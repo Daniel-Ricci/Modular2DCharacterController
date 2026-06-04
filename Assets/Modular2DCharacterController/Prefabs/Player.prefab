@@ -11,6 +11,10 @@ GameObject:
   - component: {fileID: 548829648891183911}
   - component: {fileID: 9007837118997397910}
   - component: {fileID: 6879002011067484455}
+  - component: {fileID: 2854622110580915959}
+  - component: {fileID: 6872046410647265516}
+  - component: {fileID: 9072815575998707769}
+  - component: {fileID: 3147954627580100399}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -60,7 +64,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!70 &6879002011067484455
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -98,6 +102,58 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1, y: 2}
   m_Direction: 0
+--- !u!114 &2854622110580915959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 161c24859b198ff498b084ddaed638d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Core.CharacterController2D
+--- !u!114 &6872046410647265516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1307e4b0b608ee4468af310b48b67bb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Core.VelocityMotor
+--- !u!114 &9072815575998707769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87afe8fb9cf1992429b9c7ae5b512eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Input.NewInputSystemProvider
+  moveAction: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  jumpAction: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  rollAction: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+--- !u!114 &3147954627580100399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dac754d3ba4c274d979b3c508c022e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.HorizontalMovementFeature
+  moveSpeed: 8
 --- !u!1 &1436459613464208644
 GameObject:
   m_ObjectHideFlags: 0
