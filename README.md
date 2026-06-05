@@ -1,8 +1,8 @@
 # Modular2DCharacterController
 
-A modular 2D character controller for Unity built around reusable features, interchangeable movement implementations, and support for both Unity Input Systems.
+A modular 2D character controller for Unity built around reusable gameplay features and support for both Unity Input Systems.
 
-The goal of this project is to provide a flexible foundation for 2D platformers while keeping gameplay features decoupled from input and movement implementations.
+The goal of this project is to provide a flexible foundation for 2D platformers while keeping gameplay features decoupled from input implementations.
 
 ---
 
@@ -31,39 +31,72 @@ Character behavior is implemented through independent features.
 Current implemented features:
 
 * `HorizontalMovementFeature`
+* `JumpFeature`
 
 Features implement the `ICharacterFeature` interface and are automatically discovered by `CharacterController2D`.
 
 This allows new features to be added without modifying the controller itself.
 
-Examples of planned features:
-
-* Jump
-* Roll
-* Dash
-* Wall Jump
-* Wall Slide
-* Ledge Grab
-* Sprint
-
 ---
 
-### Movement Motor System
+### Jump System
 
-Movement execution is separated from gameplay features.
+`JumpFeature` includes a modern platformer-style jump system with built-in quality-of-life mechanics.
 
-Features express movement intent while motors determine how that movement is applied.
+Features:
 
-Current motor implementations:
+* Multiple jumps
+* Coyote time
+* Jump buffering
+* Variable jump height
+* Fixed jump height option
+* Jump hang time
+* Custom gravity
+* Faster fall gravity
 
-* `VelocityMotor`
-* `ForceMotor`
+#### Coyote Time
 
-All motors implement:
+Allows jumps to occur shortly after leaving a platform.
 
-* `ICharacterMotor`
+This improves responsiveness and makes jumps feel more forgiving.
 
-This allows the same gameplay features to work with different movement implementations.
+#### Jump Buffering
+
+Allows jump input to be pressed shortly before landing.
+
+The jump will automatically execute on landing if the buffer window is still active.
+
+#### Variable Jump Height
+
+When enabled:
+
+* Tap jump for a short jump
+* Hold jump for a full jump
+
+#### Fixed Jump Height
+
+When enabled:
+
+* Every jump reaches the same height regardless of button hold duration
+
+#### Jump Hang Time
+
+Gravity is reduced near the apex of a jump.
+
+This provides:
+
+* Better aerial control
+* Improved platforming precision
+* More responsive jump feel
+
+#### Custom Gravity
+
+Jumping uses manually calculated gravity based on:
+
+* Desired jump height
+* Desired time to apex
+
+This allows jump behavior to be tuned through gameplay values rather than trial-and-error physics settings.
 
 ---
 
@@ -77,6 +110,13 @@ This allows the same gameplay features to work with different movement implement
 
 Ground detection uses collider casting instead of manually placed ground check points, making it easier to support different collider shapes and future slope handling.
 
+Features include:
+
+* Layer filtering
+* Surface normal detection
+* Ground angle calculation
+* Slope validation
+
 ---
 
 ## Project Structure
@@ -85,14 +125,16 @@ Ground detection uses collider casting instead of manually placed ground check p
 Scripts/
 ├── Core/
 │   ├── CharacterController2D
-│   ├── GroundDetector
-│   ├── ICharacterMotor
-│   ├── VelocityMotor
-│   └── ForceMotor
+│   └── CharacterMotor
+│   └── GroundDetector
 │
 ├── Features/
 │   ├── ICharacterFeature
-│   └── HorizontalMovementFeature
+│   ├── HorizontalMovementFeature
+│   └── JumpFeature
+│
+├── Data/
+│   └── JumpSettings
 │
 └── Input/
     ├── ICharacterInput
@@ -114,9 +156,9 @@ Create a GameObject with:
 Add the following components:
 
 * CharacterController2D
-* VelocityMotor or ForceMotor
 * GroundDetector
 * HorizontalMovementFeature
+* JumpFeature
 
 Choose one input provider:
 
@@ -189,14 +231,23 @@ Configure the same layer inside `GroundDetector`.
 
 ---
 
-### 4. Test Movement
+### 4. Configure Jump Settings
 
-Press Play.
+Create a `JumpSettings` scriptable object asset and configure:
 
-The character should:
+* Jump Height
+* Time To Apex
+* Fall Gravity Multiplier
 
-* Fall using Rigidbody2D physics
-* Move left and right using the configured input provider
+Sample JumpSettings are provided, but a custom one can be made in Create > Modular 2D Character Controller > Jump Settings.
+
+Optional gameplay tuning:
+
+* Maximum Jump Count
+* Coyote Time
+* Jump Buffer Time
+* Variable Jump Height
+* Jump Hang Time
 
 ---
 
@@ -204,8 +255,8 @@ The character should:
 
 * Modular architecture
 * Reusable gameplay features
-* Support for multiple movement implementations
 * Support for both Unity input systems
 * Easy to extend
 * Minimal setup
+* Gameplay-driven jump tuning
 * Future support for advanced platformer mechanics

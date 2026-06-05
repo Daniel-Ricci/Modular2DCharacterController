@@ -9,14 +9,14 @@ namespace Modular2DCharacterController.Features
     /// </summary>
     public class HorizontalMovementFeature : MonoBehaviour, ICharacterFeature
     {
-        [SerializeField] private float moveSpeed = 8f;
+        [SerializeField] private float moveSpeed;
 
-        private ICharacterMotor _motor;
+        private CharacterMotor _motor;
         private ICharacterInput _input;
 
         private void Awake()
         {
-            _motor = GetComponent<ICharacterMotor>();
+            _motor = GetComponent<CharacterMotor>();
             _input = GetComponent<ICharacterInput>();
         }
 
