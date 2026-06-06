@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: FloatyGroundedMovement
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Data.HorizontalMovementProfile
   priority: 0
-  maxSpeed: 0
-  acceleration: 0
-  deceleration: 0
-  turnAcceleration: 0
+  maxSpeed: 7
+  acceleration: 45
+  deceleration: 60
+  turnAcceleration: 80

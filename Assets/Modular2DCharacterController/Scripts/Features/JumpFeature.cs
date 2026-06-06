@@ -112,12 +112,12 @@ namespace Modular2DCharacterController.Features
         private void CalculateJumpValues(JumpProfile currentJumpProfile)
         {
             _gravity =
-                -(2f * defaultJumpProfile.jumpHeight) /
-                (defaultJumpProfile.timeToApex * defaultJumpProfile.timeToApex);
+                -(2f * currentJumpProfile.jumpHeight) /
+                (currentJumpProfile.timeToApex * currentJumpProfile.timeToApex);
 
             _jumpVelocity =
                 Mathf.Abs(_gravity) *
-                defaultJumpProfile.timeToApex;
+                currentJumpProfile.timeToApex;
         }
 
         private void UpdateGroundState()
