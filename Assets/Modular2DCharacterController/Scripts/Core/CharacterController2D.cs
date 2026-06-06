@@ -1,14 +1,22 @@
+using Modular2DCharacterController.Data;
 using UnityEngine;
 using Modular2DCharacterController.Features;
 
 namespace Modular2DCharacterController.Core
 {
     /// <summary>
-    /// Coordinates character features.
+    /// Coordinates character features and stores profile providers.
     /// </summary>
+    [RequireComponent(typeof(GroundDetector))]
+    [RequireComponent(typeof(CharacterMotor))]
     public class CharacterController2D : MonoBehaviour
     {
         private ICharacterFeature[] _features;
+        
+        // Profile providers
+        public ProfileProvider<HorizontalMovementProfile> HorizontalMovementProfileProvider { get; }
+            = new();
+        public ProfileProvider<JumpProfile> JumpProfileProvider { get; } = new();
 
         private void Awake()
         {

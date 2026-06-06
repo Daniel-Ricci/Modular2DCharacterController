@@ -1,8 +1,8 @@
 # Modular2DCharacterController
 
-A modular 2D character controller for Unity built around reusable gameplay features and support for both Unity Input Systems.
+A modular 2D character controller for Unity built around reusable gameplay features, runtime profile overrides, and support for both Unity Input Systems.
 
-The goal of this project is to provide a flexible foundation for 2D platformers while keeping gameplay features decoupled from input implementations.
+The goal of this project is to provide a flexible foundation for 2D platformers while keeping gameplay features decoupled from input implementations and gameplay tuning data.
 
 ---
 
@@ -39,6 +39,59 @@ This allows new features to be added without modifying the controller itself.
 
 ---
 
+### Profile System
+
+Gameplay tuning is driven by ScriptableObject profiles.
+
+All profiles inherit from a common base class:
+
+```text
+FeatureProfile
+├── HorizontalMovementProfile
+└── JumpProfile
+```
+
+Each profile contains a Priority value.
+
+Profiles are managed by generic `ProfileProvider<T>` instances stored inside `CharacterController2D`.
+
+When multiple profiles are registered simultaneously, the provider automatically selects the highest-priority profile.
+
+This enables runtime gameplay overrides without modifying feature logic.
+
+Examples:
+
+* Air movement while airborne
+* Sprint movement while running
+* Crouch movement while crouching
+* Environmental modifiers
+* Temporary powerups
+
+Features consume only the currently active profile and remain unaware of where it originated.
+
+---
+
+### Horizontal Movement
+
+`HorizontalMovementFeature` includes:
+
+* Configurable movement profiles
+* Acceleration
+* Deceleration
+* Turn acceleration
+* Character facing support
+* Multiple flipping modes
+
+Supported facing modes:
+
+* None
+* Transform Scale
+* SpriteRenderer Flip
+
+Movement values are driven entirely by the currently active `HorizontalMovementProfile`.
+
+---
+
 ### Jump System
 
 `JumpFeature` includes a modern platformer-style jump system with built-in quality-of-life mechanics.
@@ -53,6 +106,7 @@ Features:
 * Jump hang time
 * Custom gravity
 * Faster fall gravity
+* Air movement profile overrides
 
 #### Coyote Time
 
@@ -93,8 +147,8 @@ This provides:
 
 Jumping uses manually calculated gravity based on:
 
-* Desired jump height
-* Desired time to apex
+* Jump Height
+* Time To Apex
 
 This allows jump behavior to be tuned through gameplay values rather than trial-and-error physics settings.
 
@@ -119,13 +173,214 @@ Features include:
 
 ---
 
+## Profile Architecture
+
+### Base Profile
+
+All profiles inherit from:
+
+```csharp
+FeatureProfile
+```
+
+which contains:
+
+```csharp
+public int priority;
+```
+
+The priority determines which profile becomes active when multiple profiles are registered.
+
+Higher priority wins.
+
+---
+
+### Profile Providers
+
+Profile providers manage active profiles at runtime.
+
+Current providers:
+
+```csharp
+ProfileProvider<HorizontalMovementProfile>
+ProfileProvider<JumpProfile>
+```
+
+Providers support:
+
+```csharp
+RegisterProfile(...)
+UnregisterProfile(...)
+GetCurrentProfile()
+```
+
+The currently active profile is always the highest-priority registered profile.
+
+---
+
+### Example
+
+Default movement:
+
+```text
+Walk Profile
+Priority = 0
+```
+
+Air movement:
+
+```text
+Air Profile
+Priority = 10
+```
+
+When airborne:
+
+```text
+Current Profile = Air Profile
+```
+
+When grounded:
+
+```text
+Current Profile = Walk Profile
+```
+
+No changes are required inside the movement feature itself.
+
+---
+
+## Creating Profiles
+
+### Creating a Horizontal Movement Profile
+
+Create:
+
+```text
+Create
+└── Modular 2D Character Controller
+    └── Horizontal Movement Profile
+```
+
+Configure:
+
+* Priority
+* Max Speed
+* Acceleration
+* Deceleration
+* Turn Acceleration
+
+Example:
+
+```text
+Priority = 0
+
+Max Speed = 8
+Acceleration = 80
+Deceleration = 100
+Turn Acceleration = 150
+```
+
+Assign the profile to:
+
+```text
+HorizontalMovementFeature
+└── Default Movement Profile
+```
+
+---
+
+### Creating a Jump Profile
+
+Create:
+
+```text
+Create
+└── Modular 2D Character Controller
+    └── Jump Profile
+```
+
+Configure:
+
+* Priority
+* Jump Height
+* Time To Apex
+* Fall Gravity Multiplier
+
+Example:
+
+```text
+Priority = 0
+
+Jump Height = 4
+Time To Apex = 0.4
+Fall Gravity Multiplier = 2
+```
+
+Assign the profile to:
+
+```text
+JumpFeature
+└── Default Jump Profile
+```
+
+---
+
+## Runtime Profile Overrides
+
+Features can temporarily override gameplay behavior by registering profiles.
+
+Register a profile:
+
+```csharp
+provider.RegisterProfile(profile);
+```
+
+Remove a profile:
+
+```csharp
+provider.UnregisterProfile(profile);
+```
+
+Retrieve the active profile:
+
+```csharp
+provider.GetCurrentProfile();
+```
+
+The provider automatically selects the highest-priority registered profile.
+
+---
+
+### Example: Air Movement
+
+`JumpFeature` can register an air movement profile when the character becomes airborne.
+
+Grounded:
+
+```text
+Walk Profile
+Priority = 0
+```
+
+Airborne:
+
+```text
+Air Profile
+Priority = 10
+```
+
+Because the air profile has a higher priority, it becomes the active movement profile until the character lands.
+
+---
+
 ## Project Structure
 
 ```text
 Scripts/
 ├── Core/
 │   ├── CharacterController2D
-│   └── CharacterMotor
+│   ├── CharacterMotor
 │   └── GroundDetector
 │
 ├── Features/
@@ -134,7 +389,10 @@ Scripts/
 │   └── JumpFeature
 │
 ├── Data/
-│   └── JumpSettings
+│   ├── FeatureProfile
+│   ├── HorizontalMovementProfile
+│   ├── JumpProfile
+│   └── ProfileProvider
 │
 └── Input/
     ├── ICharacterInput
@@ -175,7 +433,6 @@ Uses:
 
 * Horizontal
 * Jump
-* Roll
 
 Ensure these entries exist in:
 
@@ -194,8 +451,7 @@ Example action map:
 ```text
 Player
 ├── Move
-├── Jump
-└── Roll
+└── Jump
 ```
 
 Recommended setup:
@@ -213,7 +469,6 @@ Assign the actions to:
 
 * Move Action
 * Jump Action
-* Roll Action
 
 on the `NewInputSystemProvider`.
 
@@ -231,32 +486,52 @@ Configure the same layer inside `GroundDetector`.
 
 ---
 
-### 4. Configure Jump Settings
+### 4. Create Movement Profiles
 
-Create a `JumpSettings` scriptable object asset and configure:
+Create a `HorizontalMovementProfile`.
 
-* Jump Height
-* Time To Apex
-* Fall Gravity Multiplier
+Assign it to:
 
-Sample JumpSettings are provided, but a custom one can be made in Create > Modular 2D Character Controller > Jump Settings.
+```text
+HorizontalMovementFeature
+└── Default Movement Profile
+```
 
-Optional gameplay tuning:
+---
 
-* Maximum Jump Count
-* Coyote Time
-* Jump Buffer Time
-* Variable Jump Height
-* Jump Hang Time
+### 5. Create Jump Profiles
+
+Create a `JumpProfile`.
+
+Assign it to:
+
+```text
+JumpFeature
+└── Default Jump Profile
+```
+
+---
+
+### 6. Press Play
+
+Your character should now:
+
+* Move
+* Jump
+* Support coyote time
+* Support jump buffering
+* Support multiple jumps
+* Use profile-driven gameplay tuning
 
 ---
 
 ## Design Goals
 
 * Modular architecture
+* Profile-driven gameplay tuning
 * Reusable gameplay features
 * Support for both Unity input systems
 * Easy to extend
 * Minimal setup
-* Gameplay-driven jump tuning
+* Runtime gameplay overrides
 * Future support for advanced platformer mechanics

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e22c63a3aec350499ca8bbed1994bc0, type: 3}
   m_Name: ArcadePlatformerJumpSettings
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Data.JumpSettings
-  JumpHeight: 3
-  TimeToApex: 0.25
-  FallGravityMultiplier: 3
+  priority: 0
+  jumpHeight: 3
+  timeToApex: 0.25
+  fallGravityMultiplier: 2.5
