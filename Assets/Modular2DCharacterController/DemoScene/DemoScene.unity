@@ -257,6 +257,16 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &1026762008 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 9007837118997397910, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+  m_PrefabInstance: {fileID: 1141310045916416020}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1026762009 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 548829648891183911, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+  m_PrefabInstance: {fileID: 1141310045916416020}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1401225062
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,6 +416,8 @@ GameObject:
   - component: {fileID: 2120853845}
   - component: {fileID: 2120853844}
   - component: {fileID: 2120853843}
+  - component: {fileID: 2120853847}
+  - component: {fileID: 2120853846}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -487,6 +499,96 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2120853846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120853842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 819253c933fb96f489d7102d0a3e2526, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Camera.Advanced2DPlatformerCamera
+  target: {fileID: 1026762009}
+  targetRigidbody: {fileID: 1026762008}
+  followX: 1
+  followY: 1
+  offset: {x: 0, y: 1.25}
+  smoothTime: {x: 0.18, y: 0.24}
+  maxFollowSpeed: 100
+  useDeadZone: 1
+  deadZoneSize: {x: 1.5, y: 1}
+  useLookAhead: 1
+  lookAheadDistance: 2.5
+  lookAheadSmoothing: 6
+  lookAheadReturnSpeed: 3
+  minimumVelocityForLookAhead: 0.2
+  useVerticalVelocityBias: 1
+  upwardBias: 0.75
+  downwardBias: -1.25
+  verticalBiasSmoothing: 5
+  minimumVerticalVelocityForBias: 1
+  useBounds: 0
+  minBounds: {x: 0, y: 0}
+  maxBounds: {x: 0, y: 0}
+  defaultOrthographicSize: 6
+  zoomSmoothTime: 0.2
+  minOrthographicSize: 3
+  maxOrthographicSize: 12
+  pixelSnap: 0
+  pixelsPerUnit: 16
+  autoEnableTargetInterpolation: 1
+  snapDistance: 8
+  shakeTraumaDecay: 1.5
+  maxShakeOffset: 0.35
+  maxShakeRotation: 2
+  shakeFrequency: 24
+--- !u!114 &2120853847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120853842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1001 &1141310045916416020
 PrefabInstance:
   m_ObjectHideFlags: 0
