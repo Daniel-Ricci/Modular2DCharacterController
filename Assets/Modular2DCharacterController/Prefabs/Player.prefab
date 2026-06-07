@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 9072815575998707769}
   - component: {fileID: 3147954627580100399}
   - component: {fileID: 3036728849090581681}
+  - component: {fileID: 2065180972893838928}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -56,7 +57,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 44022f2b87d958247a589bdca8c553b6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -159,7 +160,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Input.NewInputSystemProvider
   moveAction: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   jumpAction: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  rollAction: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  runAction: {fileID: -7471211009204490832, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!114 &3147954627580100399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,6 +174,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.HorizontalMovementFeature
   defaultMovementProfile: {fileID: 11400000, guid: e31a74ffdcc1e674ab5089d20d8588dc, type: 2}
+  preserveMomentumAboveMaxSpeed: 1
+  overspeedDeceleration: 0
   facingMode: 1
   graphicsRoot: {fileID: 7855801637417708460}
   spriteRenderer: {fileID: 0}
@@ -198,6 +201,20 @@ MonoBehaviour:
   enableJumpHangTime: 1
   jumpHangVelocityThreshold: 1
   jumpHangGravityMultiplier: 0.35
+--- !u!114 &2065180972893838928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dca2a4f4bf7b45340b8ada94617d483c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.RunFeature
+  runMovementProfile: {fileID: 11400000, guid: 0823fea60afa7c6418d57fb35664a9de, type: 2}
+  minimumMoveInput: 0.1
 --- !u!1 &1436459613464208644
 GameObject:
   m_ObjectHideFlags: 0

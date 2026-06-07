@@ -12,7 +12,7 @@ namespace Modular2DCharacterController.Input
 
         [Header("Button Names")]
         [SerializeField] private string jumpButton = "Jump";
-        [SerializeField] private string rollButton = "Roll";
+        [SerializeField] private string runButton = "Run";
 
         public float MoveInput => UnityEngine.Input.GetAxisRaw(horizontalAxis);
 
@@ -20,6 +20,6 @@ namespace Modular2DCharacterController.Input
 
         public bool JumpHeld => UnityEngine.Input.GetButton(jumpButton);
 
-        public bool RollPressed => UnityEngine.Input.GetButtonDown(rollButton);
+        public bool RunHeld => UnityEngine.Input.GetButtonDown(runButton);
     }
 }

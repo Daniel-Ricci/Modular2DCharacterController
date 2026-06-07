@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7fd87c8ad6642cf40beeaae32cb2046c, type: 3}
-  m_Name: BasicAirMovement
+  m_Name: RunProfile
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Data.HorizontalMovementProfile
-  priority: 20
-  maxSpeed: 8
-  acceleration: 40
-  deceleration: 20
-  turnAcceleration: 60
+  priority: 10
+  maxSpeed: 12
+  acceleration: 110
+  deceleration: 120
+  turnAcceleration: 170

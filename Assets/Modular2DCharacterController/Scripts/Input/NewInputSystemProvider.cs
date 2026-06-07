@@ -11,7 +11,7 @@ namespace Modular2DCharacterController.Input
         [Header("Input Actions")]
         [SerializeField] private InputActionReference moveAction;
         [SerializeField] private InputActionReference jumpAction;
-        [SerializeField] private InputActionReference rollAction;
+        [SerializeField] private InputActionReference runAction;
 
         public float MoveInput =>
             moveAction != null
@@ -26,22 +26,22 @@ namespace Modular2DCharacterController.Input
             jumpAction != null &&
             jumpAction.action.IsPressed();
 
-        public bool RollPressed =>
-            rollAction != null &&
-            rollAction.action.WasPressedThisFrame();
+        public bool RunHeld =>
+            runAction != null &&
+            runAction.action.IsPressed();
 
         private void OnEnable()
         {
             moveAction?.action.Enable();
             jumpAction?.action.Enable();
-            rollAction?.action.Enable();
+            runAction?.action.Enable();
         }
 
         private void OnDisable()
         {
             moveAction?.action.Disable();
             jumpAction?.action.Disable();
-            rollAction?.action.Disable();
+            runAction?.action.Disable();
         }
     }
 }

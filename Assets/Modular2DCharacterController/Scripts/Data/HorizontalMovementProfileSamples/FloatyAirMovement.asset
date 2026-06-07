@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fd87c8ad6642cf40beeaae32cb2046c, type: 3}
   m_Name: FloatyAirMovement
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Data.HorizontalMovementProfile
-  priority: 10
+  priority: 20
   maxSpeed: 7
   acceleration: 15
   deceleration: 5

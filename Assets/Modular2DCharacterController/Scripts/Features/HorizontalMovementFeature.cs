@@ -28,6 +28,14 @@ namespace Modular2DCharacterController.Features
         [SerializeField]
         private HorizontalMovementProfile defaultMovementProfile;
 
+        [Header("Momentum")]
+        [SerializeField]
+        private bool preserveMomentumAboveMaxSpeed = true;
+
+        [SerializeField]
+        [Min(0f)]
+        private float overspeedDeceleration = 0f;
+
         [Header("Flipping")]
         [SerializeField]
         private FlippingMode facingMode = FlippingMode.TransformScale;
@@ -76,27 +84,58 @@ namespace Modular2DCharacterController.Features
 
         public void FixedTick()
         {
-            HorizontalMovementProfile currentProfile = _horizontalMovementProfileProvider.GetCurrentProfile();
-            
+            HorizontalMovementProfile currentProfile =
+                _horizontalMovementProfileProvider.GetCurrentProfile();
+
             if (currentProfile == null)
                 return;
-            
+
+            float moveInput = _input.MoveInput;
+
             float targetSpeed =
-                _input.MoveInput * currentProfile.maxSpeed;
+                moveInput * currentProfile.maxSpeed;
 
             float currentSpeed =
                 _motor.HorizontalVelocity;
 
             bool isTryingToMove =
-                Mathf.Abs(_input.MoveInput) > 0.01f;
+                Mathf.Abs(moveInput) > 0.01f;
 
             bool isTurning =
                 isTryingToMove &&
                 Mathf.Abs(currentSpeed) > 0.01f &&
-                !Mathf.Approximately(Mathf.Sign(currentSpeed), Mathf.Sign(_input.MoveInput));
+                !Mathf.Approximately(Mathf.Sign(currentSpeed), Mathf.Sign(moveInput));
+
+            bool isMovingSameDirection =
+                isTryingToMove &&
+                Mathf.Abs(currentSpeed) > 0.01f &&
+                Mathf.Approximately(Mathf.Sign(currentSpeed), Mathf.Sign(moveInput));
+
+            bool isAboveProfileMaxSpeed =
+                Mathf.Abs(currentSpeed) > Mathf.Abs(targetSpeed);
+
+            if (
+                preserveMomentumAboveMaxSpeed &&
+                isMovingSameDirection &&
+                isAboveProfileMaxSpeed)
+            {
+                float preservedSpeed = currentSpeed;
+
+                if (overspeedDeceleration > 0f)
+                {
+                    preservedSpeed = Mathf.MoveTowards(
+                        currentSpeed,
+                        targetSpeed,
+                        overspeedDeceleration * Time.fixedDeltaTime);
+                }
+
+                _motor.SetHorizontalVelocity(preservedSpeed);
+                UpdateFacingDirection();
+                return;
+            }
 
             float accelerationRate;
-            
+
             if (!isTryingToMove)
             {
                 accelerationRate =
