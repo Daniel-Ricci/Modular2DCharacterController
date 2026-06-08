@@ -52,6 +52,7 @@ namespace Modular2DCharacterController.Features
         private CharacterMotor _motor;
         private ICharacterInput _input;
         private CharacterController2D _controller;
+        private DashFeature _dashFeature;
         private ProfileProvider<HorizontalMovementProfile> _horizontalMovementProfileProvider;
 
         private void Awake()
@@ -59,6 +60,7 @@ namespace Modular2DCharacterController.Features
             _motor = GetComponent<CharacterMotor>();
             _input = GetComponent<ICharacterInput>();
             _controller = GetComponent<CharacterController2D>();
+            _dashFeature = GetComponent<DashFeature>();
             _horizontalMovementProfileProvider = _controller.HorizontalMovementProfileProvider;
 
             if (defaultMovementProfile != null)
@@ -84,6 +86,9 @@ namespace Modular2DCharacterController.Features
 
         public void FixedTick()
         {
+            if (_dashFeature != null && _dashFeature.IsDashing)
+                return;
+            
             HorizontalMovementProfile currentProfile =
                 _horizontalMovementProfileProvider.GetCurrentProfile();
 

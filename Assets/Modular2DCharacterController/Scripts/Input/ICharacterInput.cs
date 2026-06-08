@@ -12,5 +12,9 @@ namespace Modular2DCharacterController.Input
         bool JumpHeld { get; }
 
         bool RunHeld { get; }
+        
+        bool DashPressed { get; }
+        
+        bool DashHeld { get; }
     }
 }

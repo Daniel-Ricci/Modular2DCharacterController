@@ -58,6 +58,7 @@ namespace Modular2DCharacterController.Features
         private GroundDetector _groundDetector;
         private Rigidbody2D _rigidbody;
         private CharacterController2D _controller;
+        private DashFeature _dashFeature;
         private ProfileProvider<JumpProfile> _jumpProfileProvider;
         private ProfileProvider<HorizontalMovementProfile> _horizontalMovementProfileProvider;
 
@@ -79,6 +80,7 @@ namespace Modular2DCharacterController.Features
             _groundDetector = GetComponent<GroundDetector>();
             _rigidbody = GetComponent<Rigidbody2D>();
             _controller = GetComponent<CharacterController2D>();
+            _dashFeature = GetComponent<DashFeature>();
             _jumpProfileProvider = _controller.JumpProfileProvider;
             _horizontalMovementProfileProvider = _controller.HorizontalMovementProfileProvider;
 
@@ -201,6 +203,9 @@ namespace Modular2DCharacterController.Features
 
         private void ApplyCustomGravity(JumpProfile currentJumpProfile)
         {
+            if (_dashFeature != null && _dashFeature.IsDashing)
+                return;
+            
             float gravityMultiplier = 1f;
 
             // Falling

@@ -12,6 +12,7 @@ namespace Modular2DCharacterController.Input
         [SerializeField] private InputActionReference moveAction;
         [SerializeField] private InputActionReference jumpAction;
         [SerializeField] private InputActionReference runAction;
+        [SerializeField] private InputActionReference dashAction;
 
         public float MoveInput =>
             moveAction != null
@@ -29,12 +30,21 @@ namespace Modular2DCharacterController.Input
         public bool RunHeld =>
             runAction != null &&
             runAction.action.IsPressed();
+        
+        public bool DashPressed =>
+            dashAction != null &&
+            dashAction.action.WasPressedThisFrame();
+
+        public bool DashHeld =>
+            dashAction != null &&
+            dashAction.action.IsPressed();
 
         private void OnEnable()
         {
             moveAction?.action.Enable();
             jumpAction?.action.Enable();
             runAction?.action.Enable();
+            dashAction?.action.Enable();
         }
 
         private void OnDisable()
@@ -42,6 +52,7 @@ namespace Modular2DCharacterController.Input
             moveAction?.action.Disable();
             jumpAction?.action.Disable();
             runAction?.action.Disable();
+            dashAction?.action.Disable();
         }
     }
 }

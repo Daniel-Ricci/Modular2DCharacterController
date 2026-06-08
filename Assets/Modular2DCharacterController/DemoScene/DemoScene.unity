@@ -395,6 +395,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1026762000 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 341889370699776070, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+  m_PrefabInstance: {fileID: 1141310045916416020}
+  m_PrefabAsset: {fileID: 0}
 --- !u!50 &1026762008 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 9007837118997397910, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
@@ -405,6 +410,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 548829648891183911, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
   m_PrefabInstance: {fileID: 1141310045916416020}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1026762013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026762000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f02bc4ea75a30e14480c6de5a9a9f224, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.DashFeature
+  defaultDashProfile: {fileID: 11400000, guid: 7be7cb5cc5db38e4088fd599ccf60e17, type: 2}
 --- !u!1 &1401225062
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,10 +797,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9072815575998707769, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: dashAction
+      value: 
+      objectReference: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 341889370699776070, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1026762013}
   m_SourcePrefab: {fileID: 100100000, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

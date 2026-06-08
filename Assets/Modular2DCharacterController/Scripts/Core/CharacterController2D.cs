@@ -17,6 +17,7 @@ namespace Modular2DCharacterController.Core
         public ProfileProvider<HorizontalMovementProfile> HorizontalMovementProfileProvider { get; }
             = new();
         public ProfileProvider<JumpProfile> JumpProfileProvider { get; } = new();
+        public ProfileProvider<DashProfile> DashProfileProvider { get; } = new();
 
         private void Awake()
         {
