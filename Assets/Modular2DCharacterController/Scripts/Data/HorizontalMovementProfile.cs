@@ -1,8 +1,10 @@
-using System;
 using UnityEngine;
 
-namespace Modular2DCharacterController.Data
+namespace Modular2DCharacterController.Scripts.Data
 {
+    /// <summary>
+    /// Data profile used by the horizontal movement feature.
+    /// </summary>
     [CreateAssetMenu(
         fileName = "HorizontalMovementProfile",
         menuName = "Modular 2D Character Controller/Horizontal Movement Profile")]
@@ -10,15 +12,15 @@ namespace Modular2DCharacterController.Data
     {
         [Header("Movement Settings")]
         [Min(0)]
-        public float maxSpeed;
+        public float maxSpeed = 8.0f;
 
         [Min(0)]
-        public float acceleration;
+        public float acceleration = 80.0f;
 
         [Min(0)]
-        public float deceleration;
+        public float deceleration = 100.0f;
 
         [Min(0)]
-        public float turnAcceleration;
+        public float turnAcceleration = 150.0f;
     }
 }

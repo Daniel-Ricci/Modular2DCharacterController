@@ -1,12 +1,12 @@
+using Modular2DCharacterController.Scripts.Core;
+using Modular2DCharacterController.Scripts.Data;
+using Modular2DCharacterController.Scripts.Input;
 using UnityEngine;
-using Modular2DCharacterController.Core;
-using Modular2DCharacterController.Data;
-using Modular2DCharacterController.Input;
 
-namespace Modular2DCharacterController.Features
+namespace Modular2DCharacterController.Scripts.Features
 {
     /// <summary>
-    /// Registers a higher-priority horizontal movement profile while the run input is held.
+    /// A configurable feature that registers a higher-priority horizontal movement profile while the run input is held.
     /// </summary>
     [RequireComponent(typeof(CharacterController2D))]
     public class RunFeature : MonoBehaviour, ICharacterFeature

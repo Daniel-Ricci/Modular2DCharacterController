@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 
-namespace Modular2DCharacterController.Data
+namespace Modular2DCharacterController.Scripts.Data
 {
+    /// <summary>
+    /// Provides the functionalities to register and unregister a feature profile, and retrieve the current one
+    /// with the highest priority.
+    /// </summary>
     public class ProfileProvider<TProfile> where TProfile : FeatureProfile
     {
         private readonly List<TProfile> _profiles = new();
@@ -28,6 +32,8 @@ namespace Modular2DCharacterController.Data
             UpdateCurrentProfile();
         }
 
+        // Keeps track of what is the highest priority profile. Updated whenever a profile is registered
+        // or unregistered.
         private void UpdateCurrentProfile()
         {
             if (_profiles.Count == 0)

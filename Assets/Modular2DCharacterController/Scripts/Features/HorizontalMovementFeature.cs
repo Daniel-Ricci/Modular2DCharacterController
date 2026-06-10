@@ -1,9 +1,9 @@
+using Modular2DCharacterController.Scripts.Core;
+using Modular2DCharacterController.Scripts.Data;
+using Modular2DCharacterController.Scripts.Input;
 using UnityEngine;
-using Modular2DCharacterController.Core;
-using Modular2DCharacterController.Data;
-using Modular2DCharacterController.Input;
 
-namespace Modular2DCharacterController.Features
+namespace Modular2DCharacterController.Scripts.Features
 {
     public enum FlippingMode
     {
@@ -19,21 +19,24 @@ namespace Modular2DCharacterController.Features
     }
 
     /// <summary>
-    /// Handles horizontal character movement.
+    /// A configurable feature that allows the player to move horizontally.
     /// </summary>
     [RequireComponent(typeof(CharacterController2D))]
     public class HorizontalMovementFeature : MonoBehaviour, ICharacterFeature
     {
         [Header("Default Movement Profile")]
+        // Default horizontal movement profile registered when this feature wakes up.
         [SerializeField]
         private HorizontalMovementProfile defaultMovementProfile;
 
         [Header("Momentum")]
         [SerializeField]
+        // True if the momentum should be preserved if the player is able to achieve a speed above the maximum.
         private bool preserveMomentumAboveMaxSpeed = true;
 
         [SerializeField]
         [Min(0f)]
+        // Deceleration rate when above maximum speed.
         private float overspeedDeceleration = 0f;
 
         [Header("Flipping")]

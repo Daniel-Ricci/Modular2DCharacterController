@@ -1,4 +1,4 @@
-namespace Modular2DCharacterController.Input
+namespace Modular2DCharacterController.Scripts.Input
 {
     /// <summary>
     /// Defines the contract for character input providers.

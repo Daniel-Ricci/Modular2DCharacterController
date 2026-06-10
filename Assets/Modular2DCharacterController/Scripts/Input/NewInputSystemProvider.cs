@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Modular2DCharacterController.Input
+namespace Modular2DCharacterController.Scripts.Input
 {
     /// <summary>
     /// Character input provider using Unity's Input System package.

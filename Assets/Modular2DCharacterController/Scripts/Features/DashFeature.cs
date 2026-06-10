@@ -1,9 +1,9 @@
+using Modular2DCharacterController.Scripts.Core;
+using Modular2DCharacterController.Scripts.Data;
+using Modular2DCharacterController.Scripts.Input;
 using UnityEngine;
-using Modular2DCharacterController.Core;
-using Modular2DCharacterController.Data;
-using Modular2DCharacterController.Input;
 
-namespace Modular2DCharacterController.Features
+namespace Modular2DCharacterController.Scripts.Features
 {
     /// <summary>
     /// A configurable 2D dash feature using DashProfile data.
@@ -11,9 +11,8 @@ namespace Modular2DCharacterController.Features
     [RequireComponent(typeof(CharacterController2D))]
     public class DashFeature : MonoBehaviour, ICharacterFeature
     {
-        [Header("Dash Profile")]
+        [Header("Default Dash Profile")]
         // Default dash profile registered when this feature wakes up.
-        // Other systems can later override it through the DashProfileProvider.
         [SerializeField]
         private DashProfile defaultDashProfile;
 

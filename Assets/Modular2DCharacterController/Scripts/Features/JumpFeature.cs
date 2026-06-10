@@ -1,18 +1,17 @@
+using Modular2DCharacterController.Scripts.Core;
+using Modular2DCharacterController.Scripts.Data;
+using Modular2DCharacterController.Scripts.Input;
 using UnityEngine;
-using Modular2DCharacterController.Core;
-using Modular2DCharacterController.Data;
-using Modular2DCharacterController.Input;
 
-namespace Modular2DCharacterController.Features
+namespace Modular2DCharacterController.Scripts.Features
 {
     /// <summary>
-    /// Handles jumping, air jumps, coyote time,
-    /// jump buffering and custom gravity.
+    /// A configurable feature that handles player jumps and air movement.
     /// </summary>
     [RequireComponent(typeof(CharacterController2D))]
     public class JumpFeature : MonoBehaviour, ICharacterFeature
     {
-        [Header("Jump Profile")]
+        [Header("Default Jump Profile")]
         [SerializeField]
         private JumpProfile defaultJumpProfile;
         
@@ -223,7 +222,7 @@ namespace Modular2DCharacterController.Features
                 gravityMultiplier =
                     jumpReleaseGravityMultiplier;
             }
-
+            
             // Jump hang time (only while ascending near apex)
             if (
                 enableJumpHangTime &&

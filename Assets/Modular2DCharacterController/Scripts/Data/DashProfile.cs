@@ -1,7 +1,10 @@
 using UnityEngine;
 
-namespace Modular2DCharacterController.Data
+namespace Modular2DCharacterController.Scripts.Data
 {
+    /// <summary>
+    /// Data profile used by the dash feature.
+    /// </summary>
     [CreateAssetMenu(
         fileName = "DashProfile",
         menuName = "Modular 2D Character Controller/Dash Profile")]

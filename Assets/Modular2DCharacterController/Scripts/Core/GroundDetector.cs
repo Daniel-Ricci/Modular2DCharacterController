@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Modular2DCharacterController.Core
+namespace Modular2DCharacterController.Scripts.Core
 {
     /// <summary>
     /// Detects and exposes information about the ground beneath the character.
@@ -61,6 +61,7 @@ namespace Modular2DCharacterController.Core
                 return;
             }
 
+            // Casts the collider's shape downwards to check for ground.
             int hitCount = _characterCollider.Cast(
                 Vector2.down,
                 _contactFilter,

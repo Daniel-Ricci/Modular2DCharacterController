@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SnappyDashProfile
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Data.DashProfile
   priority: 0
-  dashSpeed: 18
+  dashSpeed: 55
   dashDuration: 0.14
   dashCooldown: 0.1
   variableDashLength: 1
