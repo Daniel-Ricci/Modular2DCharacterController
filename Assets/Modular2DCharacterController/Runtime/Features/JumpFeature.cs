@@ -1,9 +1,9 @@
-using Modular2DCharacterController.Scripts.Core;
-using Modular2DCharacterController.Scripts.Data;
-using Modular2DCharacterController.Scripts.Input;
+using Modular2DCharacterController.Runtime.Core;
+using Modular2DCharacterController.Runtime.Data;
+using Modular2DCharacterController.Runtime.Input;
 using UnityEngine;
 
-namespace Modular2DCharacterController.Scripts.Features
+namespace Modular2DCharacterController.Runtime.Features
 {
     /// <summary>
     /// A configurable feature that handles player jumps and air movement.

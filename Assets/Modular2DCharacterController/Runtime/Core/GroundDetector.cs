@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Modular2DCharacterController.Scripts.Core
+namespace Modular2DCharacterController.Runtime.Core
 {
     /// <summary>
     /// Detects and exposes information about the ground beneath the character.

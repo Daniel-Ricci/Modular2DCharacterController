@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Modular2DCharacterController.Scripts.Core
+namespace Modular2DCharacterController.Runtime.Core
 {
     /// <summary>
     /// Provides a centralized interface for character physics operations.

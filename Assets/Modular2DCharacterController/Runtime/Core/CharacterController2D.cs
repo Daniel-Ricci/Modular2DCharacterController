@@ -1,8 +1,8 @@
-using Modular2DCharacterController.Scripts.Data;
-using Modular2DCharacterController.Scripts.Features;
+using Modular2DCharacterController.Runtime.Data;
+using Modular2DCharacterController.Runtime.Features;
 using UnityEngine;
 
-namespace Modular2DCharacterController.Scripts.Core
+namespace Modular2DCharacterController.Runtime.Core
 {
     /// <summary>
     /// Coordinates character features and stores profile providers.

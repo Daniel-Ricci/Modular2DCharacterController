@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Modular2DCharacterController.Scripts.Input
+namespace Modular2DCharacterController.Runtime.Input
 {
     /// <summary>
     /// Character input provider using Unity's legacy Input Manager.

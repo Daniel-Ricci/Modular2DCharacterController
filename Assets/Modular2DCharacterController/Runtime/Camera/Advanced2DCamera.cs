@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Modular2DCharacterController.Camera
+namespace Modular2DCharacterController.Runtime.Camera
 {
     [RequireComponent(typeof(UnityEngine.Camera))]
     public class Advanced2DPlatformerCamera : MonoBehaviour

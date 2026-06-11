@@ -1,4 +1,4 @@
-namespace Modular2DCharacterController.Scripts.Features
+namespace Modular2DCharacterController.Runtime.Features
 {
     /// <summary>
     /// Defines the contract for all character features.

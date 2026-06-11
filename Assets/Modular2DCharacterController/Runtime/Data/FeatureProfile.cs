@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Modular2DCharacterController.Scripts.Data
+namespace Modular2DCharacterController.Runtime.Data
 {
     /// <summary>
     /// Base class for each profile that provides the data used by each feature.

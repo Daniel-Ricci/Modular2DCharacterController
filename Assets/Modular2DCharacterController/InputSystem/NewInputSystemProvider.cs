@@ -1,7 +1,10 @@
+#if ENABLE_INPUT_SYSTEM
+
+using Modular2DCharacterController.Runtime.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Modular2DCharacterController.Scripts.Input
+namespace Modular2DCharacterController.InputSystem
 {
     /// <summary>
     /// Character input provider using Unity's Input System package.
@@ -56,3 +59,5 @@ namespace Modular2DCharacterController.Scripts.Input
         }
     }
 }
+
+#endif

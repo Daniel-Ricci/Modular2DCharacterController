@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Modular2DCharacterController.Scripts.Data
+namespace Modular2DCharacterController.Runtime.Data
 {
     /// <summary>
     /// Data profile used by the jump feature.
