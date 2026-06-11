@@ -1,6 +1,7 @@
 using Modular2DCharacterController.Runtime.Core;
-using Modular2DCharacterController.Runtime.Data;
 using Modular2DCharacterController.Runtime.Input;
+using Modular2DCharacterController.Runtime.Data.FeatureProfiles;
+using System;
 using UnityEngine;
 
 namespace Modular2DCharacterController.Runtime.Features
@@ -14,10 +15,6 @@ namespace Modular2DCharacterController.Runtime.Features
         [Header("Default Jump Profile")]
         [SerializeField]
         private JumpProfile defaultJumpProfile;
-        
-        [Header("Air Movement Profile")]
-        [SerializeField]
-        private HorizontalMovementProfile airMovementProfile;
 
         [Header("Gameplay")]
         [SerializeField]
@@ -51,6 +48,10 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         [Range(0.1f, 1f)]
         private float jumpHangGravityMultiplier = 0.35f;
+        
+        // Event for jumping.
+        // Uses the jump's velocity as parameter.
+        public event Action<float> Jumped;
 
         private CharacterMotor _motor;
         private ICharacterInput _input;
@@ -59,7 +60,6 @@ namespace Modular2DCharacterController.Runtime.Features
         private CharacterController2D _controller;
         private DashFeature _dashFeature;
         private ProfileProvider<JumpProfile> _jumpProfileProvider;
-        private ProfileProvider<HorizontalMovementProfile> _horizontalMovementProfileProvider;
 
         private float _gravity;
         private float _jumpVelocity;
@@ -81,7 +81,6 @@ namespace Modular2DCharacterController.Runtime.Features
             _controller = GetComponent<CharacterController2D>();
             _dashFeature = GetComponent<DashFeature>();
             _jumpProfileProvider = _controller.JumpProfileProvider;
-            _horizontalMovementProfileProvider = _controller.HorizontalMovementProfileProvider;
 
             if (defaultJumpProfile != null)
             {
@@ -90,6 +89,16 @@ namespace Modular2DCharacterController.Runtime.Features
 
             _rigidbody.gravityScale = 0f;
             _remainingJumps = maxJumpCount;
+        }
+
+        private void OnEnable()
+        {
+            _groundDetector.Landed += ResetJumps;
+        }
+
+        private void OnDisable()
+        {
+            _groundDetector.Landed -= ResetJumps;
         }
 
         public void Tick()
@@ -104,7 +113,6 @@ namespace Modular2DCharacterController.Runtime.Features
         {
             JumpProfile currentJumpProfile = _jumpProfileProvider?.GetCurrentProfile();
             CalculateJumpValues(currentJumpProfile);
-            UpdateGroundState();
             UpdateTimers();
             TryJump();
             ApplyCustomGravity(currentJumpProfile);
@@ -119,28 +127,6 @@ namespace Modular2DCharacterController.Runtime.Features
             _jumpVelocity =
                 Mathf.Abs(_gravity) *
                 currentJumpProfile.timeToApex;
-        }
-
-        private void UpdateGroundState()
-        {
-            bool isGrounded = _groundDetector.IsGrounded;
-
-            switch (isGrounded)
-            {
-                // Just went airborne
-                case false when _wasGrounded:
-                    if(airMovementProfile != null)
-                        _horizontalMovementProfileProvider?.RegisterProfile(airMovementProfile);
-                    break;
-                // Just landed
-                case true when !_wasGrounded:
-                    _remainingJumps = maxJumpCount;
-                    if(airMovementProfile != null)
-                        _horizontalMovementProfileProvider?.UnregisterProfile(airMovementProfile);
-                    break;
-            }
-
-            _wasGrounded = isGrounded;
         }
 
         private void UpdateTimers()
@@ -198,6 +184,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _coyoteTimer = 0f;
 
             _motor.SetVerticalVelocity(_jumpVelocity);
+            Jumped?.Invoke(_jumpVelocity);
         }
 
         private void ApplyCustomGravity(JumpProfile currentJumpProfile)
@@ -236,6 +223,11 @@ namespace Modular2DCharacterController.Runtime.Features
             _rigidbody.AddForce(
                 Vector2.up * (_gravity * gravityMultiplier * _rigidbody.mass),
                 ForceMode2D.Force);
+        }
+
+        private void ResetJumps(Vector2 unused)
+        {
+            _remainingJumps = maxJumpCount;
         }
     }
 }

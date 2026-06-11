@@ -1,0 +1,101 @@
+using Modular2DCharacterController.Runtime.Features;
+using System;
+using UnityEngine;
+
+namespace Modular2DCharacterController.Runtime.Core
+{
+    /// <summary>
+    /// Listens to the low-level feature events and expose a single integration point for external systems.
+    /// </summary>
+    public class CharacterEventDispatcher : MonoBehaviour
+    {
+        public event Action<Vector2> Landed;
+        public event Action<Vector2> LeftGround;
+        public event Action<float> Jumped;
+        public event Action StartedRun;
+        public event Action StoppedRun;
+        public event Action<float> Dashed;
+
+        [Header("Feature References")]
+        [SerializeField]
+        private GroundDetector groundDetector;
+        [SerializeField]
+        private JumpFeature jumpFeature;
+        [SerializeField]
+        private RunFeature runFeature;
+        [SerializeField]
+        private DashFeature dashFeature;
+
+        private void OnEnable()
+        {
+            if (groundDetector != null)
+            {
+                groundDetector.Landed += OnLanded;
+                groundDetector.LeftGround += OnLeftGround;
+            }
+            
+            if (jumpFeature != null)
+                jumpFeature.Jumped += OnJumped;
+
+            if (runFeature != null)
+            {
+                runFeature.StartedRun += OnStartedRun;
+                runFeature.StoppedRun += OnStoppedRun;
+            }
+
+            if (dashFeature != null)
+                dashFeature.Dashed += OnDashed;
+        }
+
+        private void OnDisable()
+        {
+            if (groundDetector != null)
+            {
+                groundDetector.Landed -= OnLanded;
+                groundDetector.LeftGround -= OnLeftGround;
+            }
+            
+            if (jumpFeature != null)
+                jumpFeature.Jumped -= OnJumped;
+            
+            if (runFeature != null)
+            {
+                runFeature.StartedRun -= OnStartedRun;
+                runFeature.StoppedRun -= OnStoppedRun;
+            }
+            
+            if (dashFeature != null)
+                dashFeature.Dashed -= OnDashed;
+        }
+        
+        private void OnLanded(Vector2 landingVelocity)
+        {
+            Landed?.Invoke(landingVelocity);
+        }
+
+        private void OnLeftGround(Vector2 launchVelocity)
+        {
+            LeftGround?.Invoke(launchVelocity);
+        }
+
+        private void OnJumped(float jumpVelocity)
+        {
+            Jumped?.Invoke(jumpVelocity);
+        }
+
+        private void OnStartedRun()
+        {
+            StartedRun?.Invoke();
+        }
+
+        private void OnStoppedRun()
+        {
+            StoppedRun?.Invoke();
+        }
+
+        private void OnDashed(float dashVelocity)
+        {
+            Dashed?.Invoke(dashVelocity);
+        }
+    }
+}

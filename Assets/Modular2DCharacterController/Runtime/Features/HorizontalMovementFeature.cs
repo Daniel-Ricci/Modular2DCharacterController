@@ -1,5 +1,5 @@
 using Modular2DCharacterController.Runtime.Core;
-using Modular2DCharacterController.Runtime.Data;
+using Modular2DCharacterController.Runtime.Data.FeatureProfiles;
 using Modular2DCharacterController.Runtime.Input;
 using UnityEngine;
 
@@ -28,6 +28,10 @@ namespace Modular2DCharacterController.Runtime.Features
         // Default horizontal movement profile registered when this feature wakes up.
         [SerializeField]
         private HorizontalMovementProfile defaultMovementProfile;
+        
+        [Header("Air Movement Profile")]
+        [SerializeField]
+        private HorizontalMovementProfile airMovementProfile;
 
         [Header("Momentum")]
         [SerializeField]
@@ -54,6 +58,7 @@ namespace Modular2DCharacterController.Runtime.Features
 
         private CharacterMotor _motor;
         private ICharacterInput _input;
+        private GroundDetector _groundDetector;
         private CharacterController2D _controller;
         private DashFeature _dashFeature;
         private ProfileProvider<HorizontalMovementProfile> _horizontalMovementProfileProvider;
@@ -62,6 +67,7 @@ namespace Modular2DCharacterController.Runtime.Features
         {
             _motor = GetComponent<CharacterMotor>();
             _input = GetComponent<ICharacterInput>();
+            _groundDetector = GetComponent<GroundDetector>();
             _controller = GetComponent<CharacterController2D>();
             _dashFeature = GetComponent<DashFeature>();
             _horizontalMovementProfileProvider = _controller.HorizontalMovementProfileProvider;
@@ -81,6 +87,18 @@ namespace Modular2DCharacterController.Runtime.Features
             {
                 spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             }
+        }
+
+        private void OnEnable()
+        {
+            _groundDetector.LeftGround += OnLeftGround;
+            _groundDetector.Landed += OnLanded;
+        }
+
+        private void OnDisable()
+        {
+            _groundDetector.LeftGround -= OnLeftGround;
+            _groundDetector.Landed -= OnLanded;
         }
 
         public void Tick()
@@ -219,6 +237,22 @@ namespace Modular2DCharacterController.Runtime.Features
 
             spriteRenderer.flipX =
                 FacingDirection == FacingDirection.Left;
+        }
+
+        private void OnLeftGround(Vector2 unused)
+        {
+            if (airMovementProfile != null)
+            {
+                _horizontalMovementProfileProvider?.RegisterProfile(airMovementProfile);
+            }
+        }
+        
+        private void OnLanded(Vector2 unused)
+        {
+            if (airMovementProfile != null)
+            {
+                _horizontalMovementProfileProvider?.UnregisterProfile(airMovementProfile);
+            }
         }
     }
 }

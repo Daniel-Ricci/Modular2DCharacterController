@@ -1,6 +1,7 @@
 using Modular2DCharacterController.Runtime.Core;
-using Modular2DCharacterController.Runtime.Data;
+using Modular2DCharacterController.Runtime.Data.FeatureProfiles;
 using Modular2DCharacterController.Runtime.Input;
+using System;
 using UnityEngine;
 
 namespace Modular2DCharacterController.Runtime.Features
@@ -19,6 +20,10 @@ namespace Modular2DCharacterController.Runtime.Features
         // True while the dash is actively controlling velocity.
         // Other features can read this to skip movement or gravity during dash.
         public bool IsDashing { get; private set; }
+        
+        // Event for dashing.
+        // Uses the dash's velocity as parameter.
+        public event Action<float> Dashed;
 
         private CharacterController2D _controller;
         private CharacterMotor _motor;
@@ -193,6 +198,7 @@ namespace Modular2DCharacterController.Runtime.Features
 
             // Set velocity immediately so dash starts on this physics tick.
             _motor.SetVelocity(_dashDirection * currentProfile.dashSpeed);
+            Dashed?.Invoke(currentProfile.dashSpeed);
         }
 
         private Vector2 GetDashDirection(DashProfile currentProfile)

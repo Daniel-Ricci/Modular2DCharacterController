@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Modular2DCharacterController.Runtime.Data
+namespace Modular2DCharacterController.Runtime.Data.FeatureProfiles
 {
     /// <summary>
     /// Data profile used by the horizontal movement feature.

@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 3147954627580100399}
   - component: {fileID: 3036728849090581681}
   - component: {fileID: 2065180972893838928}
+  - component: {fileID: 7500109327406742787}
+  - component: {fileID: 908953618317756315}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -134,6 +136,7 @@ MonoBehaviour:
     m_Bits: 128
   groundCheckDistance: 0.01
   minGroundNormalY: 0.65
+  ascendingVelocityThreshold: 1
 --- !u!114 &2854622110580915959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,6 +164,7 @@ MonoBehaviour:
   moveAction: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   jumpAction: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   runAction: {fileID: -7471211009204490832, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  dashAction: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!114 &3147954627580100399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,6 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.HorizontalMovementFeature
   defaultMovementProfile: {fileID: 11400000, guid: e31a74ffdcc1e674ab5089d20d8588dc, type: 2}
+  airMovementProfile: {fileID: 11400000, guid: 1e4f9bfc726bce24daa51f569d87291a, type: 2}
   preserveMomentumAboveMaxSpeed: 1
   overspeedDeceleration: 0
   facingMode: 1
@@ -192,7 +197,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.JumpFeature
   defaultJumpProfile: {fileID: 11400000, guid: 75971002a49ce7e4cb81e5022aeb38af, type: 2}
-  airMovementProfile: {fileID: 11400000, guid: 1e4f9bfc726bce24daa51f569d87291a, type: 2}
   maxJumpCount: 2
   coyoteTime: 0.1
   jumpBufferTime: 0.1
@@ -215,6 +219,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.RunFeature
   runMovementProfile: {fileID: 11400000, guid: 0823fea60afa7c6418d57fb35664a9de, type: 2}
   minimumMoveInput: 0.1
+--- !u!114 &7500109327406742787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f02bc4ea75a30e14480c6de5a9a9f224, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.DashFeature
+  defaultDashProfile: {fileID: 11400000, guid: 7be7cb5cc5db38e4088fd599ccf60e17, type: 2}
+--- !u!114 &908953618317756315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5ea883e7374314ea2ee32c72c4e0e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.CharacterEventDispatcher
+  groundDetector: {fileID: 1624187124611957247}
+  jumpFeature: {fileID: 3036728849090581681}
 --- !u!1 &1436459613464208644
 GameObject:
   m_ObjectHideFlags: 0

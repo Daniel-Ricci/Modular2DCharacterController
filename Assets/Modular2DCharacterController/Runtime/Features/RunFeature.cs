@@ -1,6 +1,7 @@
 using Modular2DCharacterController.Runtime.Core;
-using Modular2DCharacterController.Runtime.Data;
+using Modular2DCharacterController.Runtime.Data.FeatureProfiles;
 using Modular2DCharacterController.Runtime.Input;
+using System;
 using UnityEngine;
 
 namespace Modular2DCharacterController.Runtime.Features
@@ -19,6 +20,10 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         [Range(0f, 1f)]
         private float minimumMoveInput = 0.1f;
+        
+        // Events for starting and stopping run.
+        public event Action StartedRun;
+        public event Action StoppedRun;
 
         private CharacterController2D _controller;
         private ICharacterInput _input;
@@ -56,10 +61,12 @@ namespace Modular2DCharacterController.Runtime.Features
             if (shouldRun)
             {
                 _profileProvider.RegisterProfile(runMovementProfile);
+                StartedRun?.Invoke();
             }
             else
             {
                 _profileProvider.UnregisterProfile(runMovementProfile);
+                StoppedRun?.Invoke();
             }
         }
 

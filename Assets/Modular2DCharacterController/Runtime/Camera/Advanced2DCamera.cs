@@ -1,7 +1,13 @@
+using System;
+using Modular2DCharacterController.Runtime.Core;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Modular2DCharacterController.Runtime.Camera
 {
+    /// <summary>
+    /// A configurable 2D camera
+    /// </summary>
     [RequireComponent(typeof(UnityEngine.Camera))]
     public class Advanced2DPlatformerCamera : MonoBehaviour
     {
@@ -128,6 +134,10 @@ namespace Modular2DCharacterController.Runtime.Camera
         // How fast the shake noise changes.
         [SerializeField] private float shakeFrequency = 24f;
 
+        [Header("Character Event Dispatcher")]
+        // Dispatcher for character's internal events
+        [SerializeField] private CharacterEventDispatcher characterEventDispatcher;
+        
         // Cached Camera component.
         private UnityEngine.Camera _camera;
 
@@ -522,14 +532,14 @@ namespace Modular2DCharacterController.Runtime.Camera
             SetZoom(defaultOrthographicSize);
         }
 
-        public void AddShake(float amount)
+        private void AddShake(float amount)
         {
             // Add shake trauma.
             // Values are clamped so shake intensity stays predictable.
             _shakeTrauma = Mathf.Clamp01(_shakeTrauma + amount);
         }
 
-        public void ClearShake()
+        private void ClearShake()
         {
             // Immediately remove all active shake and reset rotation.
             _shakeTrauma = 0f;

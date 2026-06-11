@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Modular2DCharacterController.Runtime.Data
+namespace Modular2DCharacterController.Runtime.Data.FeatureProfiles
 {
     /// <summary>
     /// Provides the functionalities to register and unregister a feature profile, and retrieve the current one
