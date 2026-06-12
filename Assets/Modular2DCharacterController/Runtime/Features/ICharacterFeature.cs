@@ -6,8 +6,10 @@ namespace Modular2DCharacterController.Runtime.Features
     /// </summary>
     public interface ICharacterFeature
     {
+        // Called on update by the CharacterController2D
         void Tick();
 
+        // Called on fixed update by the CharacterController2D
         void FixedTick();
     }
 }

@@ -13,13 +13,20 @@ namespace Modular2DCharacterController.Runtime.Features
     public class RunFeature : MonoBehaviour, ICharacterFeature
     {
         [Header("Run Profile")]
+        
+        [Tooltip("Run movement profile to register when running")]
         [SerializeField]
         private HorizontalMovementProfile runMovementProfile;
 
         [Header("Run Settings")]
+        
+        [Tooltip("Minimum input necessary to start running")]
         [SerializeField]
         [Range(0f, 1f)]
         private float minimumMoveInput = 0.1f;
+        
+        // True while running
+        public bool IsRunning { get; private set; }
         
         // Events for starting and stopping run.
         public event Action StartedRun;
@@ -38,6 +45,14 @@ namespace Modular2DCharacterController.Runtime.Features
 
             _profileProvider = _controller.HorizontalMovementProfileProvider;
         }
+        
+        private void OnDisable()
+        {
+            if(runMovementProfile != null)
+                _profileProvider?.UnregisterProfile(runMovementProfile);
+
+            IsRunning = false;
+        }
 
         public void Tick()
         {
@@ -52,7 +67,7 @@ namespace Modular2DCharacterController.Runtime.Features
         {
             if (runMovementProfile == null || _input == null)
             {
-                _profileProvider.UnregisterProfile(runMovementProfile);
+                _profileProvider?.UnregisterProfile(runMovementProfile);
                 return;
             }
 
@@ -60,13 +75,15 @@ namespace Modular2DCharacterController.Runtime.Features
 
             if (shouldRun)
             {
-                _profileProvider.RegisterProfile(runMovementProfile);
+                _profileProvider?.RegisterProfile(runMovementProfile);
                 StartedRun?.Invoke();
+                IsRunning = true;
             }
             else
             {
-                _profileProvider.UnregisterProfile(runMovementProfile);
+                _profileProvider?.UnregisterProfile(runMovementProfile);
                 StoppedRun?.Invoke();
+                IsRunning = false;
             }
         }
 

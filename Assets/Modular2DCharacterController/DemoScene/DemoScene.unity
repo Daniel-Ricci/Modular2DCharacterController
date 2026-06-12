@@ -405,28 +405,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 548829648891183911, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
   m_PrefabInstance: {fileID: 1141310045916416020}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1026762013 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7500109327406742787, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-  m_PrefabInstance: {fileID: 1141310045916416020}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f02bc4ea75a30e14480c6de5a9a9f224, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.DashFeature
---- !u!114 &1026762014 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2065180972893838928, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-  m_PrefabInstance: {fileID: 1141310045916416020}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dca2a4f4bf7b45340b8ada94617d483c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.RunFeature
 --- !u!114 &1026762022 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 908953618317756315, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
@@ -813,14 +791,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 908953618317756315, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      propertyPath: runFeature
-      value: 
-      objectReference: {fileID: 1026762014}
-    - target: {fileID: 908953618317756315, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      propertyPath: dashFeature
-      value: 
-      objectReference: {fileID: 1026762013}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

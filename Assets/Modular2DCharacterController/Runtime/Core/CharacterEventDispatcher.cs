@@ -15,6 +15,8 @@ namespace Modular2DCharacterController.Runtime.Core
         public event Action StartedRun;
         public event Action StoppedRun;
         public event Action<float> Dashed;
+        public event Action CrouchStarted;
+        public event Action CrouchEnded;
 
         [Header("Feature References")]
         [SerializeField]
@@ -25,6 +27,8 @@ namespace Modular2DCharacterController.Runtime.Core
         private RunFeature runFeature;
         [SerializeField]
         private DashFeature dashFeature;
+        [SerializeField]
+        private CrouchFeature crouchFeature;
 
         private void OnEnable()
         {
@@ -45,6 +49,12 @@ namespace Modular2DCharacterController.Runtime.Core
 
             if (dashFeature != null)
                 dashFeature.Dashed += OnDashed;
+
+            if (crouchFeature != null)
+            {
+                crouchFeature.CrouchStarted += OnCrouchStarted;
+                crouchFeature.CrouchEnded += OnCrouchEnded;
+            }
         }
 
         private void OnDisable()
@@ -66,6 +76,12 @@ namespace Modular2DCharacterController.Runtime.Core
             
             if (dashFeature != null)
                 dashFeature.Dashed -= OnDashed;
+            
+            if (crouchFeature != null)
+            {
+                crouchFeature.CrouchStarted -= OnCrouchStarted;
+                crouchFeature.CrouchEnded -= OnCrouchEnded;
+            }
         }
         
         private void OnLanded(Vector2 landingVelocity)
@@ -96,6 +112,16 @@ namespace Modular2DCharacterController.Runtime.Core
         private void OnDashed(float dashVelocity)
         {
             Dashed?.Invoke(dashVelocity);
+        }
+
+        private void OnCrouchStarted()
+        {
+            CrouchStarted?.Invoke();
+        }
+
+        private void OnCrouchEnded()
+        {
+            CrouchEnded?.Invoke();
         }
     }
 }

@@ -14,12 +14,13 @@ GameObject:
   - component: {fileID: 5862783433706219167}
   - component: {fileID: 1624187124611957247}
   - component: {fileID: 2854622110580915959}
+  - component: {fileID: 908953618317756315}
   - component: {fileID: 9072815575998707769}
   - component: {fileID: 3147954627580100399}
   - component: {fileID: 3036728849090581681}
   - component: {fileID: 2065180972893838928}
   - component: {fileID: 7500109327406742787}
-  - component: {fileID: 908953618317756315}
+  - component: {fileID: 539890544002109190}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -149,6 +150,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 161c24859b198ff498b084ddaed638d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Core.CharacterController2D
+--- !u!114 &908953618317756315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5ea883e7374314ea2ee32c72c4e0e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.CharacterEventDispatcher
+  groundDetector: {fileID: 1624187124611957247}
+  jumpFeature: {fileID: 3036728849090581681}
+  runFeature: {fileID: 2065180972893838928}
+  dashFeature: {fileID: 7500109327406742787}
 --- !u!114 &9072815575998707769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,6 +182,7 @@ MonoBehaviour:
   jumpAction: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   runAction: {fileID: -7471211009204490832, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   dashAction: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  crouchAction: {fileID: 7040659881675835329, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!114 &3147954627580100399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,7 +250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.DashFeature
   defaultDashProfile: {fileID: 11400000, guid: 7be7cb5cc5db38e4088fd599ccf60e17, type: 2}
---- !u!114 &908953618317756315
+--- !u!114 &539890544002109190
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -241,11 +259,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 341889370699776070}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c5ea883e7374314ea2ee32c72c4e0e4, type: 3}
+  m_Script: {fileID: 11500000, guid: d3a84c388373c5a4b8700819e01f1019, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.CharacterEventDispatcher
-  groundDetector: {fileID: 1624187124611957247}
-  jumpFeature: {fileID: 3036728849090581681}
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.CrouchFeature
+  crouchMovementProfile: {fileID: 11400000, guid: d100008c8a8357b42aceeda15fea35c7, type: 2}
+  crouchMode: 0
+  groundedOnly: 1
+  requireMovementInput: 0
+  minimumMoveInput: 0.1
+  clearToggleWhenLeavingGround: 1
 --- !u!1 &1436459613464208644
 GameObject:
   m_ObjectHideFlags: 0

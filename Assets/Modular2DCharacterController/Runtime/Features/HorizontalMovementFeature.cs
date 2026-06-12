@@ -25,31 +25,52 @@ namespace Modular2DCharacterController.Runtime.Features
     public class HorizontalMovementFeature : MonoBehaviour, ICharacterFeature
     {
         [Header("Default Movement Profile")]
-        // Default horizontal movement profile registered when this feature wakes up.
+
+        [Tooltip(
+            "The default horizontal movement profile registered when this feature initializes.")]
         [SerializeField]
         private HorizontalMovementProfile defaultMovementProfile;
         
         [Header("Air Movement Profile")]
+
+        [Tooltip(
+            "Optional movement profile applied while airborne. " +
+            "Can be used to reduce acceleration, maximum speed, or air control.")]
         [SerializeField]
         private HorizontalMovementProfile airMovementProfile;
 
         [Header("Momentum")]
+
+        [Tooltip(
+            "If enabled, speeds above the current profile's maximum speed are preserved " +
+            "while moving in the same direction. Useful for maintaining momentum gained " +
+            "from dashes, slopes, moving platforms, or external forces.")]
         [SerializeField]
-        // True if the momentum should be preserved if the player is able to achieve a speed above the maximum.
         private bool preserveMomentumAboveMaxSpeed = true;
 
+        [Tooltip(
+            "The rate at which excess speed is removed when preserving momentum above max speed. " +
+            "A value of 0 disables overspeed deceleration.")]
         [SerializeField]
         [Min(0f)]
-        // Deceleration rate when above maximum speed.
         private float overspeedDeceleration = 0f;
 
         [Header("Flipping")]
+
+        [Tooltip(
+            "Determines how the character's facing direction is visually represented.")]
         [SerializeField]
         private FlippingMode facingMode = FlippingMode.TransformScale;
 
+        [Tooltip(
+            "The transform used when flipping via local scale. " +
+            "If left empty, the GameObject's transform is used.")]
         [SerializeField]
         private Transform graphicsRoot;
 
+        [Tooltip(
+            "The SpriteRenderer used when SpriteRendererFlip mode is selected. " +
+            "If left empty, the first SpriteRenderer found in the children will be used.")]
         [SerializeField]
         private SpriteRenderer spriteRenderer;
 
@@ -71,12 +92,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _controller = GetComponent<CharacterController2D>();
             _dashFeature = GetComponent<DashFeature>();
             _horizontalMovementProfileProvider = _controller.HorizontalMovementProfileProvider;
-
-            if (defaultMovementProfile != null)
-            {
-                _horizontalMovementProfileProvider?.RegisterProfile(defaultMovementProfile);
-            }
-
+            
             if (graphicsRoot == null)
             {
                 graphicsRoot = transform;
@@ -91,12 +107,27 @@ namespace Modular2DCharacterController.Runtime.Features
 
         private void OnEnable()
         {
+            if (defaultMovementProfile != null)
+            {
+                _horizontalMovementProfileProvider?.RegisterProfile(defaultMovementProfile);
+            }
+            
             _groundDetector.LeftGround += OnLeftGround;
             _groundDetector.Landed += OnLanded;
         }
 
         private void OnDisable()
         {
+            if (defaultMovementProfile != null)
+            {
+                _horizontalMovementProfileProvider?.UnregisterProfile(defaultMovementProfile);
+            }
+
+            if (airMovementProfile != null)
+            {
+                _horizontalMovementProfileProvider?.UnregisterProfile(airMovementProfile);
+            }
+            
             _groundDetector.LeftGround -= OnLeftGround;
             _groundDetector.Landed -= OnLanded;
         }

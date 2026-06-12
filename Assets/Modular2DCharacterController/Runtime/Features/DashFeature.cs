@@ -13,7 +13,8 @@ namespace Modular2DCharacterController.Runtime.Features
     public class DashFeature : MonoBehaviour, ICharacterFeature
     {
         [Header("Default Dash Profile")]
-        // Default dash profile registered when this feature wakes up.
+        
+        [Tooltip("Default dash profile registered when this feature initializes.")]
         [SerializeField]
         private DashProfile defaultDashProfile;
 
@@ -62,6 +63,15 @@ namespace Modular2DCharacterController.Runtime.Features
 
             _dashProfileProvider = _controller.DashProfileProvider;
 
+            // Initialize facing from the character's actual facing state if available.
+            _lastFacingDirection =
+                _horizontalMovementFeature != null
+                    ? _horizontalMovementFeature.FacingDirection
+                    : FacingDirection.Right;
+        }
+        
+        private void OnEnable()
+        {
             // Register the default profile so this feature has dash tuning data.
             if (defaultDashProfile != null)
             {
@@ -72,12 +82,17 @@ namespace Modular2DCharacterController.Runtime.Features
             {
                 _remainingDashes = 0;
             }
+        }
 
-            // Initialize facing from the character's actual facing state if available.
-            _lastFacingDirection =
-                _horizontalMovementFeature != null
-                    ? _horizontalMovementFeature.FacingDirection
-                    : FacingDirection.Right;
+        private void OnDisable()
+        {
+            DashProfile currentProfile = _dashProfileProvider.GetCurrentProfile();
+            _dashProfileProvider?.UnregisterProfile(defaultDashProfile);
+
+            if (IsDashing)
+            {
+                EndDash(currentProfile);
+            }
         }
 
         public void Tick()

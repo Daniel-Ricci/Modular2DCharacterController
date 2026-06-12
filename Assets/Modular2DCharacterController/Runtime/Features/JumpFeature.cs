@@ -13,38 +13,63 @@ namespace Modular2DCharacterController.Runtime.Features
     public class JumpFeature : MonoBehaviour, ICharacterFeature
     {
         [Header("Default Jump Profile")]
+
+        [Tooltip(
+            "The default jump profile used when no higher-priority jump profile is active.")]
         [SerializeField]
         private JumpProfile defaultJumpProfile;
 
         [Header("Gameplay")]
+
+        [Tooltip(
+            "The maximum number of jumps that can be performed before landing. " +
+            "A value of 1 allows a single jump, 2 enables double jump, etc.")]
         [SerializeField]
         [Min(1)]
         private int maxJumpCount = 2;
 
+        [Tooltip(
+            "Allows jumping shortly after leaving the ground, making jumps feel more forgiving.")]
         [SerializeField]
         [Min(0f)]
         private float coyoteTime = 0.1f;
 
+        [Tooltip(
+            "Allows a jump input pressed slightly before landing to be buffered and executed automatically.")]
         [SerializeField]
         [Min(0f)]
         private float jumpBufferTime = 0.1f;
 
         [Header("Jump Type")]
+
+        [Tooltip(
+            "If enabled, all jumps reach the same height regardless of how long the jump button is held.")]
         [SerializeField]
         private bool fixedJumpHeight = false;
 
+        [Tooltip(
+            "Additional gravity applied when the jump button is released early. " +
+            "Higher values produce shorter jumps.")]
         [SerializeField]
         [Min(1f)]
         private float jumpReleaseGravityMultiplier = 3f;
 
         [Header("Jump Hang Time")]
+
+        [Tooltip(
+            "If enabled, gravity is reduced near the top of a jump to create a floatier apex.")]
         [SerializeField]
         private bool enableJumpHangTime = true;
 
+        [Tooltip(
+            "Maximum upward velocity at which jump hang time begins to take effect.")]
         [SerializeField]
         [Min(0f)]
         private float jumpHangVelocityThreshold = 1f;
 
+        [Tooltip(
+            "Gravity multiplier applied during jump hang time. " +
+            "Lower values create a longer, floatier apex.")]
         [SerializeField]
         [Range(0.1f, 1f)]
         private float jumpHangGravityMultiplier = 0.35f;
@@ -82,22 +107,27 @@ namespace Modular2DCharacterController.Runtime.Features
             _dashFeature = GetComponent<DashFeature>();
             _jumpProfileProvider = _controller.JumpProfileProvider;
 
-            if (defaultJumpProfile != null)
-            {
-                _jumpProfileProvider?.RegisterProfile(defaultJumpProfile);
-            }
-
             _rigidbody.gravityScale = 0f;
             _remainingJumps = maxJumpCount;
         }
 
         private void OnEnable()
         {
+            if (defaultJumpProfile != null)
+            {
+                _jumpProfileProvider?.RegisterProfile(defaultJumpProfile);
+            }
+            
             _groundDetector.Landed += ResetJumps;
         }
 
         private void OnDisable()
         {
+            if (defaultJumpProfile != null)
+            {
+                _jumpProfileProvider?.UnregisterProfile(defaultJumpProfile);
+            }
+
             _groundDetector.Landed -= ResetJumps;
         }
 
