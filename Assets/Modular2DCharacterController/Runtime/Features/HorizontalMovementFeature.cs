@@ -171,8 +171,7 @@ namespace Modular2DCharacterController.Runtime.Features
             bool isAboveProfileMaxSpeed =
                 Mathf.Abs(currentSpeed) > Mathf.Abs(targetSpeed);
 
-            if (
-                preserveMomentumAboveMaxSpeed &&
+            if (preserveMomentumAboveMaxSpeed &&
                 isMovingSameDirection &&
                 isAboveProfileMaxSpeed)
             {

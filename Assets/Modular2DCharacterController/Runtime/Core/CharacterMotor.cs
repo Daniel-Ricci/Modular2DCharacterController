@@ -3,42 +3,110 @@ using UnityEngine;
 namespace Modular2DCharacterController.Runtime.Core
 {
     /// <summary>
-    /// Provides a centralized interface for character physics operations.
+    /// Centralizes all character Rigidbody2D velocity operations.
+    /// Supports separate velocity layers so external motion does not overwrite player movement.
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     public class CharacterMotor : MonoBehaviour
     {
         private Rigidbody2D _rigidbody;
 
-        public Vector2 Velocity => _rigidbody.linearVelocity;
+        private Vector2 _selfVelocity;
+        private Vector2 _externalVelocity;
+        private Vector2 _lastAppliedExternalVelocity;
 
-        public float HorizontalVelocity => _rigidbody.linearVelocityX;
+        private bool _velocityStepStarted;
 
-        public float VerticalVelocity => _rigidbody.linearVelocityY;
+        public Vector2 Velocity
+        {
+            get
+            {
+                EnsureVelocityStepStarted();
+                return _selfVelocity;
+            }
+        }
+
+        public Vector2 FinalVelocity =>
+            _selfVelocity + _externalVelocity;
+
+        public float HorizontalVelocity
+        {
+            get
+            {
+                EnsureVelocityStepStarted();
+                return _selfVelocity.x;
+            }
+        }
+
+        public float VerticalVelocity
+        {
+            get
+            {
+                EnsureVelocityStepStarted();
+                return _selfVelocity.y;
+            }
+        }
 
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
         }
 
+        public void BeginVelocityStep()
+        {
+            _selfVelocity =
+                _rigidbody.linearVelocity -
+                _lastAppliedExternalVelocity;
+
+            _externalVelocity = Vector2.zero;
+            _velocityStepStarted = true;
+        }
+
+        public void ApplyVelocity()
+        {
+            EnsureVelocityStepStarted();
+
+            _rigidbody.linearVelocity =
+                _selfVelocity + _externalVelocity;
+
+            _lastAppliedExternalVelocity = _externalVelocity;
+            _velocityStepStarted = false;
+        }
+
         public void SetHorizontalVelocity(float velocity)
         {
-            _rigidbody.linearVelocityX = velocity;
+            EnsureVelocityStepStarted();
+            _selfVelocity.x = velocity;
         }
 
         public void SetVerticalVelocity(float velocity)
         {
-            _rigidbody.linearVelocityY = velocity;
+            EnsureVelocityStepStarted();
+            _selfVelocity.y = velocity;
         }
 
         public void SetVelocity(Vector2 velocity)
         {
-            _rigidbody.linearVelocity = velocity;
+            EnsureVelocityStepStarted();
+            _selfVelocity = velocity;
         }
 
         public void AddVelocity(Vector2 velocity)
         {
-            _rigidbody.linearVelocity += velocity;
+            EnsureVelocityStepStarted();
+            _selfVelocity += velocity;
+        }
+
+        public void SetExternalVelocity(Vector2 velocity)
+        {
+            EnsureVelocityStepStarted();
+            _externalVelocity = velocity;
+        }
+
+        public void AddExternalVelocity(Vector2 velocity)
+        {
+            EnsureVelocityStepStarted();
+            _externalVelocity += velocity;
         }
 
         public void AddForce(
@@ -50,17 +118,35 @@ namespace Modular2DCharacterController.Runtime.Core
 
         public void StopHorizontalMovement()
         {
-            _rigidbody.linearVelocityX = 0f;
+            EnsureVelocityStepStarted();
+            _selfVelocity.x = 0f;
         }
 
         public void StopVerticalMovement()
         {
-            _rigidbody.linearVelocityY = 0f;
+            EnsureVelocityStepStarted();
+            _selfVelocity.y = 0f;
         }
 
         public void Stop()
         {
-            _rigidbody.linearVelocity = Vector2.zero;
+            EnsureVelocityStepStarted();
+            _selfVelocity = Vector2.zero;
+            _externalVelocity = Vector2.zero;
+            _lastAppliedExternalVelocity = Vector2.zero;
+        }
+
+        public void MovePosition(Vector2 position)
+        {
+            _rigidbody.MovePosition(position);
+        }
+
+        private void EnsureVelocityStepStarted()
+        {
+            if (_velocityStepStarted)
+                return;
+
+            BeginVelocityStep();
         }
     }
 }
