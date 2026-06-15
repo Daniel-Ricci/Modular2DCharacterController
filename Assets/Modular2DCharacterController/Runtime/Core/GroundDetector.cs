@@ -20,16 +20,14 @@ namespace Modular2DCharacterController.Runtime.Core
         [Tooltip("The distance below the character collider to check for valid ground.")]
         [SerializeField]
         [Min(0f)]
-        private float groundCheckDistance = 0.05f;
+        private float groundCheckDistance = 0.1f;
 
         [Header("Slope Filtering")]
 
-        [Tooltip(
-            "Minimum upward-facing normal required for a surface to be considered ground. " +
-            "Lower values allow steeper slopes.")]
+        [Tooltip("Maximum angle required for a surface to be considered ground.")]
         [SerializeField]
-        [Range(0f, 1f)]
-        private float minGroundNormalY = 0.65f;
+        [Range(0f, 90f)]
+        private float maxSlopeAngle = 50f;
 
         [Header("Ascending Velocity Threshold")]
 
@@ -137,7 +135,7 @@ namespace Modular2DCharacterController.Runtime.Core
                 }
             }
 
-            if (bestHit.normal.y < minGroundNormalY)
+            if (Vector2.Angle(bestHit.normal, Vector2.up) > maxSlopeAngle)
             {
                 SetGrounded(false);
                 ClearGroundData();
@@ -223,9 +221,9 @@ namespace Modular2DCharacterController.Runtime.Core
             IsGrounded = grounded;
 
             if (grounded)
-                Landed?.Invoke(_motor.Velocity);
+                Landed?.Invoke(_motor.CurrentVelocity);
             else
-                LeftGround?.Invoke(_motor.Velocity);
+                LeftGround?.Invoke(_motor.CurrentVelocity);
         }
     }
 }

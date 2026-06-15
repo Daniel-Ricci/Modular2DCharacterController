@@ -40,14 +40,10 @@ namespace Modular2DCharacterController.Runtime.Core
 
         private void FixedUpdate()
         {
-            _motor.BeginVelocityStep();
-
             foreach (ICharacterFeature feature in _features)
             {
                 feature.FixedTick();
             }
-
-            _motor.ApplyVelocity();
         }
     }
 }

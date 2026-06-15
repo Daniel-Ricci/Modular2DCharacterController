@@ -277,7 +277,7 @@ namespace Modular2DCharacterController.Runtime.Features
             IsDashing = false;
             _cooldownTimer = currentProfile.dashCooldown;
 
-            Vector2 exitVelocity = _motor.Velocity;
+            Vector2 exitVelocity = _motor.CurrentVelocity;
 
             // Optionally keep part of the dash speed after dash ends.
             if (currentProfile.preserveDashMomentum)

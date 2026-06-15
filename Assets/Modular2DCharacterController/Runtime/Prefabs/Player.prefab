@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 2065180972893838928}
   - component: {fileID: 7500109327406742787}
   - component: {fileID: 539890544002109190}
+  - component: {fileID: 951386037181885141}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -120,6 +121,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18748e39b1d277846980c9f8070b66f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Core.CharacterMotor
+  useCustomGravity: 1
+  gravityAcceleration: -35
+  maxFallSpeed: 25
 --- !u!114 &1624187124611957247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,9 +139,11 @@ MonoBehaviour:
   groundLayers:
     serializedVersion: 2
     m_Bits: 128
-  groundCheckDistance: 0.01
-  minGroundNormalY: 0.65
+  groundCheckDistance: 0.1
+  maxSlopeAngle: 50
   ascendingVelocityThreshold: 1
+  useGroundRigidbodyVelocity: 0
+  groundDeltaDeadZone: 0.00001
 --- !u!114 &2854622110580915959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,6 +172,7 @@ MonoBehaviour:
   jumpFeature: {fileID: 3036728849090581681}
   runFeature: {fileID: 2065180972893838928}
   dashFeature: {fileID: 7500109327406742787}
+  crouchFeature: {fileID: 539890544002109190}
 --- !u!114 &9072815575998707769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,7 +205,7 @@ MonoBehaviour:
   defaultMovementProfile: {fileID: 11400000, guid: e31a74ffdcc1e674ab5089d20d8588dc, type: 2}
   airMovementProfile: {fileID: 11400000, guid: 1e4f9bfc726bce24daa51f569d87291a, type: 2}
   preserveMomentumAboveMaxSpeed: 1
-  overspeedDeceleration: 0
+  overspeedDeceleration: 20
   facingMode: 1
   graphicsRoot: {fileID: 7855801637417708460}
   spriteRenderer: {fileID: 0}
@@ -268,6 +275,18 @@ MonoBehaviour:
   requireMovementInput: 0
   minimumMoveInput: 0.1
   clearToggleWhenLeavingGround: 1
+--- !u!114 &951386037181885141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad431d7f4ad9d4b448ad4209c5893dba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.PlatformFollower
 --- !u!1 &1436459613464208644
 GameObject:
   m_ObjectHideFlags: 0
