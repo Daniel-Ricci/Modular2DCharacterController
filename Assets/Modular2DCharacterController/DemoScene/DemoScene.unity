@@ -1867,16 +1867,10 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 341889370699776070, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      insertIndex: 5
-      addedObject: {fileID: 1141310045916416023}
-    - targetCorrespondingSourceObject: {fileID: 341889370699776070, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1141310045916416024}
-    - targetCorrespondingSourceObject: {fileID: 341889370699776070, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1141310045916416025}
+      addedObject: {fileID: 1141310045916416026}
   m_SourcePrefab: {fileID: 100100000, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
---- !u!114 &1141310045916416023
+--- !u!114 &1141310045916416026
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1885,41 +1879,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1026762000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5eb5d32abea69ea44a16ca7c2a063c90, type: 3}
+  m_Script: {fileID: 11500000, guid: 1d9f26eeabd6d5548962bde06b7474a2, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.WallDetector
-  wallLayers:
-    serializedVersion: 2
-    m_Bits: 128
-  wallCheckDistance: 0.1
---- !u!114 &1141310045916416024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026762000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a845b15c9aed684aa4b38942b18945a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.WallSlideFeature
-  useGravityDuringWallSlide: 0
-  wallSlideGravityFactor: 0.3
-  wallSlideVelocity: 3
---- !u!114 &1141310045916416025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026762000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 897f7524d06524c40b095f2b0e7637e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.WallJumpFeature
-  defaultWallJumpProfile: {fileID: 11400000, guid: dbc287f7f2386df4c8caac2d9e5f3e9a, type: 2}
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.GlideFeature
+  defaultGlideProfile: {fileID: 11400000, guid: 4d83aad13062fb1439cc0aebcaeb9f6c, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

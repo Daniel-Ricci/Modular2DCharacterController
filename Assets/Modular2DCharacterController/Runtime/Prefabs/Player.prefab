@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6879002011067484455}
   - component: {fileID: 5862783433706219167}
   - component: {fileID: 1624187124611957247}
+  - component: {fileID: 980959531919785132}
   - component: {fileID: 2854622110580915959}
   - component: {fileID: 908953618317756315}
   - component: {fileID: 9072815575998707769}
@@ -22,6 +23,9 @@ GameObject:
   - component: {fileID: 7500109327406742787}
   - component: {fileID: 539890544002109190}
   - component: {fileID: 951386037181885141}
+  - component: {fileID: 1537304120068154184}
+  - component: {fileID: 2421745089491559696}
+  - component: {fileID: 7429609835000910511}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -144,6 +148,22 @@ MonoBehaviour:
   ascendingVelocityThreshold: 1
   useGroundRigidbodyVelocity: 0
   groundDeltaDeadZone: 0.00001
+--- !u!114 &980959531919785132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eb5d32abea69ea44a16ca7c2a063c90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.WallDetector
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  wallCheckDistance: 0.1
 --- !u!114 &2854622110580915959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,6 +193,7 @@ MonoBehaviour:
   runFeature: {fileID: 2065180972893838928}
   dashFeature: {fileID: 7500109327406742787}
   crouchFeature: {fileID: 539890544002109190}
+  wallJumpFeature: {fileID: 0}
 --- !u!114 &9072815575998707769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,6 +278,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.DashFeature
   defaultDashProfile: {fileID: 11400000, guid: 7be7cb5cc5db38e4088fd599ccf60e17, type: 2}
+  maxDashCount: 3
+  resetDashCountOnGrounded: 1
+  resetDashCountOnWallJump: 0
 --- !u!114 &539890544002109190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,6 +311,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad431d7f4ad9d4b448ad4209c5893dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.PlatformFollower
+--- !u!114 &1537304120068154184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a845b15c9aed684aa4b38942b18945a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.WallSlideFeature
+  useGravityDuringWallSlide: 0
+  wallSlideGravityFactor: 0.3
+  wallSlideVelocity: 3
+--- !u!114 &2421745089491559696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 897f7524d06524c40b095f2b0e7637e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.WallJumpFeature
+  defaultWallJumpProfile: {fileID: 11400000, guid: dbc287f7f2386df4c8caac2d9e5f3e9a, type: 2}
+--- !u!114 &7429609835000910511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d9f26eeabd6d5548962bde06b7474a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.GlideFeature
+  defaultGlideProfile: {fileID: 11400000, guid: 4d83aad13062fb1439cc0aebcaeb9f6c, type: 2}
 --- !u!1 &1436459613464208644
 GameObject:
   m_ObjectHideFlags: 0

@@ -26,6 +26,9 @@ namespace Modular2DCharacterController.Runtime.Core
 
         public ProfileProvider<WallJumpProfile> WallJumpProfileProvider { get; }
             = new();
+        
+        public ProfileProvider<GlideProfile> GlideProfileProvider { get; }
+            = new();
 
         private void Awake()
         {
