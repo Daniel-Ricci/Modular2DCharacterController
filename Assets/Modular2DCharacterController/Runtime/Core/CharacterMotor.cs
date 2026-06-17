@@ -132,6 +132,9 @@ namespace Modular2DCharacterController.Runtime.Core
 
             _hasSelfVelocityOverride = true;
             _selfVelocityOverride = velocity;
+            
+            _hasHorizontalVelocityOverride = false;
+            _hasVerticalVelocityOverride = false;
         }
 
         public void SetHorizontalVelocity(float velocity)

@@ -17,6 +17,21 @@ namespace Modular2DCharacterController.Runtime.Features
         [Tooltip("Default dash profile registered when this feature initializes.")]
         [SerializeField]
         private DashProfile defaultDashProfile;
+        
+        [Header("Dash Count")]
+        [Tooltip(
+            "The maximum number of consecutive dashes that can be performed " +
+            "before the dash count must be reset.")]
+        [Min(1)]
+        public int maxDashCount = 1;
+        
+        [Tooltip("Should reset dash count when grounded?.")]
+        [SerializeField]
+        private bool resetDashCountOnGrounded;
+        
+        [Tooltip("Should reset dash count when wall jump?.")]
+        [SerializeField]
+        private bool resetDashCountOnWallJump;
 
         // True while the dash is actively controlling velocity.
         // Other features can read this to skip movement or gravity during dash.
@@ -31,6 +46,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private ICharacterInput _input;
         private GroundDetector _groundDetector;
         private HorizontalMovementFeature _horizontalMovementFeature;
+        private WallJumpFeature _wallJumpFeature;
         private ProfileProvider<DashProfile> _dashProfileProvider;
 
         // Direction chosen when the dash starts.
@@ -60,8 +76,10 @@ namespace Modular2DCharacterController.Runtime.Features
             _input = GetComponent<ICharacterInput>();
             _groundDetector = GetComponent<GroundDetector>();
             _horizontalMovementFeature = GetComponent<HorizontalMovementFeature>();
-
+            _wallJumpFeature = GetComponent<WallJumpFeature>();
             _dashProfileProvider = _controller.DashProfileProvider;
+
+            _remainingDashes = maxDashCount;
 
             // Initialize facing from the character's actual facing state if available.
             _lastFacingDirection =
@@ -76,12 +94,14 @@ namespace Modular2DCharacterController.Runtime.Features
             if (defaultDashProfile != null)
             {
                 _dashProfileProvider.RegisterProfile(defaultDashProfile);
-                _remainingDashes = defaultDashProfile.maxDashCount;
             }
             else
             {
                 _remainingDashes = 0;
             }
+
+            if(_wallJumpFeature  != null)
+                _wallJumpFeature.WallJumped += ResetDashCount;
         }
 
         private void OnDisable()
@@ -93,11 +113,13 @@ namespace Modular2DCharacterController.Runtime.Features
             {
                 EndDash(currentProfile);
             }
+            
+            if(_wallJumpFeature != null)
+                _wallJumpFeature.WallJumped -= ResetDashCount;
         }
 
         public void Tick()
         {
-            // Capture dash input during Update.
             if (_input != null && _input.DashPressed)
             {
                 _dashRequested = true;
@@ -114,7 +136,7 @@ namespace Modular2DCharacterController.Runtime.Features
 
             UpdateFacingMemory();
             UpdateTimers();
-            ResetDashCountIfGrounded(currentProfile);
+            ResetDashCountIfGrounded();
 
             // While dashing, keep applying dash velocity and skip start checks.
             if (IsDashing)
@@ -160,9 +182,9 @@ namespace Modular2DCharacterController.Runtime.Features
             }
         }
 
-        private void ResetDashCountIfGrounded(DashProfile currentProfile)
+        private void ResetDashCountIfGrounded()
         {
-            if (!currentProfile.resetDashCountOnGround)
+            if (!resetDashCountOnGrounded)
                 return;
 
             // Restore dash charges when grounded, but not during the dash itself.
@@ -170,7 +192,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 _groundDetector.IsGrounded &&
                 !IsDashing)
             {
-                _remainingDashes = currentProfile.maxDashCount;
+                _remainingDashes = maxDashCount;
             }
         }
 
@@ -299,6 +321,11 @@ namespace Modular2DCharacterController.Runtime.Features
             }
 
             _motor.SetVelocity(exitVelocity);
+        }
+
+        private void ResetDashCount()
+        {
+            _remainingDashes = maxDashCount;
         }
     }
 }

@@ -81,8 +81,11 @@ namespace Modular2DCharacterController.Runtime.Features
         private CharacterMotor _motor;
         private ICharacterInput _input;
         private GroundDetector _groundDetector;
+        private WallDetector _wallDetector;
         private CharacterController2D _controller;
         private DashFeature _dashFeature;
+        private WallSlideFeature _wallSlideFeature;
+        private WallJumpFeature _wallJumpFeature;
         private ProfileProvider<JumpProfile> _jumpProfileProvider;
 
         private float _jumpVelocity;
@@ -99,8 +102,11 @@ namespace Modular2DCharacterController.Runtime.Features
             _motor = GetComponent<CharacterMotor>();
             _input = GetComponent<ICharacterInput>();
             _groundDetector = GetComponent<GroundDetector>();
+            _wallDetector = GetComponent<WallDetector>();
             _controller = GetComponent<CharacterController2D>();
             _dashFeature = GetComponent<DashFeature>();
+            _wallSlideFeature = GetComponent<WallSlideFeature>();
+            _wallJumpFeature = GetComponent<WallJumpFeature>();
             _jumpProfileProvider = _controller.JumpProfileProvider;
 
             _remainingJumps = maxJumpCount;
@@ -112,8 +118,6 @@ namespace Modular2DCharacterController.Runtime.Features
             {
                 _jumpProfileProvider?.RegisterProfile(defaultJumpProfile);
             }
-
-            //_groundDetector.Landed += ResetJumps;
         }
 
         private void OnDisable()
@@ -122,8 +126,6 @@ namespace Modular2DCharacterController.Runtime.Features
             {
                 _jumpProfileProvider?.UnregisterProfile(defaultJumpProfile);
             }
-
-            //_groundDetector.Landed -= ResetJumps;
         }
 
         public void Tick()
@@ -139,7 +141,7 @@ namespace Modular2DCharacterController.Runtime.Features
             JumpProfile currentJumpProfile =
                 _jumpProfileProvider?.GetCurrentProfile();
 
-            if (currentJumpProfile == null)
+            if (!currentJumpProfile)
                 return;
 
             CalculateJumpValues(currentJumpProfile);
@@ -182,6 +184,15 @@ namespace Modular2DCharacterController.Runtime.Features
 
         private void TryJump()
         {
+            if (_dashFeature != null && _dashFeature.IsDashing)
+                return;
+
+            if (_wallSlideFeature != null && _wallJumpFeature != null)
+            {
+                if (_wallSlideFeature.IsWallSliding) return;
+                if (_wallJumpFeature.IsMovementLocked) return;
+            }
+            
             if (_jumpBufferTimer <= 0f)
             {
                 return;
@@ -218,9 +229,6 @@ namespace Modular2DCharacterController.Runtime.Features
 
         private void ApplyJumpGravityModifiers(JumpProfile currentJumpProfile)
         {
-            if (_dashFeature != null && _dashFeature.IsDashing)
-                return;
-
             float gravityMultiplier = 1f;
 
             if (_motor.VerticalVelocity < 0f)
@@ -245,11 +253,6 @@ namespace Modular2DCharacterController.Runtime.Features
             }
 
             _motor.AddGravityMultiplier(gravityMultiplier);
-        }
-
-        private void ResetJumps(Vector2 unused)
-        {
-            _remainingJumps = maxJumpCount;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Modular2DCharacterController.Runtime.Data.FeatureProfiles
         menuName = "Modular 2D Character Controller/Dash Profile")]
     public class DashProfile : FeatureProfile
     {
-        [Header("Dash")]
+        [Header("Dash Settings")]
 
         [Tooltip(
             "The speed applied while dashing.")]
@@ -39,18 +39,8 @@ namespace Modular2DCharacterController.Runtime.Data.FeatureProfiles
         [Min(0.01f)]
         public float minimumDashDuration = 0.06f;
 
-        [Header("Dash Count")]
-
-        [Tooltip(
-            "The maximum number of consecutive dashes that can be performed " +
-            "before the dash count must be reset.")]
-        [Min(1)]
-        public int maxDashCount = 1;
-
-        [Tooltip(
-            "If enabled, the available dash count is restored when the character becomes grounded.")]
-        public bool resetDashCountOnGround = true;
-
+        [Header("Ground/Air Dash")]
+        
         [Tooltip(
             "If enabled, dashing is allowed while grounded.")]
         public bool allowGroundDash = true;

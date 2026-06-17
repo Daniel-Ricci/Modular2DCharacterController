@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1e22c63a3aec350499ca8bbed1994bc0, type: 3}
-  m_Name: ArcadePlatformerJumpSettings
+  m_Name: ArcadePlatformerJumpProfile
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Data.JumpSettings
   priority: 0
   jumpHeight: 3

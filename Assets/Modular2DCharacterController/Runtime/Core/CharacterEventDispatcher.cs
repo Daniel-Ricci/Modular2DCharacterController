@@ -17,6 +17,7 @@ namespace Modular2DCharacterController.Runtime.Core
         public event Action<float> Dashed;
         public event Action CrouchStarted;
         public event Action CrouchEnded;
+        public event Action WallJumped;
 
         [Header("Feature References")]
         [SerializeField]
@@ -29,6 +30,8 @@ namespace Modular2DCharacterController.Runtime.Core
         private DashFeature dashFeature;
         [SerializeField]
         private CrouchFeature crouchFeature;
+        [SerializeField]
+        private WallJumpFeature wallJumpFeature;
 
         private void OnEnable()
         {
@@ -54,6 +57,11 @@ namespace Modular2DCharacterController.Runtime.Core
             {
                 crouchFeature.CrouchStarted += OnCrouchStarted;
                 crouchFeature.CrouchEnded += OnCrouchEnded;
+            }
+
+            if (wallJumpFeature != null)
+            {
+                wallJumpFeature.WallJumped += OnWallJumped;
             }
         }
 
@@ -81,6 +89,11 @@ namespace Modular2DCharacterController.Runtime.Core
             {
                 crouchFeature.CrouchStarted -= OnCrouchStarted;
                 crouchFeature.CrouchEnded -= OnCrouchEnded;
+            }
+            
+            if (wallJumpFeature != null)
+            {
+                wallJumpFeature.WallJumped -= OnWallJumped;
             }
         }
         
@@ -122,6 +135,11 @@ namespace Modular2DCharacterController.Runtime.Core
         private void OnCrouchEnded()
         {
             CrouchEnded?.Invoke();
+        }
+        
+        private void OnWallJumped()
+        {
+            WallJumped?.Invoke();
         }
     }
 }

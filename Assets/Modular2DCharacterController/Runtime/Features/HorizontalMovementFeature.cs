@@ -82,6 +82,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private GroundDetector _groundDetector;
         private CharacterController2D _controller;
         private DashFeature _dashFeature;
+        private WallJumpFeature _wallJumpFeature;
         private ProfileProvider<HorizontalMovementProfile> _horizontalMovementProfileProvider;
 
         private void Awake()
@@ -91,6 +92,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _groundDetector = GetComponent<GroundDetector>();
             _controller = GetComponent<CharacterController2D>();
             _dashFeature = GetComponent<DashFeature>();
+            _wallJumpFeature = GetComponent<WallJumpFeature>();
             _horizontalMovementProfileProvider = _controller.HorizontalMovementProfileProvider;
             
             if (graphicsRoot == null)
@@ -139,6 +141,9 @@ namespace Modular2DCharacterController.Runtime.Features
         public void FixedTick()
         {
             if (_dashFeature != null && _dashFeature.IsDashing)
+                return;
+            
+            if (_wallJumpFeature != null && _wallJumpFeature.IsMovementLocked)
                 return;
             
             HorizontalMovementProfile currentProfile =

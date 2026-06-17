@@ -24,6 +24,9 @@ namespace Modular2DCharacterController.Runtime.Core
         public ProfileProvider<DashProfile> DashProfileProvider { get; }
             = new();
 
+        public ProfileProvider<WallJumpProfile> WallJumpProfileProvider { get; }
+            = new();
+
         private void Awake()
         {
             _features = GetComponents<ICharacterFeature>();
