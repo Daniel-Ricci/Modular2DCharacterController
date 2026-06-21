@@ -28,7 +28,7 @@ namespace Modular2DCharacterController.Runtime.Features
             if (!_groundDetector.IsGrounded)
                 return;
 
-            _motor.SetExternalVelocity(_groundDetector.GroundVelocity);
+            _motor.AddExternalVelocity(_groundDetector.GroundVelocity);
         }
     }
 }

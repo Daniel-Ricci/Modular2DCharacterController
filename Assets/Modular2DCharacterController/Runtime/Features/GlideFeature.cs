@@ -105,7 +105,7 @@ namespace Modular2DCharacterController.Runtime.Features
         {
             IsGliding =
                 !_groundDetector.IsGrounded &&
-                _motor.VerticalVelocity < 0f &&
+                _motor.CurrentSelfVelocity.y < 0f &&
                 _input.RunHeld;
         }
 
@@ -118,7 +118,7 @@ namespace Modular2DCharacterController.Runtime.Features
             }
             else
             {
-                _motor.SetVerticalVelocity(
+                _motor.SetVerticalSelfVelocity(
                     -currentProfile.fallSpeed);
                 _motor.SuppressGravityThisFrame();
             }

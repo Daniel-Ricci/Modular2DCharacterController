@@ -234,7 +234,7 @@ namespace Modular2DCharacterController.Runtime.Features
             IsDashing = true;
 
             // Set velocity immediately so dash starts on this physics tick.
-            _motor.SetVelocity(_dashDirection * currentProfile.dashSpeed);
+            _motor.SetSelfVelocity(_dashDirection * currentProfile.dashSpeed);
             Dashed?.Invoke(currentProfile.dashSpeed);
         }
 
@@ -291,7 +291,7 @@ namespace Modular2DCharacterController.Runtime.Features
 
             // Reapply dash velocity every physics tick.
             // This is what lets dash override normal movement and gravity.
-            _motor.SetVelocity(_dashDirection * currentProfile.dashSpeed);
+            _motor.SetSelfVelocity(_dashDirection * currentProfile.dashSpeed);
         }
 
         private void EndDash(DashProfile currentProfile)
@@ -299,7 +299,7 @@ namespace Modular2DCharacterController.Runtime.Features
             IsDashing = false;
             _cooldownTimer = currentProfile.dashCooldown;
 
-            Vector2 exitVelocity = _motor.CurrentVelocity;
+            Vector2 exitVelocity = _motor.CurrentSelfVelocity;
 
             // Optionally keep part of the dash speed after dash ends.
             if (currentProfile.preserveDashMomentum)
@@ -320,7 +320,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 exitVelocity.y = 0f;
             }
 
-            _motor.SetVelocity(exitVelocity);
+            _motor.SetSelfVelocity(exitVelocity);
         }
 
         private void ResetDashCount()

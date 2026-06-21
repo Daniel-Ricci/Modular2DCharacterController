@@ -221,9 +221,9 @@ namespace Modular2DCharacterController.Runtime.Core
             IsGrounded = grounded;
 
             if (grounded)
-                Landed?.Invoke(_motor.CurrentVelocity);
+                Landed?.Invoke(_motor.CurrentSelfVelocity);
             else
-                LeftGround?.Invoke(_motor.CurrentVelocity);
+                LeftGround?.Invoke(_motor.CurrentSelfVelocity);
         }
     }
 }

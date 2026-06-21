@@ -115,7 +115,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 currentWallJumpProfile.horizontalForce,
                 currentWallJumpProfile.verticalForce);
 
-            _motor.SetVelocity(velocity);
+            _motor.SetSelfVelocity(velocity);
 
             _movementLockTimer =
                 currentWallJumpProfile.movementLockDuration;

@@ -1,6 +1,7 @@
 using Modular2DCharacterController.Runtime.Data;
 using Modular2DCharacterController.Runtime.Data.FeatureProfiles;
 using Modular2DCharacterController.Runtime.Features;
+using Modular2DCharacterController.Runtime.Input;
 using UnityEngine;
 
 namespace Modular2DCharacterController.Runtime.Core
@@ -10,6 +11,7 @@ namespace Modular2DCharacterController.Runtime.Core
     /// </summary>
     [RequireComponent(typeof(GroundDetector))]
     [RequireComponent(typeof(CharacterMotor))]
+    [RequireComponent(typeof(ICharacterInput))]
     public class CharacterController2D : MonoBehaviour
     {
         private ICharacterFeature[] _features;

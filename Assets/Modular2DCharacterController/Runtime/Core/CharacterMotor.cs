@@ -28,50 +28,89 @@ namespace Modular2DCharacterController.Runtime.Core
             "Base gravity acceleration applied by the motor. " +
             "Use a negative value to pull the character downward.")]
         [SerializeField]
-        private float gravityAcceleration = -35f;
+        private float gravityAcceleration = -45f;
+
+        [Header("Fall Speed Limit")]
 
         [Tooltip(
-            "Maximum downward speed caused by gravity. " +
+            "Maximum fall speed possible after applying gravity. " +
             "Use 0 or below to disable the fall speed clamp.")]
         [SerializeField]
         private float maxFallSpeed = 25f;
 
         private Rigidbody2D _rigidbody;
 
-        private Vector2 _baseVelocity;
-        private Vector2 _selfVelocity;
+        // Velocity at the start of the frame context.
+        // Considers only self applied velocity, ignoring
+        // all external velocity applied on the last frame.
+        // Will be considered as base velocity to apply all modifiers on,
+        // unless overriden by Set Velocity.
+        private Vector2 _frameStartSelfVelocity;
+
+        // Keeps track of external velocity applied over the
+        // player, such as moving platforms.
         private Vector2 _externalVelocity;
+
+        // Keeps track of the external velocity applied in
+        // the last frame. Used to separate external movement
+        // from the Rigidbody velocity when rebuilding the next
+        // frame context.
         private Vector2 _lastAppliedExternalVelocity;
 
-        private Vector2 _additiveVelocity;
-        private Vector2 _acceleration;
+        // Velocity to be added upon the frame start self velocity, if
+        // not overriden.
+        private Vector2 _additiveSelfVelocity;
 
+        // Acceleration to be added upon the frame start self velocity, if
+        // not overriden.
+        private Vector2 _selfAcceleration;
+
+        // When setting a velocity directly, through the
+        // set velocity methods, (horizontal, vertical or both)
+        // they will override the frame start self velocity as
+        // the base velocity for calculations on the current frame.
+        // Additive velocity will still be applied over them.
         private bool _hasSelfVelocityOverride;
+        private bool _hasHorizontalSelfVelocityOverride;
+        private bool _hasVerticalSelfVelocityOverride;
         private Vector2 _selfVelocityOverride;
+        private float _horizontalSelfVelocityOverride;
+        private float _verticalSelfVelocityOverride;
 
-        private bool _hasHorizontalVelocityOverride;
-        private bool _hasVerticalVelocityOverride;
-        private float _horizontalVelocityOverride;
-        private float _verticalVelocityOverride;
-
+        // Same logic is applied to external velocity.
         private bool _hasExternalVelocityOverride;
+        private bool _hasHorizontalExternalVelocityOverride;
+        private bool _hasVerticalExternalVelocityOverride;
         private Vector2 _externalVelocityOverride;
+        private float _horizontalExternalVelocityOverride;
+        private float _verticalExternalVelocityOverride;
 
+        // Acceleration to be added to the external velocity applied each frame.
+        private Vector2 _externalAcceleration;
+
+        // If true, ignore effects of external sources this frame.
+        private bool _externalVelocitySuppressed;
+
+        // Multiplier to be applied to the gravity over the player.
         private float _gravityMultiplier = 1f;
+
+        // If true, ignore effects of the gravity this frame.
         private bool _gravitySuppressed;
 
-        private bool _requestBufferInitialized;
+        // Indicates whether the frame context has been built.
+        // The first motor access of a frame reconstructs the
+        // current movement state and clears pending requests.
+        private bool _frameContextInitialized;
 
+#region Getters
         public float GravityAcceleration => gravityAcceleration;
 
-        public bool UseCustomGravity => useCustomGravity;
-
-        public Vector2 CurrentVelocity
+        public Vector2 CurrentSelfVelocity
         {
             get
             {
-                EnsureRequestBuffer();
-                return _selfVelocity;
+                EnsureFrameContext();
+                return ResolveSelfVelocity();
             }
         }
 
@@ -79,8 +118,8 @@ namespace Modular2DCharacterController.Runtime.Core
         {
             get
             {
-                EnsureRequestBuffer();
-                return ResolveExternalVelocity();
+                EnsureFrameContext();
+                return ResolveAppliedExternalVelocity();
             }
         }
 
@@ -88,28 +127,131 @@ namespace Modular2DCharacterController.Runtime.Core
         {
             get
             {
-                EnsureRequestBuffer();
-                return ResolveFinalVelocity();
+                EnsureFrameContext();
+                return ResolveSelfVelocity() + ResolveAppliedExternalVelocity();
             }
+        }
+#endregion
+
+#region Setters
+        public void SetSelfVelocity(Vector2 velocity)
+        {
+            EnsureFrameContext();
+
+            _hasSelfVelocityOverride = true;
+            _selfVelocityOverride = velocity;
+
+            _hasHorizontalSelfVelocityOverride = false;
+            _hasVerticalSelfVelocityOverride = false;
         }
 
-        public float HorizontalVelocity
+        public void SetHorizontalSelfVelocity(float velocity)
         {
-            get
-            {
-                EnsureRequestBuffer();
-                return _selfVelocity.x;
-            }
+            EnsureFrameContext();
+
+            if (_hasSelfVelocityOverride)
+                return;
+
+            _hasHorizontalSelfVelocityOverride = true;
+            _horizontalSelfVelocityOverride = velocity;
         }
 
-        public float VerticalVelocity
+        public void SetVerticalSelfVelocity(float velocity)
         {
-            get
-            {
-                EnsureRequestBuffer();
-                return _selfVelocity.y;
-            }
+            EnsureFrameContext();
+
+            if (_hasSelfVelocityOverride)
+                return;
+
+            _hasVerticalSelfVelocityOverride = true;
+            _verticalSelfVelocityOverride = velocity;
         }
+
+        public void AddSelfVelocity(Vector2 velocity)
+        {
+            EnsureFrameContext();
+            _additiveSelfVelocity += velocity;
+        }
+
+        public void AddSelfAcceleration(Vector2 acceleration)
+        {
+            EnsureFrameContext();
+            _selfAcceleration += acceleration;
+        }
+
+        public void SetExternalVelocity(Vector2 velocity)
+        {
+            EnsureFrameContext();
+
+            _hasExternalVelocityOverride = true;
+            _externalVelocityOverride = velocity;
+
+            _hasHorizontalExternalVelocityOverride = false;
+            _hasVerticalExternalVelocityOverride = false;
+        }
+
+        public void SetHorizontalExternalVelocity(float velocity)
+        {
+            EnsureFrameContext();
+
+            if (_hasExternalVelocityOverride)
+                return;
+
+            _hasHorizontalExternalVelocityOverride = true;
+            _horizontalExternalVelocityOverride = velocity;
+        }
+
+        public void SetVerticalExternalVelocity(float velocity)
+        {
+            EnsureFrameContext();
+
+            if (_hasExternalVelocityOverride)
+                return;
+
+            _hasVerticalExternalVelocityOverride = true;
+            _verticalExternalVelocityOverride = velocity;
+        }
+
+        public void AddExternalVelocity(Vector2 velocity)
+        {
+            EnsureFrameContext();
+            _externalVelocity += velocity;
+        }
+
+        public void AddExternalAcceleration(Vector2 acceleration)
+        {
+            EnsureFrameContext();
+            _externalAcceleration += acceleration;
+        }
+
+        public void SuppressAllExternalVelocityThisFrame()
+        {
+            EnsureFrameContext();
+            _externalVelocitySuppressed = true;
+        }
+
+        public void AddGravityMultiplier(float multiplier)
+        {
+            EnsureFrameContext();
+            _gravityMultiplier *= multiplier;
+        }
+
+        public void SuppressGravityThisFrame()
+        {
+            EnsureFrameContext();
+            _gravitySuppressed = true;
+        }
+
+        public void StopSelfMovement()
+        {
+            SetSelfVelocity(Vector2.zero);
+        }
+
+        public void StopExternalMovement()
+        {
+            SetExternalVelocity(Vector2.zero);
+        }
+#endregion
 
         private void Awake()
         {
@@ -126,176 +268,137 @@ namespace Modular2DCharacterController.Runtime.Core
             Apply();
         }
 
-        public void SetVelocity(Vector2 velocity)
-        {
-            EnsureRequestBuffer();
-
-            _hasSelfVelocityOverride = true;
-            _selfVelocityOverride = velocity;
-            
-            _hasHorizontalVelocityOverride = false;
-            _hasVerticalVelocityOverride = false;
-        }
-
-        public void SetHorizontalVelocity(float velocity)
-        {
-            EnsureRequestBuffer();
-
-            _hasHorizontalVelocityOverride = true;
-            _horizontalVelocityOverride = velocity;
-        }
-
-        public void SetVerticalVelocity(float velocity)
-        {
-            EnsureRequestBuffer();
-
-            _hasVerticalVelocityOverride = true;
-            _verticalVelocityOverride = velocity;
-        }
-
-        public void AddVelocity(Vector2 velocity)
-        {
-            EnsureRequestBuffer();
-
-            _additiveVelocity += velocity;
-        }
-
-        public void AddAcceleration(Vector2 acceleration)
-        {
-            EnsureRequestBuffer();
-
-            _acceleration += acceleration;
-        }
-
-        public void SetExternalVelocity(Vector2 velocity)
-        {
-            EnsureRequestBuffer();
-
-            _hasExternalVelocityOverride = true;
-            _externalVelocityOverride = velocity;
-        }
-
-        public void AddExternalVelocity(Vector2 velocity)
-        {
-            EnsureRequestBuffer();
-
-            _externalVelocity += velocity;
-        }
-
-        public void AddGravityMultiplier(float multiplier)
-        {
-            EnsureRequestBuffer();
-
-            _gravityMultiplier *= multiplier;
-        }
-
-        public void SuppressGravityThisFrame()
-        {
-            EnsureRequestBuffer();
-
-            _gravitySuppressed = true;
-        }
-
-        public void StopHorizontalMovement()
-        {
-            SetHorizontalVelocity(0f);
-        }
-
-        public void StopVerticalMovement()
-        {
-            SetVerticalVelocity(0f);
-        }
-
-        public void Stop()
-        {
-            SetVelocity(Vector2.zero);
-            SetExternalVelocity(Vector2.zero);
-            _lastAppliedExternalVelocity = Vector2.zero;
-        }
-
-        public void MovePosition(Vector2 position)
-        {
-            _rigidbody.MovePosition(position);
-        }
-
+        // Resolves all movement requests submitted during the current physics frame
+        // and applies the resulting velocity to the Rigidbody.
+        //
+        // This marks the end of the motor's frame lifecycle:
+        //
+        //     Build Frame Context
+        //         |
+        //     Features submit movement requests
+        //         |
+        //     Resolve character velocity
+        //         |
+        //     Resolve external velocity
+        //         |
+        //     Apply final Rigidbody velocity
+        //         |
+        //     Invalidate frame context
+        //
+        // The final velocity applied to the Rigidbody is:
+        //
+        //     Character Velocity + External Velocity
+        //
+        // Once applied, the frame context is invalidated so a fresh context will be
+        // reconstructed from the Rigidbody state on the next motor access.
         private void Apply()
         {
-            EnsureRequestBuffer();
+            EnsureFrameContext();
 
             Vector2 resolvedSelfVelocity =
                 ResolveSelfVelocity();
 
             Vector2 resolvedExternalVelocity =
-                ResolveExternalVelocity();
+                ResolveAppliedExternalVelocity();
 
-            _rigidbody.linearVelocity =
-                resolvedSelfVelocity + resolvedExternalVelocity;
+            Vector2 finalVelocity =
+                resolvedSelfVelocity +
+                resolvedExternalVelocity;
+
+            if (maxFallSpeed > 0f &&
+                finalVelocity.y < -maxFallSpeed)
+            {
+                finalVelocity.y = -maxFallSpeed;
+            }
+
+            _rigidbody.linearVelocity = finalVelocity;
 
             _lastAppliedExternalVelocity =
                 resolvedExternalVelocity;
 
-            ClearRequestBuffer();
+            InvalidateFrameContext();
         }
 
-        private void EnsureRequestBuffer()
+        // Reconstruct current character movement state
+        // from the Rigidbody before collecting requests
+        // for the new physics frame.
+        private void EnsureFrameContext()
         {
-            if (_requestBufferInitialized)
+            if (_frameContextInitialized)
                 return;
 
-            _baseVelocity = _rigidbody.linearVelocity;
-
-            _selfVelocity =
-                _baseVelocity -
+            _frameStartSelfVelocity =
+                _rigidbody.linearVelocity -
                 _lastAppliedExternalVelocity;
 
             _externalVelocity = Vector2.zero;
 
-            _additiveVelocity = Vector2.zero;
-            _acceleration = Vector2.zero;
+            _additiveSelfVelocity = Vector2.zero;
+            _selfAcceleration = Vector2.zero;
 
             _hasSelfVelocityOverride = false;
+            _hasHorizontalSelfVelocityOverride = false;
+            _hasVerticalSelfVelocityOverride = false;
             _selfVelocityOverride = Vector2.zero;
-
-            _hasHorizontalVelocityOverride = false;
-            _hasVerticalVelocityOverride = false;
-            _horizontalVelocityOverride = 0f;
-            _verticalVelocityOverride = 0f;
+            _horizontalSelfVelocityOverride = 0f;
+            _verticalSelfVelocityOverride = 0f;
 
             _hasExternalVelocityOverride = false;
+            _hasHorizontalExternalVelocityOverride = false;
+            _hasVerticalExternalVelocityOverride = false;
             _externalVelocityOverride = Vector2.zero;
+            _horizontalExternalVelocityOverride = 0f;
+            _verticalExternalVelocityOverride = 0f;
+
+            _externalAcceleration = Vector2.zero;
+            _externalVelocitySuppressed = false;
 
             _gravityMultiplier = 1f;
             _gravitySuppressed = false;
 
-            _requestBufferInitialized = true;
+            _frameContextInitialized = true;
         }
 
-        private void ClearRequestBuffer()
+        // Mark the current frame context as invalid.
+        // The next motor access will rebuild the frame context
+        // from the current Rigidbody velocity and reset all
+        // pending movement requests.
+        private void InvalidateFrameContext()
         {
-            _requestBufferInitialized = false;
+            _frameContextInitialized = false;
         }
 
+        // Calculate self-applied velocity (including gravity)
         private Vector2 ResolveSelfVelocity()
         {
-            Vector2 resolvedSelfVelocity = _selfVelocity;
+            Vector2 resolvedSelfVelocity =
+                _frameStartSelfVelocity;
 
             if (_hasSelfVelocityOverride)
             {
-                resolvedSelfVelocity = _selfVelocityOverride;
+                resolvedSelfVelocity =
+                    _selfVelocityOverride;
             }
-
-            if (_hasHorizontalVelocityOverride)
+            else
             {
-                resolvedSelfVelocity.x = _horizontalVelocityOverride;
+                if (_hasHorizontalSelfVelocityOverride)
+                {
+                    resolvedSelfVelocity.x =
+                        _horizontalSelfVelocityOverride;
+                }
+
+                if (_hasVerticalSelfVelocityOverride)
+                {
+                    resolvedSelfVelocity.y =
+                        _verticalSelfVelocityOverride;
+                }
             }
 
-            if (_hasVerticalVelocityOverride)
-            {
-                resolvedSelfVelocity.y = _verticalVelocityOverride;
-            }
+            resolvedSelfVelocity +=
+                _additiveSelfVelocity;
 
-            resolvedSelfVelocity += _additiveVelocity;
-            resolvedSelfVelocity += _acceleration * Time.fixedDeltaTime;
+            resolvedSelfVelocity +=
+                _selfAcceleration * Time.fixedDeltaTime;
 
             if (useCustomGravity && !_gravitySuppressed)
             {
@@ -303,32 +406,50 @@ namespace Modular2DCharacterController.Runtime.Core
                     gravityAcceleration *
                     _gravityMultiplier *
                     Time.fixedDeltaTime;
-
-                if (maxFallSpeed > 0f)
-                {
-                    resolvedSelfVelocity.y =
-                        Mathf.Max(resolvedSelfVelocity.y, -maxFallSpeed);
-                }
             }
 
             return resolvedSelfVelocity;
         }
 
+        // Calculate velocity applied by external sources
         private Vector2 ResolveExternalVelocity()
         {
-            Vector2 resolvedExternalVelocity = _externalVelocity;
+            Vector2 resolvedExternalVelocity =
+                _externalVelocity;
 
             if (_hasExternalVelocityOverride)
             {
-                resolvedExternalVelocity = _externalVelocityOverride;
+                resolvedExternalVelocity =
+                    _externalVelocityOverride;
             }
+            else
+            {
+                if (_hasHorizontalExternalVelocityOverride)
+                {
+                    resolvedExternalVelocity.x =
+                        _horizontalExternalVelocityOverride;
+                }
+
+                if (_hasVerticalExternalVelocityOverride)
+                {
+                    resolvedExternalVelocity.y =
+                        _verticalExternalVelocityOverride;
+                }
+            }
+
+            resolvedExternalVelocity +=
+                _externalAcceleration * Time.fixedDeltaTime;
 
             return resolvedExternalVelocity;
         }
 
-        private Vector2 ResolveFinalVelocity()
+        // Calculate the external velocity that will actually be applied this frame.
+        private Vector2 ResolveAppliedExternalVelocity()
         {
-            return ResolveSelfVelocity() + ResolveExternalVelocity();
+            if (_externalVelocitySuppressed)
+                return Vector2.zero;
+
+            return ResolveExternalVelocity();
         }
     }
 }

@@ -20,6 +20,14 @@ namespace Modular2DCharacterController.Runtime.Features
 
     /// <summary>
     /// A configurable feature that allows the player to move horizontally.
+    ///
+    /// It uses the Horizontal Movement Profile Provider to retrieve the
+    /// current movement profile and calculate movement. The default movement
+    /// profile is used for basic movement when grounded and the air movement
+    /// profile when airborne (higher priority).
+    ///
+    /// Other features may register higher priority profiles in the provider
+    /// to override the values, such as run or crouch features.
     /// </summary>
     [RequireComponent(typeof(CharacterController2D))]
     public class HorizontalMovementFeature : MonoBehaviour, ICharacterFeature
@@ -73,10 +81,8 @@ namespace Modular2DCharacterController.Runtime.Features
             "If left empty, the first SpriteRenderer found in the children will be used.")]
         [SerializeField]
         private SpriteRenderer spriteRenderer;
-
-        public FacingDirection FacingDirection { get; private set; }
-            = FacingDirection.Right;
-
+        
+        // Components rused by this feature.
         private CharacterMotor _motor;
         private ICharacterInput _input;
         private GroundDetector _groundDetector;
@@ -84,6 +90,9 @@ namespace Modular2DCharacterController.Runtime.Features
         private DashFeature _dashFeature;
         private WallJumpFeature _wallJumpFeature;
         private ProfileProvider<HorizontalMovementProfile> _horizontalMovementProfileProvider;
+        
+        public FacingDirection FacingDirection { get; private set; }
+            = FacingDirection.Right;
 
         private void Awake()
         {
@@ -158,7 +167,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 moveInput * currentProfile.maxSpeed;
 
             float currentSpeed =
-                _motor.HorizontalVelocity;
+                _motor.CurrentSelfVelocity.x;
 
             bool isTryingToMove =
                 Mathf.Abs(moveInput) > 0.01f;
@@ -190,7 +199,7 @@ namespace Modular2DCharacterController.Runtime.Features
                         overspeedDeceleration * Time.fixedDeltaTime);
                 }
 
-                _motor.SetHorizontalVelocity(preservedSpeed);
+                _motor.SetHorizontalSelfVelocity(preservedSpeed);
                 UpdateFacingDirection();
                 return;
             }
@@ -219,11 +228,12 @@ namespace Modular2DCharacterController.Runtime.Features
                     targetSpeed,
                     accelerationRate * Time.fixedDeltaTime);
 
-            _motor.SetHorizontalVelocity(newSpeed);
+            _motor.SetHorizontalSelfVelocity(newSpeed);
 
             UpdateFacingDirection();
         }
 
+        // Updates direction the character is facing.
         private void UpdateFacingDirection()
         {
             if (Mathf.Abs(_input.MoveInput) < 0.01f)
@@ -249,6 +259,7 @@ namespace Modular2DCharacterController.Runtime.Features
             }
         }
 
+        // Flips the character by updating its scale.
         private void FlipByScale()
         {
             if (graphicsRoot == null)
@@ -265,6 +276,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 scale;
         }
 
+        // Flips the character by updating sprite renderer's facing direction.
         private void FlipBySpriteRenderer()
         {
             if (spriteRenderer == null)
@@ -274,6 +286,8 @@ namespace Modular2DCharacterController.Runtime.Features
                 FacingDirection == FacingDirection.Left;
         }
 
+        // Called when the character goes airborne to register the air movement
+        // profile, if available.
         private void OnLeftGround(Vector2 unused)
         {
             if (airMovementProfile != null)
@@ -282,6 +296,7 @@ namespace Modular2DCharacterController.Runtime.Features
             }
         }
         
+        // Called when the character lands to unregister the air movement profile.
         private void OnLanded(Vector2 unused)
         {
             if (airMovementProfile != null)

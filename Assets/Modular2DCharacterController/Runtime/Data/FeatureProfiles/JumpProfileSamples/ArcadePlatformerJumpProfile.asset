@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ArcadePlatformerJumpProfile
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Data.JumpSettings
   priority: 0
-  jumpHeight: 3
+  jumpHeight: 4
   timeToApex: 0.25
   fallGravityMultiplier: 2.5

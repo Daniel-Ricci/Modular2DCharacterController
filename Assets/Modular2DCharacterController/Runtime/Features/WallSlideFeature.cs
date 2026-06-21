@@ -88,7 +88,7 @@ namespace Modular2DCharacterController.Runtime.Features
             IsWallSliding = holdingTowardsWall;
             
             bool goingUp =
-                _motor.CurrentVelocity.y > 0.01f;
+                _motor.CurrentSelfVelocity.y > 0.01f;
 
             if (IsWallSliding && !goingUp)
             {
@@ -98,7 +98,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 }
                 else
                 {
-                    _motor.SetVerticalVelocity(-wallSlideVelocity);
+                    _motor.SetVerticalSelfVelocity(-wallSlideVelocity);
                     _motor.SuppressGravityThisFrame();
                 }
             }

@@ -9,7 +9,7 @@ namespace Modular2DCharacterController.Runtime.Features
     /// <summary>
     /// A configurable feature that handles player jumps.
     /// Gravity itself is owned by CharacterMotor; this feature only modifies gravity
-    /// when jump-specific behavior is needed.
+    /// while it is actively managing a jump arc.
     /// </summary>
     [RequireComponent(typeof(CharacterController2D))]
     public class JumpFeature : MonoBehaviour, ICharacterFeature
@@ -41,6 +41,14 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         [Min(0f)]
         private float jumpBufferTime = 0.1f;
+
+        [Header("Jump Arc")]
+
+        [Tooltip(
+            "If enabled, JumpProfile Time To Apex is used to calculate an ascent gravity multiplier. " +
+            "If disabled, the motor's base gravity is used as the source of truth.")]
+        [SerializeField]
+        private bool useTimeToApex = false;
 
         [Header("Jump Type")]
 
@@ -81,7 +89,6 @@ namespace Modular2DCharacterController.Runtime.Features
         private CharacterMotor _motor;
         private ICharacterInput _input;
         private GroundDetector _groundDetector;
-        private WallDetector _wallDetector;
         private CharacterController2D _controller;
         private DashFeature _dashFeature;
         private WallSlideFeature _wallSlideFeature;
@@ -89,6 +96,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private ProfileProvider<JumpProfile> _jumpProfileProvider;
 
         private float _jumpVelocity;
+        private float _ascentGravityMultiplier = 1f;
 
         private float _coyoteTimer;
         private float _jumpBufferTimer;
@@ -96,13 +104,14 @@ namespace Modular2DCharacterController.Runtime.Features
         private int _remainingJumps;
 
         private bool _jumpRequested;
+        private bool _isJumpActive;
+        private bool _isJumpAscending;
 
         private void Awake()
         {
             _motor = GetComponent<CharacterMotor>();
             _input = GetComponent<ICharacterInput>();
             _groundDetector = GetComponent<GroundDetector>();
-            _wallDetector = GetComponent<WallDetector>();
             _controller = GetComponent<CharacterController2D>();
             _dashFeature = GetComponent<DashFeature>();
             _wallSlideFeature = GetComponent<WallSlideFeature>();
@@ -144,19 +153,16 @@ namespace Modular2DCharacterController.Runtime.Features
             if (!currentJumpProfile)
                 return;
 
-            CalculateJumpValues(currentJumpProfile);
             UpdateTimers();
-            TryJump();
+            UpdateJumpState();
+
+            if (_jumpBufferTimer > 0f)
+            {
+                CalculateJumpValues(currentJumpProfile);
+                TryJump();
+            }
+
             ApplyJumpGravityModifiers(currentJumpProfile);
-        }
-
-        private void CalculateJumpValues(JumpProfile currentJumpProfile)
-        {
-            float gravity =
-                Mathf.Abs(_motor.GravityAcceleration);
-
-            _jumpVelocity =
-                Mathf.Sqrt(2f * gravity * currentJumpProfile.jumpHeight);
         }
 
         private void UpdateTimers()
@@ -182,20 +188,95 @@ namespace Modular2DCharacterController.Runtime.Features
             }
         }
 
+        private void UpdateJumpState()
+        {
+            Vector2 currentVelocity =
+                _motor.CurrentSelfVelocity;
+
+            if (_groundDetector.IsGrounded)
+            {
+                _isJumpActive = false;
+                _isJumpAscending = false;
+                return;
+            }
+
+            if (_dashFeature != null && _dashFeature.IsDashing)
+            {
+                _isJumpActive = false;
+                _isJumpAscending = false;
+                return;
+            }
+
+            if (_wallJumpFeature != null && _wallJumpFeature.IsMovementLocked)
+            {
+                _isJumpActive = false;
+                _isJumpAscending = false;
+                return;
+            }
+
+            if (_isJumpAscending && currentVelocity.y <= 0f)
+            {
+                _isJumpAscending = false;
+            }
+
+            if (_isJumpActive && currentVelocity.y <= 0f)
+            {
+                _isJumpAscending = false;
+            }
+        }
+
+        private void CalculateJumpValues(JumpProfile currentJumpProfile)
+        {
+            float baseGravity =
+                Mathf.Abs(_motor.GravityAcceleration);
+
+            if (baseGravity <= 0.0001f)
+            {
+                _jumpVelocity = 0f;
+                _ascentGravityMultiplier = 1f;
+                return;
+            }
+
+            if (useTimeToApex)
+            {
+                float safeTimeToApex =
+                    Mathf.Max(currentJumpProfile.timeToApex, 0.0001f);
+
+                float requiredGravity =
+                    (2f * currentJumpProfile.jumpHeight) /
+                    (safeTimeToApex * safeTimeToApex);
+
+                _ascentGravityMultiplier =
+                    requiredGravity / baseGravity;
+
+                _jumpVelocity =
+                    requiredGravity * safeTimeToApex;
+
+                return;
+            }
+
+            _ascentGravityMultiplier = 1f;
+
+            _jumpVelocity =
+                Mathf.Sqrt(
+                    2f *
+                    baseGravity *
+                    currentJumpProfile.jumpHeight);
+        }
+
         private void TryJump()
         {
             if (_dashFeature != null && _dashFeature.IsDashing)
                 return;
 
-            if (_wallSlideFeature != null && _wallJumpFeature != null)
+            if (_wallSlideFeature != null &&
+                _wallJumpFeature != null)
             {
-                if (_wallSlideFeature.IsWallSliding) return;
-                if (_wallJumpFeature.IsMovementLocked) return;
-            }
-            
-            if (_jumpBufferTimer <= 0f)
-            {
-                return;
+                if (_wallSlideFeature.IsWallSliding)
+                    return;
+
+                if (_wallJumpFeature.IsMovementLocked)
+                    return;
             }
 
             bool canGroundJump =
@@ -207,9 +288,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 _remainingJumps > 0;
 
             if (!canGroundJump && !canAirJump)
-            {
                 return;
-            }
 
             if (canGroundJump)
             {
@@ -223,36 +302,61 @@ namespace Modular2DCharacterController.Runtime.Features
             _jumpBufferTimer = 0f;
             _coyoteTimer = 0f;
 
-            _motor.SetVerticalVelocity(_jumpVelocity);
+            _motor.SetVerticalSelfVelocity(_jumpVelocity);
+
+            _isJumpActive = true;
+            _isJumpAscending = true;
+
             Jumped?.Invoke(_jumpVelocity);
         }
 
-        private void ApplyJumpGravityModifiers(JumpProfile currentJumpProfile)
+        private void ApplyJumpGravityModifiers(
+            JumpProfile currentJumpProfile)
         {
-            float gravityMultiplier = 1f;
+            if (!_isJumpActive)
+                return;
 
-            if (_motor.VerticalVelocity < 0f)
+            if (_dashFeature != null && _dashFeature.IsDashing)
+                return;
+
+            if (_wallJumpFeature != null &&
+                _wallJumpFeature.IsMovementLocked)
             {
-                gravityMultiplier =
+                return;
+            }
+
+            Vector2 currentVelocity =
+                _motor.CurrentSelfVelocity;
+
+            float finalGravityMultiplier = 1f;
+
+            if (currentVelocity.y < 0f)
+            {
+                finalGravityMultiplier *=
                     currentJumpProfile.fallGravityMultiplier;
+
+                _isJumpAscending = false;
             }
-            else if (!fixedJumpHeight &&
-                     _motor.VerticalVelocity > 0f &&
-                     !_input.JumpHeld)
+            else if (_isJumpAscending)
             {
-                gravityMultiplier =
-                    jumpReleaseGravityMultiplier;
+                finalGravityMultiplier *=
+                    _ascentGravityMultiplier;
+
+                if (!fixedJumpHeight && !_input.JumpHeld)
+                {
+                    finalGravityMultiplier *=
+                        jumpReleaseGravityMultiplier;
+                }
+
+                if (enableJumpHangTime &&
+                    currentVelocity.y <= jumpHangVelocityThreshold)
+                {
+                    finalGravityMultiplier *=
+                        jumpHangGravityMultiplier;
+                }
             }
 
-            if (enableJumpHangTime &&
-                _motor.VerticalVelocity > 0f &&
-                _motor.VerticalVelocity <= jumpHangVelocityThreshold)
-            {
-                gravityMultiplier *=
-                    jumpHangGravityMultiplier;
-            }
-
-            _motor.AddGravityMultiplier(gravityMultiplier);
+            _motor.AddGravityMultiplier(finalGravityMultiplier);
         }
     }
 }

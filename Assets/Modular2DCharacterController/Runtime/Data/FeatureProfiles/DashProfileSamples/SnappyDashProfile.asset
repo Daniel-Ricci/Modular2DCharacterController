@@ -18,8 +18,6 @@ MonoBehaviour:
   dashCooldown: 0.1
   variableDashLength: 1
   minimumDashDuration: 0.06
-  maxDashCount: 1
-  resetDashCountOnGround: 1
   allowGroundDash: 1
   allowAirDash: 1
   useInputDirection: 1

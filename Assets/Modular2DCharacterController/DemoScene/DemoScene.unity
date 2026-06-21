@@ -185,7 +185,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &113646279
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -242,6 +242,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!4 &113646280
 Transform:
   m_ObjectHideFlags: 0
@@ -323,7 +324,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &133283106
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -380,6 +381,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!4 &133283107
 Transform:
   m_ObjectHideFlags: 0
@@ -461,7 +463,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &407892553
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -518,6 +520,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!4 &407892554
 Transform:
   m_ObjectHideFlags: 0
@@ -663,7 +666,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &555328638
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -720,6 +723,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!4 &555328639
 Transform:
   m_ObjectHideFlags: 0
@@ -801,7 +805,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &577993702
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -858,6 +862,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!4 &577993703
 Transform:
   m_ObjectHideFlags: 0
@@ -939,7 +944,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &670082481
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -996,6 +1001,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!4 &670082482
 Transform:
   m_ObjectHideFlags: 0
@@ -1098,7 +1104,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &1177921577
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1155,6 +1161,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!4 &1177921578
 Transform:
   m_ObjectHideFlags: 0
@@ -1238,7 +1245,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &1401225064
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1295,6 +1302,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!4 &1401225065
 Transform:
   m_ObjectHideFlags: 0
@@ -1410,7 +1418,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &1438837098
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1467,6 +1475,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!4 &1438837099
 Transform:
   m_ObjectHideFlags: 0
@@ -1548,7 +1557,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &2089770039
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1605,6 +1614,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!4 &2089770040
 Transform:
   m_ObjectHideFlags: 0
@@ -1857,7 +1867,46 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 908953618317756315, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: runFeature
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 908953618317756315, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: dashFeature
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 908953618317756315, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: jumpFeature
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 908953618317756315, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: crouchFeature
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 908953618317756315, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: wallJumpFeature
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3036728849090581681, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: defaultJumpProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: fd02a943b8e73be47916f9f213147fcc, type: 2}
+    - target: {fileID: 5862783433706219167, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: maxFallSpeed
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5862783433706219167, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: gravityAcceleration
+      value: -45
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 2065180972893838928, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+    - {fileID: 7500109327406742787, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+    - {fileID: 539890544002109190, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+    - {fileID: 951386037181885141, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+    - {fileID: 2421745089491559696, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+    - {fileID: 1537304120068154184, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+    - {fileID: 7429609835000910511, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
