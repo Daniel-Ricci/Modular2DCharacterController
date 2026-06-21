@@ -15,6 +15,7 @@ namespace Modular2DCharacterController.Runtime.Core
         public event Action StartedRun;
         public event Action StoppedRun;
         public event Action<float> Dashed;
+        public event Action DashEnded;
         public event Action CrouchStarted;
         public event Action CrouchEnded;
         public event Action WallJumped;
@@ -51,7 +52,11 @@ namespace Modular2DCharacterController.Runtime.Core
             }
 
             if (dashFeature != null)
+            {
                 dashFeature.Dashed += OnDashed;
+                dashFeature.DashEnded += OnDashEnded;
+            }
+                
 
             if (crouchFeature != null)
             {
@@ -81,9 +86,12 @@ namespace Modular2DCharacterController.Runtime.Core
                 runFeature.StartedRun -= OnStartedRun;
                 runFeature.StoppedRun -= OnStoppedRun;
             }
-            
+
             if (dashFeature != null)
+            {
                 dashFeature.Dashed -= OnDashed;
+                dashFeature.DashEnded -= OnDashEnded;
+            }
             
             if (crouchFeature != null)
             {
@@ -125,6 +133,11 @@ namespace Modular2DCharacterController.Runtime.Core
         private void OnDashed(float dashVelocity)
         {
             Dashed?.Invoke(dashVelocity);
+        }
+        
+        private void OnDashEnded()
+        {
+            DashEnded?.Invoke();
         }
 
         private void OnCrouchStarted()

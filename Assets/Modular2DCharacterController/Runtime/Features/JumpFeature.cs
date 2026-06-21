@@ -7,7 +7,8 @@ using UnityEngine;
 namespace Modular2DCharacterController.Runtime.Features
 {
     /// <summary>
-    /// A configurable feature that handles player jumps.
+    /// A configurable feature that handles character jumps.
+    /// 
     /// Gravity itself is owned by CharacterMotor; this feature only modifies gravity
     /// while it is actively managing a jump arc.
     /// </summary>
@@ -24,11 +25,12 @@ namespace Modular2DCharacterController.Runtime.Features
         [Header("Gameplay")]
 
         [Tooltip(
-            "The maximum number of jumps that can be performed before landing. " +
-            "A value of 1 allows a single jump, 2 enables double jump, etc.")]
+            "The maximum number of air jumps that can be performed before landing, " +
+            "excluding the first, grounded jump. " +
+            "A value of 0 allows a single grounded jump, 1 enables double jump, etc.")]
         [SerializeField]
-        [Min(1)]
-        private int maxJumpCount = 2;
+        [Min(0)]
+        private int maxAirJumpCount = 1;
 
         [Tooltip(
             "Allows jumping shortly after leaving the ground, making jumps feel more forgiving.")]
@@ -83,9 +85,25 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         [Range(0.1f, 1f)]
         private float jumpHangGravityMultiplier = 0.35f;
+        
+        [Header("Air Dash Jump")]
 
+        [Tooltip(
+            "If enabled, the character can jump shortly after an dash ends " +
+            "without consuming an air jump.")]
+        [SerializeField]
+        private bool allowJumpAfterDash = true;
+
+        [Tooltip(
+            "How long after an dash ends the free jump window remains available.")]
+        [SerializeField]
+        [Min(0f)]
+        private float jumpAfterDashTime = 0.15f;
+
+        // Event triggered when the character jumps.
         public event Action<float> Jumped;
 
+        // Components rused by this feature.
         private CharacterMotor _motor;
         private ICharacterInput _input;
         private GroundDetector _groundDetector;
@@ -95,14 +113,20 @@ namespace Modular2DCharacterController.Runtime.Features
         private WallJumpFeature _wallJumpFeature;
         private ProfileProvider<JumpProfile> _jumpProfileProvider;
 
+        // Keeps track of jump velocity and gravity multiplier
+        // to be applied.
         private float _jumpVelocity;
         private float _ascentGravityMultiplier = 1f;
 
+        // Timers used for coyote jump and input buffer.
         private float _coyoteTimer;
         private float _jumpBufferTimer;
+        private float _jumpAfterDashTimer;
 
+        // Keeps track of remaining jumps.
         private int _remainingJumps;
 
+        // Jump state variables.
         private bool _jumpRequested;
         private bool _isJumpActive;
         private bool _isJumpAscending;
@@ -118,7 +142,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _wallJumpFeature = GetComponent<WallJumpFeature>();
             _jumpProfileProvider = _controller.JumpProfileProvider;
 
-            _remainingJumps = maxJumpCount;
+            _remainingJumps = maxAirJumpCount;
         }
 
         private void OnEnable()
@@ -127,6 +151,11 @@ namespace Modular2DCharacterController.Runtime.Features
             {
                 _jumpProfileProvider?.RegisterProfile(defaultJumpProfile);
             }
+            
+            if (_dashFeature != null)
+            {
+                _dashFeature.DashEnded += OnAirDashEnded;
+            }
         }
 
         private void OnDisable()
@@ -134,6 +163,11 @@ namespace Modular2DCharacterController.Runtime.Features
             if (defaultJumpProfile != null)
             {
                 _jumpProfileProvider?.UnregisterProfile(defaultJumpProfile);
+            }
+            
+            if (_dashFeature != null)
+            {
+                _dashFeature.DashEnded -= OnAirDashEnded;
             }
         }
 
@@ -170,11 +204,17 @@ namespace Modular2DCharacterController.Runtime.Features
             if (_groundDetector.IsGrounded)
             {
                 _coyoteTimer = coyoteTime;
-                _remainingJumps = maxJumpCount;
+                _remainingJumps = maxAirJumpCount;
+                _jumpAfterDashTimer = 0f;
             }
             else
             {
                 _coyoteTimer -= Time.fixedDeltaTime;
+                
+                if (_jumpAfterDashTimer > 0f)
+                {
+                    _jumpAfterDashTimer -= Time.fixedDeltaTime;
+                }
             }
 
             if (_jumpRequested)
@@ -282,17 +322,27 @@ namespace Modular2DCharacterController.Runtime.Features
             bool canGroundJump =
                 _groundDetector.IsGrounded ||
                 _coyoteTimer > 0f;
+            
+            bool canJumpAfterAirDash =
+                !canGroundJump &&
+                allowJumpAfterDash &&
+                _jumpAfterDashTimer > 0f;
 
             bool canAirJump =
                 !canGroundJump &&
+                !canJumpAfterAirDash &&
                 _remainingJumps > 0;
 
-            if (!canGroundJump && !canAirJump)
+            if (!canGroundJump && !canAirJump && !canJumpAfterAirDash)
                 return;
 
             if (canGroundJump)
             {
-                _remainingJumps = maxJumpCount - 1;
+                _remainingJumps = maxAirJumpCount;
+            }
+            else if (canJumpAfterAirDash)
+            {
+                _jumpAfterDashTimer = 0f;
             }
             else
             {
@@ -357,6 +407,14 @@ namespace Modular2DCharacterController.Runtime.Features
             }
 
             _motor.AddGravityMultiplier(finalGravityMultiplier);
+        }
+        
+        private void OnAirDashEnded()
+        {
+            if (!allowJumpAfterDash)
+                return;
+
+            _jumpAfterDashTimer = jumpAfterDashTime;
         }
     }
 }

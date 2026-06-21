@@ -1888,6 +1888,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3036728849090581681, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: maxAirJumpCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3036728849090581681, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
       propertyPath: defaultJumpProfile
       value: 
       objectReference: {fileID: 11400000, guid: fd02a943b8e73be47916f9f213147fcc, type: 2}
@@ -1899,9 +1903,15 @@ PrefabInstance:
       propertyPath: gravityAcceleration
       value: -45
       objectReference: {fileID: 0}
+    - target: {fileID: 7500109327406742787, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: maxDashCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7500109327406742787, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: defaultDashProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: 7f6ee28d8d9b8934788c9ee5890d5590, type: 2}
     m_RemovedComponents:
-    - {fileID: 2065180972893838928, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-    - {fileID: 7500109327406742787, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
     - {fileID: 539890544002109190, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
     - {fileID: 951386037181885141, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
     - {fileID: 2421745089491559696, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}

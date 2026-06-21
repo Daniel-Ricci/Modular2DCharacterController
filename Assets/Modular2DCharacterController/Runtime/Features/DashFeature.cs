@@ -7,7 +7,9 @@ using UnityEngine;
 namespace Modular2DCharacterController.Runtime.Features
 {
     /// <summary>
-    /// A configurable 2D dash feature using DashProfile data.
+    /// A configurable feature that allows the character to dash.
+    ///
+    /// Uses the Dash Profile data to calculate dash force.
     /// </summary>
     [RequireComponent(typeof(CharacterController2D))]
     public class DashFeature : MonoBehaviour, ICharacterFeature
@@ -32,6 +34,18 @@ namespace Modular2DCharacterController.Runtime.Features
         [Tooltip("Should reset dash count when wall jump?.")]
         [SerializeField]
         private bool resetDashCountOnWallJump;
+        
+        [Header("Direction")]
+
+        [Tooltip("If enabled, the dash direction is determined from the current movement input.")]
+        [SerializeField]
+        private bool useInputDirection = true;
+
+        [Tooltip(
+            "If enabled and no valid input direction is available, the dash will use " +
+            "the character's facing direction instead.")]
+        [SerializeField]
+        private bool fallbackToFacingDirection = true;
 
         // True while the dash is actively controlling velocity.
         // Other features can read this to skip movement or gravity during dash.
@@ -40,7 +54,11 @@ namespace Modular2DCharacterController.Runtime.Features
         // Event for dashing.
         // Uses the dash's velocity as parameter.
         public event Action<float> Dashed;
+        
+        // Event for end of dash.
+        public event Action DashEnded;
 
+        // Components rused by this feature.
         private CharacterController2D _controller;
         private CharacterMotor _motor;
         private ICharacterInput _input;
@@ -222,7 +240,7 @@ namespace Modular2DCharacterController.Runtime.Features
             if (!isGrounded && !currentProfile.allowAirDash)
                 return;
 
-            Vector2 direction = GetDashDirection(currentProfile);
+            Vector2 direction = GetDashDirection();
 
             // If the profile does not allow any valid direction, cancel dash.
             if (direction == Vector2.zero)
@@ -238,10 +256,10 @@ namespace Modular2DCharacterController.Runtime.Features
             Dashed?.Invoke(currentProfile.dashSpeed);
         }
 
-        private Vector2 GetDashDirection(DashProfile currentProfile)
+        private Vector2 GetDashDirection()
         {
             // Use current movement input when allowed and available.
-            if (currentProfile.useInputDirection &&
+            if (useInputDirection &&
                 _input != null &&
                 Mathf.Abs(_input.MoveInput) > 0.01f)
             {
@@ -249,7 +267,7 @@ namespace Modular2DCharacterController.Runtime.Features
             }
 
             // If no movement input is held, dash toward the last known facing direction.
-            if (currentProfile.fallbackToFacingDirection)
+            if (fallbackToFacingDirection)
             {
                 return new Vector2((int)_lastFacingDirection, 0f);
             }
@@ -290,8 +308,16 @@ namespace Modular2DCharacterController.Runtime.Features
             }
 
             // Reapply dash velocity every physics tick.
-            // This is what lets dash override normal movement and gravity.
-            _motor.SetSelfVelocity(_dashDirection * currentProfile.dashSpeed);
+            if (currentProfile.applyGravity)
+            {
+                _motor.SetHorizontalSelfVelocity(_dashDirection.x > 0 ?
+                    currentProfile.dashSpeed : -currentProfile.dashSpeed);
+            }
+            else
+            {
+                _motor.SetSelfVelocity(_dashDirection * currentProfile.dashSpeed);
+                _motor.SuppressGravityThisFrame();
+            }
         }
 
         private void EndDash(DashProfile currentProfile)
@@ -321,6 +347,7 @@ namespace Modular2DCharacterController.Runtime.Features
             }
 
             _motor.SetSelfVelocity(exitVelocity);
+            DashEnded?.Invoke();
         }
 
         private void ResetDashCount()

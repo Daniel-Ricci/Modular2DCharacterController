@@ -19,7 +19,7 @@ namespace Modular2DCharacterController.Runtime.Features
     }
 
     /// <summary>
-    /// A configurable feature that allows the player to move horizontally.
+    /// A configurable feature that allows the character to move horizontally.
     ///
     /// It uses the Horizontal Movement Profile Provider to retrieve the
     /// current movement profile and calculate movement. The default movement
@@ -91,6 +91,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private WallJumpFeature _wallJumpFeature;
         private ProfileProvider<HorizontalMovementProfile> _horizontalMovementProfileProvider;
         
+        // Indicates the direction the character is currently facing.
         public FacingDirection FacingDirection { get; private set; }
             = FacingDirection.Right;
 

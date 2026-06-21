@@ -49,17 +49,6 @@ namespace Modular2DCharacterController.Runtime.Data.FeatureProfiles
             "If enabled, dashing is allowed while airborne.")]
         public bool allowAirDash = true;
 
-        [Header("Direction")]
-
-        [Tooltip(
-            "If enabled, the dash direction is determined from the current movement input.")]
-        public bool useInputDirection = true;
-
-        [Tooltip(
-            "If enabled and no valid input direction is available, the dash will use " +
-            "the character's facing direction instead.")]
-        public bool fallbackToFacingDirection = true;
-
         [Header("Dash End")]
 
         [Tooltip(
@@ -74,5 +63,10 @@ namespace Modular2DCharacterController.Runtime.Data.FeatureProfiles
         [Tooltip(
             "If enabled, the character's vertical velocity is cleared when the dash ends.")]
         public bool clearVerticalVelocityOnEnd = true;
+        
+        [Header("Gravity")]
+        [Tooltip(
+            "If enabled, apply gravit while dashing")]
+        public bool applyGravity = true;
     }
 }

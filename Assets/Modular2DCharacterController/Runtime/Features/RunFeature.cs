@@ -7,7 +7,11 @@ using UnityEngine;
 namespace Modular2DCharacterController.Runtime.Features
 {
     /// <summary>
-    /// A configurable feature that registers a higher-priority horizontal movement profile while the run input is held.
+    /// A configurable feature that allows the character to run.
+    ///
+    /// It registers a higher-priority horizontal movement profile in
+    /// the Horizontal Movement profile provider while the run input is held,
+    /// which then is used by the Horizontal Movement feature.
     /// </summary>
     [RequireComponent(typeof(CharacterController2D))]
     public class RunFeature : MonoBehaviour, ICharacterFeature
@@ -32,6 +36,7 @@ namespace Modular2DCharacterController.Runtime.Features
         public event Action StartedRun;
         public event Action StoppedRun;
 
+        // Components used by this feature.
         private CharacterController2D _controller;
         private ICharacterInput _input;
         private GroundDetector _groundDetector;
@@ -63,6 +68,7 @@ namespace Modular2DCharacterController.Runtime.Features
             UpdateRunState();
         }
 
+        // Updates the run state and register or unregister the profile accordingly.
         private void UpdateRunState()
         {
             if (runMovementProfile == null || _input == null)
@@ -87,6 +93,7 @@ namespace Modular2DCharacterController.Runtime.Features
             }
         }
 
+        // Checks if the character can run (input held + is grounded).
         private bool CanRun()
         {
             if (!_input.RunHeld)

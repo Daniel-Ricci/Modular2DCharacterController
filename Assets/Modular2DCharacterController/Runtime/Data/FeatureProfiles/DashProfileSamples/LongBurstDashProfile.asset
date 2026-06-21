@@ -18,12 +18,9 @@ MonoBehaviour:
   dashCooldown: 0.16
   variableDashLength: 0
   minimumDashDuration: 0.06
-  maxDashCount: 1
-  resetDashCountOnGround: 1
   allowGroundDash: 1
   allowAirDash: 1
-  useInputDirection: 1
-  fallbackToFacingDirection: 1
-  preserveDashMomentum: 0
+  preserveDashMomentum: 1
   endingMomentumMultiplier: 0
   clearVerticalVelocityOnEnd: 1
+  applyGravity: 0

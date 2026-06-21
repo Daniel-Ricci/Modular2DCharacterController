@@ -10,17 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef14394ebaf165f4c83d6c47106fa9f7, type: 3}
-  m_Name: SnappyDashProfile
-  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Data.DashProfile
+  m_Name: RollLikeDashProfile
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Data.FeatureProfiles.DashProfile
   priority: 0
-  dashSpeed: 30
-  dashDuration: 0.14
-  dashCooldown: 0.15
-  variableDashLength: 1
-  minimumDashDuration: 0.06
+  dashSpeed: 12
+  dashDuration: 0.3
+  dashCooldown: 0.2
+  variableDashLength: 0
+  minimumDashDuration: 0.1
   allowGroundDash: 1
-  allowAirDash: 1
+  allowAirDash: 0
   preserveDashMomentum: 0
-  endingMomentumMultiplier: 0.55
-  clearVerticalVelocityOnEnd: 1
-  applyGravity: 0
+  endingMomentumMultiplier: 0
+  clearVerticalVelocityOnEnd: 0
