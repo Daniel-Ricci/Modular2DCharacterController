@@ -103,7 +103,7 @@ namespace Modular2DCharacterController.Runtime.Features
         // Event triggered when the character jumps.
         public event Action<float> Jumped;
 
-        // Components rused by this feature.
+        // Components used by this feature.
         private CharacterMotor _motor;
         private ICharacterInput _input;
         private GroundDetector _groundDetector;

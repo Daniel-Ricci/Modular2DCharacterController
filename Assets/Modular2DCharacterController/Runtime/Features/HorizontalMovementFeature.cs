@@ -82,7 +82,7 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         private SpriteRenderer spriteRenderer;
         
-        // Components rused by this feature.
+        // Components used by this feature.
         private CharacterMotor _motor;
         private ICharacterInput _input;
         private GroundDetector _groundDetector;

@@ -16,10 +16,11 @@ MonoBehaviour:
   dashSpeed: 12
   dashDuration: 0.3
   dashCooldown: 0.2
-  variableDashLength: 0
+  variableDashLength: 1
   minimumDashDuration: 0.1
   allowGroundDash: 1
   allowAirDash: 0
-  preserveDashMomentum: 0
+  preserveDashMomentum: 1
   endingMomentumMultiplier: 0
   clearVerticalVelocityOnEnd: 0
+  applyGravity: 1

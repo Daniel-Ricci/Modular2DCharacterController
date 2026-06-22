@@ -58,7 +58,7 @@ namespace Modular2DCharacterController.Runtime.Features
         // Event for end of dash.
         public event Action DashEnded;
 
-        // Components rused by this feature.
+        // Components used by this feature.
         private CharacterController2D _controller;
         private CharacterMotor _motor;
         private ICharacterInput _input;
