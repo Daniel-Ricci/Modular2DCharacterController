@@ -187,10 +187,10 @@ namespace Modular2DCharacterController.Runtime.Features
             }
 
             // Fallback for characters without HorizontalMovementFeature.
-            if (_input != null && Mathf.Abs(_input.MoveInput) > 0.01f)
+            if (_input != null && Mathf.Abs(_input.HorizontalMoveInput) > 0.01f)
             {
                 _lastFacingDirection =
-                    _input.MoveInput > 0f
+                    _input.HorizontalMoveInput > 0f
                         ? FacingDirection.Right
                         : FacingDirection.Left;
             }
@@ -272,9 +272,9 @@ namespace Modular2DCharacterController.Runtime.Features
             // Use current movement input when allowed and available.
             if (useInputDirection &&
                 _input != null &&
-                Mathf.Abs(_input.MoveInput) > 0.01f)
+                Mathf.Abs(_input.HorizontalMoveInput) > 0.01f)
             {
-                return new Vector2(Mathf.Sign(_input.MoveInput), 0f);
+                return new Vector2(Mathf.Sign(_input.HorizontalMoveInput), 0f);
             }
 
             // If no movement input is held, dash toward the last known facing direction.

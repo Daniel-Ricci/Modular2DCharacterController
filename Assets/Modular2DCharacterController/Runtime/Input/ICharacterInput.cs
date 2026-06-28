@@ -5,7 +5,9 @@ namespace Modular2DCharacterController.Runtime.Input
     /// </summary>
     public interface ICharacterInput
     {
-        float MoveInput { get; }
+        float HorizontalMoveInput { get; }
+        
+        float VerticalMoveInput { get; }
 
         bool JumpPressed { get; }
 

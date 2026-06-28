@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 548829648891183911}
   - component: {fileID: 9007837118997397910}
   - component: {fileID: 6879002011067484455}
+  - component: {fileID: 7666062897064686800}
   - component: {fileID: 5862783433706219167}
   - component: {fileID: 1624187124611957247}
   - component: {fileID: 980959531919785132}
@@ -21,7 +22,6 @@ GameObject:
   - component: {fileID: 3036728849090581681}
   - component: {fileID: 2065180972893838928}
   - component: {fileID: 7500109327406742787}
-  - component: {fileID: 539890544002109190}
   - component: {fileID: 951386037181885141}
   - component: {fileID: 1537304120068154184}
   - component: {fileID: 2421745089491559696}
@@ -113,6 +113,42 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1, y: 2}
   m_Direction: 0
+--- !u!114 &7666062897064686800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5db8b24b5d6406e94051357bef21c39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Debug.CharacterDebugOverlay
+  debugEnabled: 1
+  toggleKey: 96
+  showInReleaseBuild: 0
+  screenOffset: {x: 12, y: 12}
+  overlayWidth: 430
+  fontSize: 13
+  decimalPlaces: 2
+  showMotor: 1
+  showDetectors: 1
+  showFeatures: 1
+  showInput: 1
+  drawGizmos: 1
+  velocityGizmoScale: 0.1
+  normalGizmoLength: 0.75
+  drawRuntimeVectors: 1
+  runtimeVelocityScale: 0.1
+  runtimeNormalLength: 0.75
+  runtimeLineWidth: 0.035
+  runtimeLineSortingOrder: 1000
+  rigidbodyVelocityColor: {r: 1, g: 1, b: 1, a: 1}
+  selfVelocityColor: {r: 0, g: 1, b: 1, a: 1}
+  externalVelocityColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  groundNormalColor: {r: 0, g: 1, b: 0, a: 1}
+  wallNormalColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &5862783433706219167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,7 +162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Core.CharacterMotor
   useCustomGravity: 1
-  gravityAcceleration: -35
+  gravityAcceleration: -45
   maxFallSpeed: 25
 --- !u!114 &1624187124611957247
 MonoBehaviour:
@@ -189,10 +225,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.CharacterEventDispatcher
   groundDetector: {fileID: 1624187124611957247}
-  jumpFeature: {fileID: 3036728849090581681}
-  runFeature: {fileID: 2065180972893838928}
-  dashFeature: {fileID: 7500109327406742787}
-  crouchFeature: {fileID: 539890544002109190}
+  jumpFeature: {fileID: 0}
+  runFeature: {fileID: 0}
+  dashFeature: {fileID: 0}
+  crouchFeature: {fileID: 0}
   wallJumpFeature: {fileID: 0}
 --- !u!114 &9072815575998707769
 MonoBehaviour:
@@ -230,6 +266,7 @@ MonoBehaviour:
   facingMode: 1
   graphicsRoot: {fileID: 7855801637417708460}
   spriteRenderer: {fileID: 0}
+  minimumInput: 0.1
 --- !u!114 &3036728849090581681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,15 +279,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c455f28c5cec3b458073fdb33a87132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.JumpFeature
-  defaultJumpProfile: {fileID: 11400000, guid: 75971002a49ce7e4cb81e5022aeb38af, type: 2}
-  maxJumpCount: 2
+  defaultJumpProfile: {fileID: 11400000, guid: fd02a943b8e73be47916f9f213147fcc, type: 2}
+  maxAirJumpCount: 0
   coyoteTime: 0.1
   jumpBufferTime: 0.1
+  useTimeToApex: 0
   fixedJumpHeight: 0
   jumpReleaseGravityMultiplier: 3
   enableJumpHangTime: 1
   jumpHangVelocityThreshold: 1
   jumpHangGravityMultiplier: 0.35
+  allowJumpAfterDash: 1
+  jumpAfterDashTime: 0.15
 --- !u!114 &2065180972893838928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,28 +317,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f02bc4ea75a30e14480c6de5a9a9f224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.DashFeature
-  defaultDashProfile: {fileID: 11400000, guid: 7be7cb5cc5db38e4088fd599ccf60e17, type: 2}
-  maxDashCount: 3
+  defaultDashProfile: {fileID: 11400000, guid: 7f6ee28d8d9b8934788c9ee5890d5590, type: 2}
+  maxDashCount: 1
   resetDashCountOnGrounded: 1
   resetDashCountOnWallJump: 0
---- !u!114 &539890544002109190
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 341889370699776070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3a84c388373c5a4b8700819e01f1019, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.CrouchFeature
-  crouchMovementProfile: {fileID: 11400000, guid: d100008c8a8357b42aceeda15fea35c7, type: 2}
-  crouchMode: 0
-  groundedOnly: 1
-  requireMovementInput: 0
-  minimumMoveInput: 0.1
-  clearToggleWhenLeavingGround: 1
+  useInputDirection: 1
+  fallbackToFacingDirection: 1
 --- !u!114 &951386037181885141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -386,7 +410,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &255651945949183656
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -443,6 +467,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!1 &6963890732174516947
 GameObject:
   m_ObjectHideFlags: 0
@@ -477,7 +502,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!212 &2107460856494226997
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -534,6 +559,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!1 &8593468256381725022
 GameObject:
   m_ObjectHideFlags: 0
@@ -602,7 +628,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &646510394454442867
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -659,3 +685,4 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []

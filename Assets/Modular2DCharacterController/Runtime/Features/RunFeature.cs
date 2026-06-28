@@ -99,7 +99,7 @@ namespace Modular2DCharacterController.Runtime.Features
             if (!_input.RunHeld)
                 return false;
 
-            if (Mathf.Abs(_input.MoveInput) < minimumMoveInput)
+            if (Mathf.Abs(_input.HorizontalMoveInput) < minimumMoveInput)
             {
                 return false;
             }

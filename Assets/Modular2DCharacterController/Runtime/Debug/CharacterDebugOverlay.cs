@@ -694,7 +694,8 @@ namespace Modular2DCharacterController.Runtime.Debug
                 return;
             }
 
-            AppendLine($"Move Input: {FormatFloat(_input.MoveInput)}");
+            AppendLine($"Horizontal Move Input: {FormatFloat(_input.HorizontalMoveInput)}");
+            AppendLine($"Vertical  Input: {FormatFloat(_input.VerticalMoveInput)}");
             AppendLine($"Jump Pressed: {_input.JumpPressed}");
             AppendLine($"Jump Held: {_input.JumpHeld}");
             AppendLine($"Run Held: {_input.RunHeld}");

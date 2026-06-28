@@ -81,7 +81,7 @@ namespace Modular2DCharacterController.Runtime.Features
             }
 
             float horizontalInput =
-                _input.MoveInput;
+                _input.HorizontalMoveInput;
 
             float wallDirection =
                 -_wallDetector.WallNormal.x;

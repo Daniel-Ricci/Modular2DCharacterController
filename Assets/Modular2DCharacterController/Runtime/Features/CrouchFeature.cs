@@ -187,7 +187,7 @@ namespace Modular2DCharacterController.Runtime.Features
 
             // Optional minimum movement input requirement.
             if (requireMovementInput &&
-                Mathf.Abs(_input.MoveInput) < minimumMoveInput)
+                Mathf.Abs(_input.HorizontalMoveInput) < minimumMoveInput)
             {
                 return false;
             }

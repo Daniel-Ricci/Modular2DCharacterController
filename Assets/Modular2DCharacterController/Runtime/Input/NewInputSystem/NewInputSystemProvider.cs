@@ -18,9 +18,14 @@ namespace Modular2DCharacterController.InputSystem
         [SerializeField] private InputActionReference dashAction;
         [SerializeField] private InputActionReference crouchAction;
 
-        public float MoveInput =>
+        public float HorizontalMoveInput =>
             moveAction != null
                 ? moveAction.action.ReadValue<Vector2>().x
+                : 0f;
+        
+        public float VerticalMoveInput =>
+            moveAction != null
+                ? moveAction.action.ReadValue<Vector2>().y
                 : 0f;
 
         public bool JumpPressed =>

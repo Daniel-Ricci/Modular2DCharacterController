@@ -82,6 +82,13 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         private SpriteRenderer spriteRenderer;
         
+        [Header("Minimum Input")]
+        
+        [Tooltip(
+            "Minimum horizontal movement input needed to generate any movement")]
+        [SerializeField]
+        private float minimumInput = 0.5f;
+        
         // Components used by this feature.
         private CharacterMotor _motor;
         private ICharacterInput _input;
@@ -165,16 +172,22 @@ namespace Modular2DCharacterController.Runtime.Features
             if (currentProfile == null)
                 return;
 
-            float moveInput = _input.MoveInput;
+            float rawMoveInput =
+                _input.HorizontalMoveInput;
+
+            float moveInput =
+                Mathf.Abs(rawMoveInput) >= minimumInput
+                    ? rawMoveInput
+                    : 0f;
+
+            bool isTryingToMove =
+                moveInput != 0f;
 
             float targetSpeed =
                 moveInput * currentProfile.maxSpeed;
 
             float currentSpeed =
                 _motor.CurrentSelfVelocity.x;
-
-            bool isTryingToMove =
-                Mathf.Abs(moveInput) > 0.01f;
 
             bool isTurning =
                 isTryingToMove &&
@@ -204,7 +217,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 }
 
                 _motor.SetHorizontalSelfVelocity(preservedSpeed);
-                UpdateFacingDirection();
+                UpdateFacingDirection(moveInput);
                 return;
             }
 
@@ -234,17 +247,17 @@ namespace Modular2DCharacterController.Runtime.Features
 
             _motor.SetHorizontalSelfVelocity(newSpeed);
 
-            UpdateFacingDirection();
+            UpdateFacingDirection(moveInput);
         }
 
         // Updates direction the character is facing.
-        private void UpdateFacingDirection()
+        private void UpdateFacingDirection(float moveInput)
         {
-            if (Mathf.Abs(_input.MoveInput) < 0.01f)
+            if (moveInput == 0f)
                 return;
 
             FacingDirection =
-                _input.MoveInput > 0f
+                moveInput > 0f
                     ? FacingDirection.Right
                     : FacingDirection.Left;
 

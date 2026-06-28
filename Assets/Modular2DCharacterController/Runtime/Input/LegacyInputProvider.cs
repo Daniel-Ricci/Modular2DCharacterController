@@ -9,6 +9,7 @@ namespace Modular2DCharacterController.Runtime.Input
     {
         [Header("Axis Names")]
         [SerializeField] private string horizontalAxis = "Horizontal";
+        [SerializeField] private string verticalAxis = "Vertical";
 
         [Header("Button Names")]
         [SerializeField] private string jumpButton = "Jump";
@@ -16,7 +17,9 @@ namespace Modular2DCharacterController.Runtime.Input
         [SerializeField] private string dashButton = "Dash";
         [SerializeField] private string crouchButton = "Crouch";
 
-        public float MoveInput => UnityEngine.Input.GetAxisRaw(horizontalAxis);
+        public float HorizontalMoveInput => UnityEngine.Input.GetAxisRaw(horizontalAxis);
+        
+        public float VerticalMoveInput => UnityEngine.Input.GetAxisRaw(verticalAxis);
 
         public bool JumpPressed => UnityEngine.Input.GetButtonDown(jumpButton);
 
