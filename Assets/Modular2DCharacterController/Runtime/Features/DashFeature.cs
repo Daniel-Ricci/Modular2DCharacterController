@@ -58,6 +58,17 @@ namespace Modular2DCharacterController.Runtime.Features
         // Event for end of dash.
         public event Action DashEnded;
 
+        public DashProfile CurrentDashProfile =>
+            _dashProfileProvider?.GetCurrentProfile();
+
+        public Vector2 DashDirection => _dashDirection;
+
+        public float DashTimer => _dashTimer;
+
+        public float CooldownTimer => _cooldownTimer;
+
+        public int RemainingDashes => _remainingDashes;
+
         // Components used by this feature.
         private CharacterController2D _controller;
         private CharacterMotor _motor;

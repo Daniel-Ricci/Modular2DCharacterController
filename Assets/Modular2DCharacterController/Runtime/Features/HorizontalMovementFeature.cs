@@ -95,6 +95,9 @@ namespace Modular2DCharacterController.Runtime.Features
         public FacingDirection FacingDirection { get; private set; }
             = FacingDirection.Right;
 
+        public HorizontalMovementProfile CurrentMovementProfile =>
+            _horizontalMovementProfileProvider?.GetCurrentProfile();
+
         private void Awake()
         {
             _motor = GetComponent<CharacterMotor>();

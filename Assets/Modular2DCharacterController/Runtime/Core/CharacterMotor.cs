@@ -102,8 +102,78 @@ namespace Modular2DCharacterController.Runtime.Core
         // current movement state and clears pending requests.
         private bool _frameContextInitialized;
 
+        // Last resolved values are kept for debugging and visualization.
+        // Unlike CurrentSelfVelocity or FinalVelocity, these values do not
+        // rebuild the frame context when read.
+        private Vector2 _lastResolvedSelfVelocity;
+        private Vector2 _lastResolvedFinalVelocity;
+        private float _lastResolvedGravityMultiplier = 1f;
+        private bool _lastResolvedGravitySuppressed;
+        private bool _lastResolvedExternalVelocitySuppressed;
+
 #region Getters
+        public bool UseCustomGravity => useCustomGravity;
+
         public float GravityAcceleration => gravityAcceleration;
+
+        public float MaxFallSpeed => maxFallSpeed;
+
+        public float CurrentGravityMultiplier
+        {
+            get
+            {
+                EnsureFrameContext();
+                return _gravityMultiplier;
+            }
+        }
+
+        public bool IsGravitySuppressed
+        {
+            get
+            {
+                EnsureFrameContext();
+                return _gravitySuppressed;
+            }
+        }
+
+        public bool IsExternalVelocitySuppressed
+        {
+            get
+            {
+                EnsureFrameContext();
+                return _externalVelocitySuppressed;
+            }
+        }
+
+        public Vector2 FrameStartSelfVelocity
+        {
+            get
+            {
+                EnsureFrameContext();
+                return _frameStartSelfVelocity;
+            }
+        }
+
+        public Vector2 LastAppliedExternalVelocity =>
+            _lastAppliedExternalVelocity;
+
+        public Vector2 LastResolvedSelfVelocity =>
+            _lastResolvedSelfVelocity;
+
+        public Vector2 LastResolvedExternalVelocity =>
+            _lastAppliedExternalVelocity;
+
+        public Vector2 LastResolvedFinalVelocity =>
+            _lastResolvedFinalVelocity;
+
+        public float LastResolvedGravityMultiplier =>
+            _lastResolvedGravityMultiplier;
+
+        public bool LastResolvedGravitySuppressed =>
+            _lastResolvedGravitySuppressed;
+
+        public bool LastResolvedExternalVelocitySuppressed =>
+            _lastResolvedExternalVelocitySuppressed;
 
         public Vector2 CurrentSelfVelocity
         {
@@ -315,6 +385,21 @@ namespace Modular2DCharacterController.Runtime.Core
 
             _lastAppliedExternalVelocity =
                 resolvedExternalVelocity;
+
+            _lastResolvedSelfVelocity =
+                resolvedSelfVelocity;
+
+            _lastResolvedFinalVelocity =
+                finalVelocity;
+
+            _lastResolvedGravityMultiplier =
+                _gravityMultiplier;
+
+            _lastResolvedGravitySuppressed =
+                _gravitySuppressed;
+
+            _lastResolvedExternalVelocitySuppressed =
+                _externalVelocitySuppressed;
 
             InvalidateFrameContext();
         }

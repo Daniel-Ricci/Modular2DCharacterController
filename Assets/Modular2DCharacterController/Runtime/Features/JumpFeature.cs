@@ -103,6 +103,25 @@ namespace Modular2DCharacterController.Runtime.Features
         // Event triggered when the character jumps.
         public event Action<float> Jumped;
 
+        public JumpProfile CurrentJumpProfile =>
+            _jumpProfileProvider?.GetCurrentProfile();
+
+        public int RemainingAirJumps => _remainingJumps;
+
+        public float CoyoteTimer => _coyoteTimer;
+
+        public float JumpBufferTimer => _jumpBufferTimer;
+
+        public float JumpAfterDashTimer => _jumpAfterDashTimer;
+
+        public float JumpVelocity => _jumpVelocity;
+
+        public float AscentGravityMultiplier => _ascentGravityMultiplier;
+
+        public bool IsJumpActive => _isJumpActive;
+
+        public bool IsJumpAscending => _isJumpAscending;
+
         // Components used by this feature.
         private CharacterMotor _motor;
         private ICharacterInput _input;

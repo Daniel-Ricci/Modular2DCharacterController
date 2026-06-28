@@ -43,6 +43,11 @@ namespace Modular2DCharacterController.Runtime.Features
         public bool IsMovementLocked =>
             _movementLockTimer > 0f;
 
+        public WallJumpProfile CurrentWallJumpProfile =>
+            _wallJumpProfileProvider?.GetCurrentProfile();
+
+        public float MovementLockTimer => _movementLockTimer;
+
         private void Awake()
         {
             _motor = GetComponent<CharacterMotor>();

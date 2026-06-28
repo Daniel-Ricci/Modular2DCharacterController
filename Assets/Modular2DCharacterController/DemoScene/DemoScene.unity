@@ -1032,7 +1032,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 908953618317756315, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
   m_PrefabInstance: {fileID: 1141310045916416020}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1979120049}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c5ea883e7374314ea2ee32c72c4e0e4, type: 3}
@@ -1491,6 +1491,47 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -30}
+--- !u!1 &1979120049 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 341889370699776070, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+  m_PrefabInstance: {fileID: 1141310045916416020}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1979120064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979120049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5db8b24b5d6406e94051357bef21c39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Debug.CharacterDebugOverlay
+  debugEnabled: 1
+  toggleKey: 96
+  showInReleaseBuild: 0
+  screenOffset: {x: 12, y: 12}
+  overlayWidth: 430
+  fontSize: 13
+  decimalPlaces: 2
+  showMotor: 1
+  showDetectors: 1
+  showFeatures: 1
+  showInput: 1
+  drawGizmos: 1
+  velocityGizmoScale: 0.1
+  normalGizmoLength: 0.75
+  drawRuntimeVectors: 1
+  runtimeVelocityScale: 0.1
+  runtimeNormalLength: 0.75
+  runtimeLineWidth: 0.035
+  runtimeLineSortingOrder: 1000
+  rigidbodyVelocityColor: {r: 1, g: 1, b: 1, a: 1}
+  selfVelocityColor: {r: 0, g: 1, b: 1, a: 1}
+  externalVelocityColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  groundNormalColor: {r: 0, g: 1, b: 0, a: 1}
+  wallNormalColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &2089770037
 GameObject:
   m_ObjectHideFlags: 0
@@ -1829,7 +1870,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 548829648891183911, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 54.4
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 548829648891183911, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1913,10 +1954,12 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 7f6ee28d8d9b8934788c9ee5890d5590, type: 2}
     m_RemovedComponents:
     - {fileID: 539890544002109190, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-    - {fileID: 7429609835000910511, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 341889370699776070, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      insertIndex: 3
+      addedObject: {fileID: 1979120064}
   m_SourcePrefab: {fileID: 100100000, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
