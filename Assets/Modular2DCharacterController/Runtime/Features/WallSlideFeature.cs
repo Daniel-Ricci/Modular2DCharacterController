@@ -1,3 +1,4 @@
+using System;
 using Modular2DCharacterController.Runtime.Core;
 using Modular2DCharacterController.Runtime.Input;
 using UnityEngine;
@@ -6,6 +7,8 @@ namespace Modular2DCharacterController.Runtime.Features
 {
     /// <summary>
     /// A configurable feature that detects and manages wall sliding.
+    ///
+    /// Character is considered wall sliding if against a wall and holding towards it.
     /// </summary>
     [RequireComponent(typeof(WallDetector))]
     [RequireComponent(typeof(CharacterController2D))]
@@ -34,6 +37,7 @@ namespace Modular2DCharacterController.Runtime.Features
         [Min(0f)]
         private float wallSlideVelocity = 3.0f;
 
+        // Components used by this feature.
         private CharacterMotor _motor;
         private GroundDetector _groundDetector;
         private WallDetector _wallDetector;
@@ -41,6 +45,7 @@ namespace Modular2DCharacterController.Runtime.Features
         
         private const float VerticalWallThreshold = 0.9f;
         
+        // True while wall sliding.
         public bool IsWallSliding { get; private set; }
 
         private void Awake()
@@ -69,7 +74,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 return;
             }
             
-            if (Mathf.Abs(_wallDetector.WallNormal.x) < 0.9f)
+            if (Mathf.Abs(_wallDetector.WallNormal.x) < VerticalWallThreshold)
             {
                 IsWallSliding = false;
                 return;

@@ -8,19 +8,23 @@ namespace Modular2DCharacterController.Runtime.Features
 {
     /// <summary>
     /// A configurable feature that handles player wall jumps.
+    ///
+    /// Requires the wall slide feature and only allows to wall jump
+    /// while wall sliding.
     /// </summary>
     [RequireComponent(typeof(CharacterController2D))]
     [RequireComponent(typeof(WallDetector))]
     [RequireComponent(typeof(WallSlideFeature))]
     public class WallJumpFeature : MonoBehaviour, ICharacterFeature
     {
-        [Header("Default Jump Profile")]
+        [Header("Default Wall Jump Profile")]
 
         [Tooltip(
             "The default wall jump profile registered when this feature initializes.")]
         [SerializeField]
         private WallJumpProfile defaultWallJumpProfile;
 
+        // Components used by this feature.
         private CharacterMotor _motor;
         private WallDetector _wallDetector;
         private WallSlideFeature _wallSlideFeature;
@@ -31,15 +35,11 @@ namespace Modular2DCharacterController.Runtime.Features
         private float _movementLockTimer;
 
         private bool _jumpRequested;
-
-        /// <summary>
-        /// Invoked when a wall jump is performed.
-        /// </summary>
+        
+        // Invoked when a wall jump is performed.
         public event Action WallJumped;
-
-        /// <summary>
-        /// Gets a value indicating whether horizontal movement is currently locked.
-        /// </summary>
+        
+        // Gets a boolean indicating whether horizontal movement is currently locked.
         public bool IsMovementLocked =>
             _movementLockTimer > 0f;
 

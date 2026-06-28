@@ -64,6 +64,7 @@ namespace Modular2DCharacterController.Runtime.Core
 
         public Vector2 GroundDelta { get; private set; }
 
+        // Event triggered when the character lands and leaves the ground.
         public event Action<Vector2> Landed;
         public event Action<Vector2> LeftGround;
 
