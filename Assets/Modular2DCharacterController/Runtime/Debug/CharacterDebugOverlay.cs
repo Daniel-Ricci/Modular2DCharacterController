@@ -139,6 +139,7 @@ namespace Modular2DCharacterController.Runtime.Debug
         private WallSlideFeature _wallSlideFeature;
         private WallJumpFeature _wallJumpFeature;
         private GlideFeature _glideFeature;
+        private GroundPoundFeature _groundPoundFeature;
         private PlatformMotionTransferFeature _platformMotionTransferFeature;
 
         private GUIStyle _labelStyle;
@@ -281,6 +282,7 @@ namespace Modular2DCharacterController.Runtime.Debug
             _wallSlideFeature = GetComponent<WallSlideFeature>();
             _wallJumpFeature = GetComponent<WallJumpFeature>();
             _glideFeature = GetComponent<GlideFeature>();
+            _groundPoundFeature = GetComponent<GroundPoundFeature>();
             _platformMotionTransferFeature = GetComponent<PlatformMotionTransferFeature>();
         }
 
@@ -677,6 +679,16 @@ namespace Modular2DCharacterController.Runtime.Debug
                 AppendLine($"Gliding: {_glideFeature.IsGliding}");
             }
 
+            if (_groundPoundFeature != null)
+            {
+                AppendLine($"Ground Pound Profile: {FormatObjectName(_groundPoundFeature.CurrentGroundPoundProfile)}");
+                AppendLine($"Ground Pounding: {_groundPoundFeature.IsGroundPounding}");
+                AppendLine($"Ground Pound Recovery: {_groundPoundFeature.IsRecoveryActive}");
+                AppendLine($"Ground Pound Still Timer: {FormatFloat(_groundPoundFeature.StillInAirTimer)}");
+                AppendLine($"Ground Pound Descend Timer: {FormatFloat(_groundPoundFeature.DescendTimer)}");
+                AppendLine($"Ground Pound Recovery Timer: {FormatFloat(_groundPoundFeature.RecoveryTimer)}");
+            }
+
             if (_platformMotionTransferFeature != null)
             {
                 AppendLine("Platform Motion Transfer: present");
@@ -705,6 +717,8 @@ namespace Modular2DCharacterController.Runtime.Debug
             AppendLine($"Dash Held: {_input.DashHeld}");
             AppendLine($"Crouch Pressed: {_input.CrouchPressed}");
             AppendLine($"Crouch Held: {_input.CrouchHeld}");
+            AppendLine($"Ground Pound Pressed: {_input.GroundPoundPressed}");
+            AppendLine($"Ground Pound Held: {_input.GroundPoundHeld}");
             AppendLine();
         }
 

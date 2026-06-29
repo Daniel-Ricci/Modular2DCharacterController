@@ -47,6 +47,13 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         private bool fallbackToFacingDirection = true;
 
+        [Header("Interruptions")]
+
+        [Tooltip(
+            "If enabled, other features can interrupt an active dash.")]
+        [SerializeField]
+        private bool canBeInterrupted = true;
+
         // True while the dash is actively controlling velocity.
         // Other features can read this to skip movement or gravity during dash.
         public bool IsDashing { get; private set; }
@@ -69,6 +76,27 @@ namespace Modular2DCharacterController.Runtime.Features
 
         public int RemainingDashes => _remainingDashes;
 
+        public bool CanInterruptCurrentDash
+        {
+            get
+            {
+                return IsDashing &&
+                       canBeInterrupted;
+            }
+        }
+
+        public bool TryInterruptDash()
+        {
+            if (!CanInterruptCurrentDash)
+                return false;
+
+            DashProfile currentProfile =
+                _dashProfileProvider.GetCurrentProfile();
+
+            EndDash(currentProfile, false);
+            return true;
+        }
+
         // Components used by this feature.
         private CharacterController2D _controller;
         private CharacterMotor _motor;
@@ -76,6 +104,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private GroundDetector _groundDetector;
         private HorizontalMovementFeature _horizontalMovementFeature;
         private WallJumpFeature _wallJumpFeature;
+        private GroundPoundFeature _groundPoundFeature;
         private ProfileProvider<DashProfile> _dashProfileProvider;
 
         // Direction chosen when the dash starts.
@@ -106,6 +135,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _groundDetector = GetComponent<GroundDetector>();
             _horizontalMovementFeature = GetComponent<HorizontalMovementFeature>();
             _wallJumpFeature = GetComponent<WallJumpFeature>();
+            _groundPoundFeature = GetComponent<GroundPoundFeature>();
             _dashProfileProvider = _controller.DashProfileProvider;
 
             _remainingDashes = maxDashCount;
@@ -140,7 +170,7 @@ namespace Modular2DCharacterController.Runtime.Features
 
             if (IsDashing)
             {
-                EndDash(currentProfile);
+                EndDash(currentProfile, true);
             }
             
             if(_wallJumpFeature != null)
@@ -241,6 +271,19 @@ namespace Modular2DCharacterController.Runtime.Features
             if (_remainingDashes <= 0)
                 return;
 
+            if (_groundPoundFeature != null &&
+                _groundPoundFeature.IsRecoveryActive)
+            {
+                return;
+            }
+
+            if (_groundPoundFeature != null &&
+                _groundPoundFeature.IsGroundPounding &&
+                !_groundPoundFeature.TryInterruptGroundPound())
+            {
+                return;
+            }
+
             bool isGrounded =
                 _groundDetector != null && _groundDetector.IsGrounded;
 
@@ -307,14 +350,14 @@ namespace Modular2DCharacterController.Runtime.Features
                 _input != null &&
                 !_input.DashHeld)
             {
-                EndDash(currentProfile);
+                EndDash(currentProfile, true);
                 return;
             }
 
             // Fixed or fully-held dash ends when its timer expires.
             if (_dashTimer <= 0f)
             {
-                EndDash(currentProfile);
+                EndDash(currentProfile, true);
                 return;
             }
 
@@ -331,10 +374,20 @@ namespace Modular2DCharacterController.Runtime.Features
             }
         }
 
-        private void EndDash(DashProfile currentProfile)
+        private void EndDash(DashProfile currentProfile, bool applyExitVelocity)
         {
             IsDashing = false;
-            _cooldownTimer = currentProfile.dashCooldown;
+
+            _cooldownTimer =
+                currentProfile != null
+                    ? currentProfile.dashCooldown
+                    : 0f;
+
+            if (!applyExitVelocity || currentProfile == null)
+            {
+                DashEnded?.Invoke();
+                return;
+            }
 
             Vector2 exitVelocity = _motor.CurrentSelfVelocity;
 

@@ -32,6 +32,9 @@ namespace Modular2DCharacterController.Runtime.Core
         public ProfileProvider<GlideProfile> GlideProfileProvider { get; }
             = new();
 
+        public ProfileProvider<GroundPoundProfile> GroundPoundProfileProvider { get; }
+            = new();
+
         private void Awake()
         {
             _features = GetComponents<ICharacterFeature>();

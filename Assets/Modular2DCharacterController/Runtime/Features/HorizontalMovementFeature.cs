@@ -96,6 +96,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private CharacterController2D _controller;
         private DashFeature _dashFeature;
         private WallJumpFeature _wallJumpFeature;
+        private GroundPoundFeature _groundPoundFeature;
         private ProfileProvider<HorizontalMovementProfile> _horizontalMovementProfileProvider;
         
         // Indicates the direction the character is currently facing.
@@ -113,6 +114,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _controller = GetComponent<CharacterController2D>();
             _dashFeature = GetComponent<DashFeature>();
             _wallJumpFeature = GetComponent<WallJumpFeature>();
+            _groundPoundFeature = GetComponent<GroundPoundFeature>();
             _horizontalMovementProfileProvider = _controller.HorizontalMovementProfileProvider;
             
             if (graphicsRoot == null)
@@ -165,6 +167,13 @@ namespace Modular2DCharacterController.Runtime.Features
             
             if (_wallJumpFeature != null && _wallJumpFeature.IsControlInfluenceActive)
                 return;
+
+            if (_groundPoundFeature != null &&
+                (_groundPoundFeature.IsGroundPounding ||
+                 _groundPoundFeature.IsRecoveryActive))
+            {
+                return;
+            }
             
             HorizontalMovementProfile currentProfile =
                 _horizontalMovementProfileProvider.GetCurrentProfile();

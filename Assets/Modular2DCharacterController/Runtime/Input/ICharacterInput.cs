@@ -22,5 +22,9 @@ namespace Modular2DCharacterController.Runtime.Input
         bool CrouchPressed { get; }
         
         bool CrouchHeld { get; }
+
+        bool GroundPoundPressed { get; }
+
+        bool GroundPoundHeld { get; }
     }
 }

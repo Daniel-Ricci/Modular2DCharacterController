@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BasicWallJumpProfile
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Data.FeatureProfiles.WallJumpProfile
   priority: 0
-  horizontalForce: 10
-  verticalForce: 14
-  movementLockDuration: 0.15
+  horizontalForce: 12
+  verticalForce: 16
+  controlInfluenceDuration: 0.25
+  horizontalInputInfluence: 0.2

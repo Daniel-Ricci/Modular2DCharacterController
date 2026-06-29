@@ -45,6 +45,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private WallSlideFeature _wallSlideFeature;
         private ICharacterInput _input;
         private CharacterController2D _controller;
+        private DashFeature _dashFeature;
         private ProfileProvider<WallJumpProfile> _wallJumpProfileProvider;
 
         private float _controlInfluenceTimer;
@@ -79,6 +80,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _wallSlideFeature = GetComponent<WallSlideFeature>();
             _input = GetComponent<ICharacterInput>();
             _controller = GetComponent<CharacterController2D>();
+            _dashFeature = GetComponent<DashFeature>();
 
             _wallJumpProfileProvider =
                 _controller.WallJumpProfileProvider;
@@ -177,6 +179,13 @@ namespace Modular2DCharacterController.Runtime.Features
 
             if (wallNormal == Vector2.zero)
                 return;
+
+            if (_dashFeature != null &&
+                _dashFeature.IsDashing &&
+                !_dashFeature.TryInterruptDash())
+            {
+                return;
+            }
 
             _wallJumpImpulseX =
                 wallNormal.x *

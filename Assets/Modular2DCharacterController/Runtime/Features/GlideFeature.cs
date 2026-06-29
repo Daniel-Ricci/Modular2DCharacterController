@@ -39,6 +39,8 @@ namespace Modular2DCharacterController.Runtime.Features
         private GroundDetector _groundDetector;
         private ICharacterInput _input;
         private CharacterController2D _controller;
+        private DashFeature _dashFeature;
+        private GroundPoundFeature _groundPoundFeature;
         private ProfileProvider<GlideProfile> _glideProfileProvider;
 
         private void Awake()
@@ -47,6 +49,8 @@ namespace Modular2DCharacterController.Runtime.Features
             _groundDetector = GetComponent<GroundDetector>();
             _input = GetComponent<ICharacterInput>();
             _controller = GetComponent<CharacterController2D>();
+            _dashFeature = GetComponent<DashFeature>();
+            _groundPoundFeature = GetComponent<GroundPoundFeature>();
 
             _glideProfileProvider =
                 _controller.GlideProfileProvider;
@@ -103,10 +107,43 @@ namespace Modular2DCharacterController.Runtime.Features
 
         private void UpdateGlideState()
         {
-            IsGliding =
+            bool wantsToGlide =
                 !_groundDetector.IsGrounded &&
                 _motor.CurrentSelfVelocity.y < 0f &&
                 _input.RunHeld;
+
+            if (!wantsToGlide)
+            {
+                IsGliding = false;
+                return;
+            }
+
+            if (_groundPoundFeature != null &&
+                _groundPoundFeature.IsRecoveryActive)
+            {
+                IsGliding = false;
+                return;
+            }
+
+            if (_groundPoundFeature != null &&
+                _groundPoundFeature.IsGroundPounding &&
+                !_groundPoundFeature.TryInterruptGroundPound())
+            {
+                IsGliding = false;
+                return;
+            }
+
+            if (_dashFeature != null &&
+                _dashFeature.IsDashing)
+            {
+                if (!_dashFeature.TryInterruptDash())
+                {
+                    IsGliding = false;
+                    return;
+                }
+            }
+
+            IsGliding = true;
         }
 
         private void ApplyGlide(GlideProfile currentProfile)

@@ -1,10 +1,9 @@
 #if ENABLE_INPUT_SYSTEM
 
-using Modular2DCharacterController.Runtime.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Modular2DCharacterController.InputSystem
+namespace Modular2DCharacterController.Runtime.Input.NewInputSystem
 {
     /// <summary>
     /// Character input provider using Unity's Input System package.
@@ -17,6 +16,7 @@ namespace Modular2DCharacterController.InputSystem
         [SerializeField] private InputActionReference runAction;
         [SerializeField] private InputActionReference dashAction;
         [SerializeField] private InputActionReference crouchAction;
+        [SerializeField] private InputActionReference groundPoundAction;
 
         public float HorizontalMoveInput =>
             moveAction != null
@@ -56,6 +56,14 @@ namespace Modular2DCharacterController.InputSystem
             crouchAction != null &&
             crouchAction.action.IsPressed();
 
+        public bool GroundPoundPressed =>
+            groundPoundAction != null &&
+            groundPoundAction.action.WasPressedThisFrame();
+
+        public bool GroundPoundHeld =>
+            groundPoundAction != null &&
+            groundPoundAction.action.IsPressed();
+
         private void OnEnable()
         {
             moveAction?.action.Enable();
@@ -63,6 +71,7 @@ namespace Modular2DCharacterController.InputSystem
             runAction?.action.Enable();
             dashAction?.action.Enable();
             crouchAction?.action.Enable();
+            groundPoundAction?.action.Enable();
         }
 
         private void OnDisable()
@@ -72,6 +81,7 @@ namespace Modular2DCharacterController.InputSystem
             runAction?.action.Disable();
             dashAction?.action.Disable();
             crouchAction?.action.Disable();
+            groundPoundAction?.action.Disable();
         }
     }
 }

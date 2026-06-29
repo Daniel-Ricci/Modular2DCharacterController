@@ -130,6 +130,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private DashFeature _dashFeature;
         private WallSlideFeature _wallSlideFeature;
         private WallJumpFeature _wallJumpFeature;
+        private GroundPoundFeature _groundPoundFeature;
         private ProfileProvider<JumpProfile> _jumpProfileProvider;
 
         // Keeps track of jump velocity and gravity multiplier
@@ -159,6 +160,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _dashFeature = GetComponent<DashFeature>();
             _wallSlideFeature = GetComponent<WallSlideFeature>();
             _wallJumpFeature = GetComponent<WallJumpFeature>();
+            _groundPoundFeature = GetComponent<GroundPoundFeature>();
             _jumpProfileProvider = _controller.JumpProfileProvider;
 
             _remainingJumps = maxAirJumpCount;
@@ -192,6 +194,13 @@ namespace Modular2DCharacterController.Runtime.Features
 
         public void Tick()
         {
+            if (_groundPoundFeature != null &&
+                _groundPoundFeature.IsRecoveryActive)
+            {
+                _jumpRequested = false;
+                return;
+            }
+
             if (_input.JumpPressed)
             {
                 _jumpRequested = true;
@@ -273,6 +282,14 @@ namespace Modular2DCharacterController.Runtime.Features
                 return;
             }
 
+            if (_groundPoundFeature != null &&
+                _groundPoundFeature.IsGroundPounding)
+            {
+                _isJumpActive = false;
+                _isJumpAscending = false;
+                return;
+            }
+
             if (_isJumpAscending && currentVelocity.y <= 0f)
             {
                 _isJumpAscending = false;
@@ -326,7 +343,24 @@ namespace Modular2DCharacterController.Runtime.Features
         private void TryJump()
         {
             if (_dashFeature != null && _dashFeature.IsDashing)
+            {
+                if (!_dashFeature.TryInterruptDash())
+                    return;
+            }
+
+            if (_groundPoundFeature != null &&
+                _groundPoundFeature.IsRecoveryActive)
+            {
+                _jumpBufferTimer = 0f;
                 return;
+            }
+
+            if (_groundPoundFeature != null &&
+                _groundPoundFeature.IsGroundPounding)
+            {
+                if (!_groundPoundFeature.TryInterruptGroundPound())
+                    return;
+            }
 
             if (_wallSlideFeature != null &&
                 _wallJumpFeature != null)

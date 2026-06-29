@@ -67,6 +67,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private CharacterController2D _controller;
         private ICharacterInput _input;
         private GroundDetector _groundDetector;
+        private GroundPoundFeature _groundPoundFeature;
         private ProfileProvider<HorizontalMovementProfile> _profileProvider;
 
         // Internal state used when operating in Toggle mode.
@@ -77,6 +78,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _controller = GetComponent<CharacterController2D>();
             _input = GetComponent<ICharacterInput>();
             _groundDetector = GetComponent<GroundDetector>();
+            _groundPoundFeature = GetComponent<GroundPoundFeature>();
 
             _profileProvider = _controller.HorizontalMovementProfileProvider;
         }
@@ -122,6 +124,14 @@ namespace Modular2DCharacterController.Runtime.Features
             if (_input == null)
                 return;
 
+            if (_groundPoundFeature != null &&
+                (_groundPoundFeature.IsGroundPounding ||
+                 _groundPoundFeature.IsRecoveryActive))
+            {
+                _toggleCrouchState = false;
+                return;
+            }
+
             if (crouchMode != CrouchMode.Toggle)
                 return;
 
@@ -165,6 +175,13 @@ namespace Modular2DCharacterController.Runtime.Features
         {
             if (_input == null)
                 return false;
+
+            if (_groundPoundFeature != null &&
+                (_groundPoundFeature.IsGroundPounding ||
+                 _groundPoundFeature.IsRecoveryActive))
+            {
+                return false;
+            }
 
             // Determine whether the player is requesting crouch.
             bool crouchRequested = crouchMode switch
