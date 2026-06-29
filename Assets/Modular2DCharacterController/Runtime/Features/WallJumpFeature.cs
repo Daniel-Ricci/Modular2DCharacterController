@@ -24,6 +24,21 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         private WallJumpProfile defaultWallJumpProfile;
 
+        [Header("Forgiveness")]
+
+        [Tooltip(
+            "Allows wall jumping shortly after leaving a wall slide.")]
+        [SerializeField]
+        [Min(0f)]
+        private float wallJumpCoyoteTime = 0.1f;
+
+        [Tooltip(
+            "Allows a jump input pressed shortly before wall sliding to be buffered " +
+            "and executed automatically.")]
+        [SerializeField]
+        [Min(0f)]
+        private float wallJumpBufferTime = 0.1f;
+
         // Components used by this feature.
         private CharacterMotor _motor;
         private WallDetector _wallDetector;
@@ -32,21 +47,30 @@ namespace Modular2DCharacterController.Runtime.Features
         private CharacterController2D _controller;
         private ProfileProvider<WallJumpProfile> _wallJumpProfileProvider;
 
-        private float _movementLockTimer;
+        private float _controlInfluenceTimer;
+        private float _wallJumpCoyoteTimer;
+        private float _wallJumpBufferTimer;
 
         private bool _jumpRequested;
+        private Vector2 _lastWallJumpNormal;
+        private float _wallJumpImpulseX;
         
         // Invoked when a wall jump is performed.
         public event Action WallJumped;
         
-        // Gets a boolean indicating whether horizontal movement is currently locked.
-        public bool IsMovementLocked =>
-            _movementLockTimer > 0f;
+        // Gets a boolean indicating whether wall jump movement is currently
+        // applying special control influence.
+        public bool IsControlInfluenceActive =>
+            _controlInfluenceTimer > 0f;
 
         public WallJumpProfile CurrentWallJumpProfile =>
             _wallJumpProfileProvider?.GetCurrentProfile();
 
-        public float MovementLockTimer => _movementLockTimer;
+        public float ControlInfluenceTimer => _controlInfluenceTimer;
+
+        public float WallJumpCoyoteTimer => _wallJumpCoyoteTimer;
+
+        public float WallJumpBufferTimer => _wallJumpBufferTimer;
 
         private void Awake()
         {
@@ -88,44 +112,130 @@ namespace Modular2DCharacterController.Runtime.Features
 
         public void FixedTick()
         {
-            if (_movementLockTimer > 0f)
-            {
-                _movementLockTimer -= Time.fixedDeltaTime;
-            }
-
-            TryWallJump();
-        }
-
-        private void TryWallJump()
-        {
-            if (!_jumpRequested)
-                return;
-
-            _jumpRequested = false;
-
-            if (!_wallSlideFeature.IsWallSliding)
-                return;
-
             WallJumpProfile currentWallJumpProfile =
                 _wallJumpProfileProvider?.GetCurrentProfile();
 
             if (currentWallJumpProfile == null)
                 return;
 
+            UpdateTimers();
+            TryWallJump(currentWallJumpProfile);
+            ApplyControlInfluence(currentWallJumpProfile);
+        }
+
+        private void UpdateTimers()
+        {
+            if (_controlInfluenceTimer > 0f)
+            {
+                _controlInfluenceTimer -= Time.fixedDeltaTime;
+            }
+
+            if (_wallSlideFeature.IsWallSliding)
+            {
+                _wallJumpCoyoteTimer =
+                    Mathf.Max(wallJumpCoyoteTime, Time.fixedDeltaTime);
+
+                _lastWallJumpNormal = _wallDetector.WallNormal;
+            }
+            else
+            {
+                _wallJumpCoyoteTimer =
+                    Mathf.Max(
+                        0f,
+                        _wallJumpCoyoteTimer - Time.fixedDeltaTime);
+            }
+
+            if (_jumpRequested)
+            {
+                _wallJumpBufferTimer =
+                    Mathf.Max(wallJumpBufferTime, Time.fixedDeltaTime);
+
+                _jumpRequested = false;
+            }
+            else
+            {
+                _wallJumpBufferTimer =
+                    Mathf.Max(
+                        0f,
+                        _wallJumpBufferTimer - Time.fixedDeltaTime);
+            }
+        }
+
+        private void TryWallJump(
+            WallJumpProfile currentWallJumpProfile)
+        {
+            if (_wallJumpBufferTimer <= 0f)
+                return;
+
+            if (_wallJumpCoyoteTimer <= 0f)
+                return;
+
             Vector2 wallNormal =
-                _wallDetector.WallNormal;
+                _wallSlideFeature.IsWallSliding
+                    ? _wallDetector.WallNormal
+                    : _lastWallJumpNormal;
+
+            if (wallNormal == Vector2.zero)
+                return;
+
+            _wallJumpImpulseX =
+                wallNormal.x *
+                currentWallJumpProfile.horizontalForce;
+
+            float influencedVelocityX =
+                CalculateInfluencedHorizontalVelocity(
+                    currentWallJumpProfile);
 
             Vector2 velocity = new Vector2(
-                wallNormal.x *
-                currentWallJumpProfile.horizontalForce,
+                influencedVelocityX,
                 currentWallJumpProfile.verticalForce);
 
             _motor.SetSelfVelocity(velocity);
 
-            _movementLockTimer =
-                currentWallJumpProfile.movementLockDuration;
+            _controlInfluenceTimer =
+                currentWallJumpProfile.controlInfluenceDuration;
+
+            _wallJumpBufferTimer = 0f;
+            _wallJumpCoyoteTimer = 0f;
 
             WallJumped?.Invoke();
+        }
+
+        private void ApplyControlInfluence(
+            WallJumpProfile currentWallJumpProfile)
+        {
+            if (_controlInfluenceTimer <= 0f)
+                return;
+
+            float influencedVelocityX =
+                CalculateInfluencedHorizontalVelocity(
+                    currentWallJumpProfile);
+
+            _motor.SetHorizontalSelfVelocity(influencedVelocityX);
+        }
+
+        private float CalculateInfluencedHorizontalVelocity(
+            WallJumpProfile currentWallJumpProfile)
+        {
+            float inputX =
+                Mathf.Clamp(_input.HorizontalMoveInput, -1f, 1f);
+
+            if (Mathf.Abs(inputX) < 0.01f)
+            {
+                inputX = 0f;
+            }
+
+            float inputVelocityX =
+                inputX *
+                currentWallJumpProfile.horizontalForce;
+
+            float influencedVelocityX =
+                Mathf.Lerp(
+                    _wallJumpImpulseX,
+                    inputVelocityX,
+                    currentWallJumpProfile.horizontalInputInfluence);
+
+            return influencedVelocityX;
         }
     }
 }

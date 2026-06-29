@@ -666,8 +666,10 @@ namespace Modular2DCharacterController.Runtime.Debug
             if (_wallJumpFeature != null)
             {
                 AppendLine($"Wall Jump Profile: {FormatObjectName(_wallJumpFeature.CurrentWallJumpProfile)}");
-                AppendLine($"Wall Jump Locked: {_wallJumpFeature.IsMovementLocked}");
-                AppendLine($"Wall Jump Lock Timer: {FormatFloat(_wallJumpFeature.MovementLockTimer)}");
+                AppendLine($"Wall Jump Control Active: {_wallJumpFeature.IsControlInfluenceActive}");
+                AppendLine($"Wall Jump Control Timer: {FormatFloat(_wallJumpFeature.ControlInfluenceTimer)}");
+                AppendLine($"Wall Jump Coyote Timer: {FormatFloat(_wallJumpFeature.WallJumpCoyoteTimer)}");
+                AppendLine($"Wall Jump Buffer Timer: {FormatFloat(_wallJumpFeature.WallJumpBufferTimer)}");
             }
 
             if (_glideFeature != null)

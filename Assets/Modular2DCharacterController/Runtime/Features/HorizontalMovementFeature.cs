@@ -163,7 +163,7 @@ namespace Modular2DCharacterController.Runtime.Features
             if (_dashFeature != null && _dashFeature.IsDashing)
                 return;
             
-            if (_wallJumpFeature != null && _wallJumpFeature.IsMovementLocked)
+            if (_wallJumpFeature != null && _wallJumpFeature.IsControlInfluenceActive)
                 return;
             
             HorizontalMovementProfile currentProfile =

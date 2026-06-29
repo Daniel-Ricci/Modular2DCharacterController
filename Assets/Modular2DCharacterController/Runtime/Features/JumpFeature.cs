@@ -266,7 +266,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 return;
             }
 
-            if (_wallJumpFeature != null && _wallJumpFeature.IsMovementLocked)
+            if (_wallJumpFeature != null && _wallJumpFeature.IsControlInfluenceActive)
             {
                 _isJumpActive = false;
                 _isJumpAscending = false;
@@ -334,7 +334,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 if (_wallSlideFeature.IsWallSliding)
                     return;
 
-                if (_wallJumpFeature.IsMovementLocked)
+                if (_wallJumpFeature.IsControlInfluenceActive)
                     return;
             }
 
@@ -389,7 +389,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 return;
 
             if (_wallJumpFeature != null &&
-                _wallJumpFeature.IsMovementLocked)
+                _wallJumpFeature.IsControlInfluenceActive)
             {
                 return;
             }
