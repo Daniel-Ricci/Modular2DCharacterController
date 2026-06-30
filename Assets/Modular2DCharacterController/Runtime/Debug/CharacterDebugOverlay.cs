@@ -136,6 +136,7 @@ namespace Modular2DCharacterController.Runtime.Debug
         private JumpFeature _jumpFeature;
         private DashFeature _dashFeature;
         private RunFeature _runFeature;
+        private CrouchFeature _crouchFeature;
         private WallSlideFeature _wallSlideFeature;
         private WallJumpFeature _wallJumpFeature;
         private GlideFeature _glideFeature;
@@ -279,6 +280,7 @@ namespace Modular2DCharacterController.Runtime.Debug
             _jumpFeature = GetComponent<JumpFeature>();
             _dashFeature = GetComponent<DashFeature>();
             _runFeature = GetComponent<RunFeature>();
+            _crouchFeature = GetComponent<CrouchFeature>();
             _wallSlideFeature = GetComponent<WallSlideFeature>();
             _wallJumpFeature = GetComponent<WallJumpFeature>();
             _glideFeature = GetComponent<GlideFeature>();
@@ -635,6 +637,12 @@ namespace Modular2DCharacterController.Runtime.Debug
             if (_runFeature != null)
             {
                 AppendLine($"Running: {_runFeature.IsRunning}");
+            }
+
+            if (_crouchFeature != null)
+            {
+                AppendLine($"Crouching: {_crouchFeature.IsCrouching}");
+                AppendLine($"Stand Blocked: {_crouchFeature.IsStandBlocked}");
             }
 
             if (_jumpFeature != null)

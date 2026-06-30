@@ -13,9 +13,11 @@ namespace Modular2DCharacterController.Runtime.Features
     }
 
     /// <summary>
-    /// A configurable feature that registers a higher-priority horizontal movement profile while crouching.
+    /// A configurable feature that handles crouch state, crouch movement,
+    /// collider resizing, and stand-up obstruction checks.
     /// </summary>
     [RequireComponent(typeof(CharacterController2D))]
+    [RequireComponent(typeof(Collider2D))]
     public class CrouchFeature : MonoBehaviour, ICharacterFeature
     {
         [Header("Crouch Profile")]
@@ -57,21 +59,71 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         private bool clearToggleWhenLeavingGround;
 
+        [Header("Collider Resize")]
+
+        [Tooltip(
+            "If enabled, this feature resizes the character's main collider while crouching.")]
+        [SerializeField]
+        private bool resizeCollider = true;
+
+        [Tooltip(
+            "The collider height multiplier used while crouching. " +
+            "A value of 0.5 means the crouched collider is half as tall.")]
+        [SerializeField]
+        [Range(0.1f, 1f)]
+        private float crouchedHeightMultiplier = 0.5f;
+
+        [Tooltip(
+            "If enabled, the bottom of the collider stays in the same position " +
+            "when crouching and standing.")]
+        [SerializeField]
+        private bool preserveColliderBottom = true;
+
+        [Header("Ceiling Check")]
+
+        [Tooltip(
+            "Layers that can block the character from standing up.")]
+        [SerializeField]
+        private LayerMask ceilingLayers = ~0;
+
+        [Tooltip(
+            "Extra clearance subtracted from the standing check size. " +
+            "Small values help avoid false positives from touching contacts.")]
+        [SerializeField]
+        [Min(0f)]
+        private float standCheckSkin = 0.01f;
+
         // True while the player is crouching
         public bool IsCrouching { get; private set; }
 
-        // Events for starting and stopping run.
+        public bool IsStandBlocked { get; private set; }
+
+        // Events for starting and stopping crouch.
         public event Action CrouchStarted;
         public event Action CrouchEnded;
+
+        // Invoked when the character tries to stand but there is not enough room.
+        public event Action CrouchStandBlocked;
+
+        // Invoked after the collider changes shape. Parameter is true while crouching.
+        public event Action<bool> CrouchColliderChanged;
         
         private CharacterController2D _controller;
         private ICharacterInput _input;
         private GroundDetector _groundDetector;
         private GroundPoundFeature _groundPoundFeature;
         private ProfileProvider<HorizontalMovementProfile> _profileProvider;
+        private Collider2D _collider;
+        private CapsuleCollider2D _capsuleCollider;
+        private BoxCollider2D _boxCollider;
 
         // Internal state used when operating in Toggle mode.
         private bool _toggleCrouchState;
+        private Vector2 _standingSize;
+        private Vector2 _standingOffset;
+        private Vector2 _crouchedSize;
+        private Vector2 _crouchedOffset;
+        private readonly Collider2D[] _standCheckResults = new Collider2D[8];
         
         private void Awake()
         {
@@ -79,8 +131,13 @@ namespace Modular2DCharacterController.Runtime.Features
             _input = GetComponent<ICharacterInput>();
             _groundDetector = GetComponent<GroundDetector>();
             _groundPoundFeature = GetComponent<GroundPoundFeature>();
+            _collider = GetComponent<Collider2D>();
+            _capsuleCollider = _collider as CapsuleCollider2D;
+            _boxCollider = _collider as BoxCollider2D;
 
             _profileProvider = _controller.HorizontalMovementProfileProvider;
+
+            CacheColliderShapes();
         }
         
         private void OnEnable()
@@ -104,7 +161,9 @@ namespace Modular2DCharacterController.Runtime.Features
             // transition back to a non-crouching state.
             if (IsCrouching)
             {
+                ApplyStandingCollider();
                 IsCrouching = false;
+                IsStandBlocked = false;
                 CrouchEnded?.Invoke();
             }
         }
@@ -143,35 +202,43 @@ namespace Modular2DCharacterController.Runtime.Features
         
         private void UpdateCrouchState()
         {
-            bool shouldCrouch = CanCrouch();
+            bool wantsToCrouch =
+                WantsToCrouch();
 
-            // Nothing changed, so no work is needed.
-            if (shouldCrouch == IsCrouching)
+            if (wantsToCrouch)
+            {
+                if (!IsCrouching && CanStartCrouch())
+                {
+                    EnterCrouch();
+                }
+
+                return;
+            }
+
+            if (!IsCrouching)
                 return;
 
-            IsCrouching = shouldCrouch;
+            bool wasStandBlocked =
+                IsStandBlocked;
 
-            if (IsCrouching)
+            if (CanStand())
             {
-                // Apply crouch movement profile.
-                if (crouchMovementProfile != null)
-                {
-                    _profileProvider.RegisterProfile(crouchMovementProfile);
-                }
-                CrouchStarted?.Invoke();
+                ExitCrouch();
+                return;
             }
-            else
+
+            if (crouchMode == CrouchMode.Toggle)
             {
-                // Remove crouch movement profile.
-                if (crouchMovementProfile != null)
-                {
-                    _profileProvider.UnregisterProfile(crouchMovementProfile);
-                }
-                CrouchEnded?.Invoke();
+                _toggleCrouchState = true;
+            }
+
+            if (!wasStandBlocked)
+            {
+                CrouchStandBlocked?.Invoke();
             }
         }
-        
-        private bool CanCrouch()
+
+        private bool WantsToCrouch()
         {
             if (_input == null)
                 return false;
@@ -183,16 +250,25 @@ namespace Modular2DCharacterController.Runtime.Features
                 return false;
             }
 
-            // Determine whether the player is requesting crouch.
-            bool crouchRequested = crouchMode switch
+            return crouchMode switch
             {
                 CrouchMode.Hold => _input.CrouchHeld,
                 CrouchMode.Toggle => _toggleCrouchState,
                 _ => false
             };
+        }
 
-            if (!crouchRequested)
+        private bool CanStartCrouch()
+        {
+            if (_input == null)
                 return false;
+
+            if (_groundPoundFeature != null &&
+                (_groundPoundFeature.IsGroundPounding ||
+                 _groundPoundFeature.IsRecoveryActive))
+            {
+                return false;
+            }
 
             // Optional grounded-only restriction.
             if (groundedOnly &&
@@ -210,6 +286,222 @@ namespace Modular2DCharacterController.Runtime.Features
             }
 
             return true;
+        }
+
+        private bool CanStand()
+        {
+            if (!resizeCollider)
+            {
+                IsStandBlocked = false;
+                return true;
+            }
+
+            bool hasRoomToStand =
+                HasRoomForStandingCollider();
+
+            IsStandBlocked =
+                !hasRoomToStand;
+
+            return hasRoomToStand;
+        }
+
+        private void EnterCrouch()
+        {
+            IsCrouching = true;
+            IsStandBlocked = false;
+
+            ApplyCrouchedCollider();
+
+            if (crouchMovementProfile != null)
+            {
+                _profileProvider.RegisterProfile(crouchMovementProfile);
+            }
+
+            CrouchStarted?.Invoke();
+        }
+
+        private void ExitCrouch()
+        {
+            ApplyStandingCollider();
+
+            IsCrouching = false;
+            IsStandBlocked = false;
+
+            if (crouchMovementProfile != null)
+            {
+                _profileProvider.UnregisterProfile(crouchMovementProfile);
+            }
+
+            CrouchEnded?.Invoke();
+        }
+
+        private void CacheColliderShapes()
+        {
+            if (_capsuleCollider != null)
+            {
+                _standingSize = _capsuleCollider.size;
+                _standingOffset = _capsuleCollider.offset;
+            }
+            else if (_boxCollider != null)
+            {
+                _standingSize = _boxCollider.size;
+                _standingOffset = _boxCollider.offset;
+            }
+            else
+            {
+                return;
+            }
+
+            float crouchedHeight =
+                Mathf.Max(
+                    _standingSize.y * crouchedHeightMultiplier,
+                    0.01f);
+
+            _crouchedSize =
+                new Vector2(
+                    _standingSize.x,
+                    crouchedHeight);
+
+            _crouchedOffset =
+                _standingOffset;
+
+            if (preserveColliderBottom)
+            {
+                float heightDifference =
+                    _standingSize.y - crouchedHeight;
+
+                _crouchedOffset.y -=
+                    heightDifference * 0.5f;
+            }
+        }
+
+        private void ApplyCrouchedCollider()
+        {
+            if (!resizeCollider)
+                return;
+
+            ApplyColliderShape(
+                _crouchedSize,
+                _crouchedOffset);
+
+            CrouchColliderChanged?.Invoke(true);
+        }
+
+        private void ApplyStandingCollider()
+        {
+            if (!resizeCollider)
+                return;
+
+            ApplyColliderShape(
+                _standingSize,
+                _standingOffset);
+
+            CrouchColliderChanged?.Invoke(false);
+        }
+
+        private void ApplyColliderShape(
+            Vector2 size,
+            Vector2 offset)
+        {
+            if (_capsuleCollider != null)
+            {
+                _capsuleCollider.size = size;
+                _capsuleCollider.offset = offset;
+                return;
+            }
+
+            if (_boxCollider != null)
+            {
+                _boxCollider.size = size;
+                _boxCollider.offset = offset;
+            }
+        }
+
+        private bool HasRoomForStandingCollider()
+        {
+            if (_capsuleCollider == null &&
+                _boxCollider == null)
+                return true;
+
+            Vector2 currentSize;
+            Vector2 currentOffset;
+
+            if (_capsuleCollider != null)
+            {
+                currentSize = _capsuleCollider.size;
+                currentOffset = _capsuleCollider.offset;
+            }
+            else
+            {
+                currentSize = _boxCollider.size;
+                currentOffset = _boxCollider.offset;
+            }
+
+            float currentTop =
+                currentOffset.y +
+                currentSize.y * 0.5f;
+
+            float standingTop =
+                _standingOffset.y +
+                _standingSize.y * 0.5f;
+
+            float addedHeight =
+                standingTop - currentTop;
+
+            if (addedHeight <= standCheckSkin)
+                return true;
+
+            Vector2 checkOffset =
+                new(
+                    _standingOffset.x,
+                    currentTop + addedHeight * 0.5f);
+
+            Vector2 checkSize =
+                new(
+                    Mathf.Max(0.01f, _standingSize.x - standCheckSkin * 2f),
+                    Mathf.Max(0.01f, addedHeight - standCheckSkin * 2f));
+
+            int hitCount =
+                Physics2D.OverlapBoxNonAlloc(
+                    GetWorldPoint(checkOffset),
+                    checkSize,
+                    transform.eulerAngles.z,
+                    _standCheckResults,
+                    ceilingLayers);
+
+            return !HasBlockingHit(hitCount);
+        }
+
+        private Vector2 GetWorldPoint(Vector2 localPoint)
+        {
+            return transform.TransformPoint(localPoint);
+        }
+
+        private bool HasBlockingHit(int hitCount)
+        {
+            for (int i = 0; i < hitCount; i++)
+            {
+                Collider2D hit =
+                    _standCheckResults[i];
+
+                _standCheckResults[i] = null;
+
+                if (hit == null)
+                    continue;
+
+                if (hit == _collider)
+                    continue;
+
+                if (hit.transform == transform ||
+                    hit.transform.IsChildOf(transform))
+                {
+                    continue;
+                }
+
+                return true;
+            }
+
+            return false;
         }
         
         private void OnLeftGround(Vector2 unused)

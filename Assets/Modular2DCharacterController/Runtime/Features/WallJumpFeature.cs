@@ -41,6 +41,7 @@ namespace Modular2DCharacterController.Runtime.Features
 
         // Components used by this feature.
         private CharacterMotor _motor;
+        private GroundDetector _groundDetector;
         private WallDetector _wallDetector;
         private WallSlideFeature _wallSlideFeature;
         private ICharacterInput _input;
@@ -52,7 +53,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private float _wallJumpCoyoteTimer;
         private float _wallJumpBufferTimer;
 
-        private bool _jumpRequested;
+        private bool _wallJumpRequested;
         private Vector2 _lastWallJumpNormal;
         private float _wallJumpImpulseX;
         
@@ -76,6 +77,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private void Awake()
         {
             _motor = GetComponent<CharacterMotor>();
+            _groundDetector = GetComponent<GroundDetector>();
             _wallDetector = GetComponent<WallDetector>();
             _wallSlideFeature = GetComponent<WallSlideFeature>();
             _input = GetComponent<ICharacterInput>();
@@ -106,9 +108,9 @@ namespace Modular2DCharacterController.Runtime.Features
 
         public void Tick()
         {
-            if (_input.JumpPressed)
+            if (_input.JumpPressed && !_groundDetector.IsGrounded)
             {
-                _jumpRequested = true;
+                _wallJumpRequested = true;
             }
         }
 
@@ -147,12 +149,12 @@ namespace Modular2DCharacterController.Runtime.Features
                         _wallJumpCoyoteTimer - Time.fixedDeltaTime);
             }
 
-            if (_jumpRequested)
+            if (_wallJumpRequested)
             {
                 _wallJumpBufferTimer =
                     Mathf.Max(wallJumpBufferTime, Time.fixedDeltaTime);
 
-                _jumpRequested = false;
+                _wallJumpRequested = false;
             }
             else
             {

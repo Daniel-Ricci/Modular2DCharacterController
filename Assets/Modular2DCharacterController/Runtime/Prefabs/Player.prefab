@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 3147954627580100399}
   - component: {fileID: 3036728849090581681}
   - component: {fileID: 2065180972893838928}
+  - component: {fileID: 4728057364999211848}
   - component: {fileID: 7500109327406742787}
   - component: {fileID: 951386037181885141}
   - component: {fileID: 1537304120068154184}
@@ -229,7 +230,7 @@ MonoBehaviour:
   jumpFeature: {fileID: 0}
   runFeature: {fileID: 0}
   dashFeature: {fileID: 0}
-  crouchFeature: {fileID: 0}
+  crouchFeature: {fileID: 4728057364999211848}
   wallJumpFeature: {fileID: 0}
 --- !u!114 &9072815575998707769
 MonoBehaviour:
@@ -307,6 +308,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.RunFeature
   runMovementProfile: {fileID: 11400000, guid: 0823fea60afa7c6418d57fb35664a9de, type: 2}
   minimumMoveInput: 0.1
+--- !u!114 &4728057364999211848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3a84c388373c5a4b8700819e01f1019, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.CrouchFeature
+  crouchMovementProfile: {fileID: 11400000, guid: d100008c8a8357b42aceeda15fea35c7, type: 2}
+  crouchMode: 0
+  groundedOnly: 1
+  requireMovementInput: 0
+  minimumMoveInput: 0.1
+  clearToggleWhenLeavingGround: 1
+  resizeCollider: 1
+  crouchedHeightMultiplier: 0.5
+  preserveColliderBottom: 1
+  ceilingLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  standCheckSkin: 0.01
 --- !u!114 &7500109327406742787
 MonoBehaviour:
   m_ObjectHideFlags: 0
