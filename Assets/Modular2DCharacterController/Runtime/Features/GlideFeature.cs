@@ -20,6 +20,13 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         private GlideProfile defaultGlideProfile;
 
+        [Header("Require Falling")]
+
+        [Tooltip(
+            "If enabled, a vertical velocity lower than 0 is required to activate gliding.")]
+        [SerializeField]
+        private bool requireFallingToGlide;
+
         /// <summary>
         /// Invoked when gliding begins.
         /// </summary>
@@ -109,7 +116,8 @@ namespace Modular2DCharacterController.Runtime.Features
         {
             bool wantsToGlide =
                 !_groundDetector.IsGrounded &&
-                _motor.CurrentSelfVelocity.y < 0f &&
+                ((requireFallingToGlide && _motor.CurrentSelfVelocity.y < 0f) ||
+                !requireFallingToGlide) &&
                 _input.RunHeld;
 
             if (!wantsToGlide)

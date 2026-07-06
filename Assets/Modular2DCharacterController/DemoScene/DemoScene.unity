@@ -1867,6 +1867,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7429609835000910511, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: defaultGlideProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: f4857f1d95bc0514fbda8f815554d6e0, type: 2}
     - target: {fileID: 7666062897064686800, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
       propertyPath: debugEnabled
       value: 0
