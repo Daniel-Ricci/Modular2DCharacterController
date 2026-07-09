@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5862783433706219167}
   - component: {fileID: 1624187124611957247}
   - component: {fileID: 980959531919785132}
+  - component: {fileID: 6381042147093948921}
   - component: {fileID: 2854622110580915959}
   - component: {fileID: 908953618317756315}
   - component: {fileID: 9072815575998707769}
@@ -202,6 +203,27 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   wallCheckDistance: 0.1
+--- !u!114 &6381042147093948921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71cbd6487c5d4b2a8bda5c6ed8a0c19f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.CeilingDetector
+  ceilingLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  ceilingCheckDistance: 0.1
+  minimumCeilingNormalY: 0.5
+  ceilingHitVelocityThreshold: 0.1
+  standCheckSkin: 0.01
+  ignoreOneWayPlatformsFromPassThroughSide: 1
+  oneWaySideTolerance: 0.001
 --- !u!114 &2854622110580915959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,6 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.CharacterEventDispatcher
   groundDetector: {fileID: 1624187124611957247}
+  ceilingDetector: {fileID: 6381042147093948921}
   jumpFeature: {fileID: 0}
   runFeature: {fileID: 0}
   dashFeature: {fileID: 0}
@@ -329,10 +352,6 @@ MonoBehaviour:
   resizeCollider: 1
   crouchedHeightMultiplier: 0.5
   preserveColliderBottom: 1
-  ceilingLayers:
-    serializedVersion: 2
-    m_Bits: 128
-  standCheckSkin: 0.01
 --- !u!114 &7500109327406742787
 MonoBehaviour:
   m_ObjectHideFlags: 0

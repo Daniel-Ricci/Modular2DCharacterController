@@ -11,6 +11,7 @@ namespace Modular2DCharacterController.Runtime.Core
     {
         public event Action<Vector2> Landed;
         public event Action<Vector2> LeftGround;
+        public event Action<GameObject> CeilingHit;
         public event Action<float> Jumped;
         public event Action StartedRun;
         public event Action StoppedRun;
@@ -25,6 +26,8 @@ namespace Modular2DCharacterController.Runtime.Core
         [Header("Feature References")]
         [SerializeField]
         private GroundDetector groundDetector;
+        [SerializeField]
+        private CeilingDetector ceilingDetector;
         [SerializeField]
         private JumpFeature jumpFeature;
         [SerializeField]
@@ -42,6 +45,11 @@ namespace Modular2DCharacterController.Runtime.Core
             {
                 groundDetector.Landed += OnLanded;
                 groundDetector.LeftGround += OnLeftGround;
+            }
+
+            if (ceilingDetector != null)
+            {
+                ceilingDetector.CeilingHit += OnCeilingHit;
             }
             
             if (jumpFeature != null)
@@ -81,6 +89,11 @@ namespace Modular2DCharacterController.Runtime.Core
                 groundDetector.Landed -= OnLanded;
                 groundDetector.LeftGround -= OnLeftGround;
             }
+
+            if (ceilingDetector != null)
+            {
+                ceilingDetector.CeilingHit -= OnCeilingHit;
+            }
             
             if (jumpFeature != null)
                 jumpFeature.Jumped -= OnJumped;
@@ -119,6 +132,11 @@ namespace Modular2DCharacterController.Runtime.Core
         private void OnLeftGround(Vector2 launchVelocity)
         {
             LeftGround?.Invoke(launchVelocity);
+        }
+
+        private void OnCeilingHit(GameObject hitObject)
+        {
+            CeilingHit?.Invoke(hitObject);
         }
 
         private void OnJumped(float jumpVelocity)

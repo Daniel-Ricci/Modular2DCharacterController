@@ -131,6 +131,7 @@ namespace Modular2DCharacterController.Runtime.Debug
         private CharacterMotor _motor;
         private GroundDetector _groundDetector;
         private WallDetector _wallDetector;
+        private CeilingDetector _ceilingDetector;
         private ICharacterInput _input;
         private HorizontalMovementFeature _horizontalMovementFeature;
         private JumpFeature _jumpFeature;
@@ -275,6 +276,7 @@ namespace Modular2DCharacterController.Runtime.Debug
             _motor = GetComponent<CharacterMotor>();
             _groundDetector = GetComponent<GroundDetector>();
             _wallDetector = GetComponent<WallDetector>();
+            _ceilingDetector = GetComponent<CeilingDetector>();
             _input = GetComponent<ICharacterInput>();
             _horizontalMovementFeature = GetComponent<HorizontalMovementFeature>();
             _jumpFeature = GetComponent<JumpFeature>();
@@ -619,6 +621,19 @@ namespace Modular2DCharacterController.Runtime.Debug
             {
                 AppendLine($"Touching Wall: {_wallDetector.IsTouchingWall}");
                 AppendLine($"Wall Normal: {FormatVector(_wallDetector.WallNormal)}");
+            }
+
+            if (_ceilingDetector == null)
+            {
+                AppendLine("CeilingDetector: missing");
+            }
+            else
+            {
+                AppendLine($"Touching Ceiling: {_ceilingDetector.IsTouchingCeiling}");
+                AppendLine($"Ceiling Normal: {FormatVector(_ceilingDetector.CeilingNormal)}");
+                AppendLine($"Ceiling Angle: {FormatFloat(_ceilingDetector.CeilingAngle)}");
+                AppendLine($"Ceiling Point: {FormatVector(_ceilingDetector.CeilingPoint)}");
+                AppendLine($"Ceiling Object: {FormatTransform(_ceilingDetector.CurrentCeilingTransform)}");
             }
 
             AppendLine();

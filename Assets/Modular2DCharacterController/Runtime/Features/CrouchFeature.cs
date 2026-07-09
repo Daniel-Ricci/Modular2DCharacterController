@@ -2,6 +2,7 @@ using Modular2DCharacterController.Runtime.Core;
 using Modular2DCharacterController.Runtime.Data.FeatureProfiles;
 using Modular2DCharacterController.Runtime.Input;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Modular2DCharacterController.Runtime.Features
@@ -18,6 +19,7 @@ namespace Modular2DCharacterController.Runtime.Features
     /// </summary>
     [RequireComponent(typeof(CharacterController2D))]
     [RequireComponent(typeof(Collider2D))]
+    [RequireComponent(typeof(CeilingDetector))]
     public class CrouchFeature : MonoBehaviour, ICharacterFeature
     {
         [Header("Crouch Profile")]
@@ -79,20 +81,6 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         private bool preserveColliderBottom = true;
 
-        [Header("Ceiling Check")]
-
-        [Tooltip(
-            "Layers that can block the character from standing up.")]
-        [SerializeField]
-        private LayerMask ceilingLayers = ~0;
-
-        [Tooltip(
-            "Extra clearance subtracted from the standing check size. " +
-            "Small values help avoid false positives from touching contacts.")]
-        [SerializeField]
-        [Min(0f)]
-        private float standCheckSkin = 0.01f;
-
         // True while the player is crouching
         public bool IsCrouching { get; private set; }
 
@@ -111,6 +99,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private CharacterController2D _controller;
         private ICharacterInput _input;
         private GroundDetector _groundDetector;
+        private CeilingDetector _ceilingDetector;
         private GroundPoundFeature _groundPoundFeature;
         private ProfileProvider<HorizontalMovementProfile> _profileProvider;
         private Collider2D _collider;
@@ -123,13 +112,16 @@ namespace Modular2DCharacterController.Runtime.Features
         private Vector2 _standingOffset;
         private Vector2 _crouchedSize;
         private Vector2 _crouchedOffset;
-        private readonly Collider2D[] _standCheckResults = new Collider2D[8];
+        private int _pendingPassThroughOneWayCount;
+        private readonly Collider2D[] _pendingPassThroughOneWayPlatforms = new Collider2D[8];
+        private readonly List<Collider2D> _temporarilyIgnoredOneWayPlatforms = new();
         
         private void Awake()
         {
             _controller = GetComponent<CharacterController2D>();
             _input = GetComponent<ICharacterInput>();
             _groundDetector = GetComponent<GroundDetector>();
+            _ceilingDetector = GetComponent<CeilingDetector>();
             _groundPoundFeature = GetComponent<GroundPoundFeature>();
             _collider = GetComponent<Collider2D>();
             _capsuleCollider = _collider as CapsuleCollider2D;
@@ -166,6 +158,8 @@ namespace Modular2DCharacterController.Runtime.Features
                 IsStandBlocked = false;
                 CrouchEnded?.Invoke();
             }
+
+            RestoreTemporaryOneWayPlatformIgnores();
         }
         
         public void Tick()
@@ -176,6 +170,7 @@ namespace Modular2DCharacterController.Runtime.Features
         public void FixedTick()
         {
             UpdateCrouchState();
+            UpdateTemporaryOneWayPlatformIgnores();
         }
         
         private void UpdateToggleInput()
@@ -322,6 +317,8 @@ namespace Modular2DCharacterController.Runtime.Features
 
         private void ExitCrouch()
         {
+            IgnorePendingPassThroughOneWayPlatforms();
+
             ApplyStandingCollider();
 
             IsCrouching = false;
@@ -448,6 +445,11 @@ namespace Modular2DCharacterController.Runtime.Features
             float addedHeight =
                 standingTop - currentTop;
 
+            float standCheckSkin =
+                _ceilingDetector != null
+                    ? _ceilingDetector.StandCheckSkin
+                    : 0f;
+
             if (addedHeight <= standCheckSkin)
                 return true;
 
@@ -458,50 +460,89 @@ namespace Modular2DCharacterController.Runtime.Features
 
             Vector2 checkSize =
                 new(
-                    Mathf.Max(0.01f, _standingSize.x - standCheckSkin * 2f),
-                    Mathf.Max(0.01f, addedHeight - standCheckSkin * 2f));
+                    Mathf.Max(0.01f, _standingSize.x),
+                    Mathf.Max(0.01f, addedHeight));
 
-            int hitCount =
-                Physics2D.OverlapBoxNonAlloc(
-                    GetWorldPoint(checkOffset),
-                    checkSize,
-                    transform.eulerAngles.z,
-                    _standCheckResults,
-                    ceilingLayers);
-
-            return !HasBlockingHit(hitCount);
-        }
-
-        private Vector2 GetWorldPoint(Vector2 localPoint)
-        {
-            return transform.TransformPoint(localPoint);
-        }
-
-        private bool HasBlockingHit(int hitCount)
-        {
-            for (int i = 0; i < hitCount; i++)
-            {
-                Collider2D hit =
-                    _standCheckResults[i];
-
-                _standCheckResults[i] = null;
-
-                if (hit == null)
-                    continue;
-
-                if (hit == _collider)
-                    continue;
-
-                if (hit.transform == transform ||
-                    hit.transform.IsChildOf(transform))
-                {
-                    continue;
-                }
-
+            if (_ceilingDetector == null)
                 return true;
+
+            _pendingPassThroughOneWayCount = 0;
+
+            return !_ceilingDetector.HasBlockingCeilingInBox(
+                transform.TransformPoint(checkOffset),
+                checkSize,
+                transform.eulerAngles.z,
+                _pendingPassThroughOneWayPlatforms,
+                out _pendingPassThroughOneWayCount);
+        }
+
+        private void IgnorePendingPassThroughOneWayPlatforms()
+        {
+            for (int i = 0; i < _pendingPassThroughOneWayCount; i++)
+            {
+                Collider2D platform =
+                    _pendingPassThroughOneWayPlatforms[i];
+
+                _pendingPassThroughOneWayPlatforms[i] = null;
+
+                if (platform == null)
+                    continue;
+
+                if (_temporarilyIgnoredOneWayPlatforms.Contains(platform))
+                    continue;
+
+                Physics2D.IgnoreCollision(
+                    _collider,
+                    platform,
+                    true);
+
+                _temporarilyIgnoredOneWayPlatforms.Add(platform);
             }
 
-            return false;
+            _pendingPassThroughOneWayCount = 0;
+        }
+
+        private void UpdateTemporaryOneWayPlatformIgnores()
+        {
+            for (int i = _temporarilyIgnoredOneWayPlatforms.Count - 1; i >= 0; i--)
+            {
+                Collider2D platform =
+                    _temporarilyIgnoredOneWayPlatforms[i];
+
+                if (platform == null ||
+                    !_collider.Distance(platform).isOverlapped)
+                {
+                    if (platform != null)
+                    {
+                        Physics2D.IgnoreCollision(
+                            _collider,
+                            platform,
+                            false);
+                    }
+
+                    _temporarilyIgnoredOneWayPlatforms.RemoveAt(i);
+                }
+            }
+        }
+
+        private void RestoreTemporaryOneWayPlatformIgnores()
+        {
+            for (int i = 0; i < _temporarilyIgnoredOneWayPlatforms.Count; i++)
+            {
+                Collider2D platform =
+                    _temporarilyIgnoredOneWayPlatforms[i];
+
+                if (platform == null)
+                    continue;
+
+                Physics2D.IgnoreCollision(
+                    _collider,
+                    platform,
+                    false);
+            }
+
+            _temporarilyIgnoredOneWayPlatforms.Clear();
+            _pendingPassThroughOneWayCount = 0;
         }
         
         private void OnLeftGround(Vector2 unused)
