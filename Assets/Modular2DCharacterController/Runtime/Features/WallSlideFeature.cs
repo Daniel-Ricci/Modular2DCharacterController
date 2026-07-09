@@ -48,6 +48,10 @@ namespace Modular2DCharacterController.Runtime.Features
         // True while wall sliding.
         public bool IsWallSliding { get; private set; }
 
+        public event Action WallSlideStarted;
+
+        public event Action WallSlideEnded;
+
         private void Awake()
         {
             _motor = GetComponent<CharacterMotor>();
@@ -62,21 +66,27 @@ namespace Modular2DCharacterController.Runtime.Features
 
         public void FixedTick()
         {
+            bool wasWallSliding =
+                IsWallSliding;
+
             if (_groundDetector.IsGrounded)
             {
                 IsWallSliding = false;
+                RaiseWallSlideEvents(wasWallSliding);
                 return;
             }
 
             if (!_wallDetector.IsTouchingWall)
             {
                 IsWallSliding = false;
+                RaiseWallSlideEvents(wasWallSliding);
                 return;
             }
             
             if (Mathf.Abs(_wallDetector.WallNormal.x) < VerticalWallThreshold)
             {
                 IsWallSliding = false;
+                RaiseWallSlideEvents(wasWallSliding);
                 return;
             }
 
@@ -91,6 +101,8 @@ namespace Modular2DCharacterController.Runtime.Features
                 Mathf.Abs(horizontalInput) > 0.01f;
 
             IsWallSliding = holdingTowardsWall;
+
+            RaiseWallSlideEvents(wasWallSliding);
             
             bool goingUp =
                 _motor.CurrentSelfVelocity.y > 0.01f;
@@ -106,6 +118,18 @@ namespace Modular2DCharacterController.Runtime.Features
                     _motor.SetVerticalSelfVelocity(-wallSlideVelocity);
                     _motor.SuppressGravityThisFrame();
                 }
+            }
+        }
+
+        private void RaiseWallSlideEvents(bool wasWallSliding)
+        {
+            if (!wasWallSliding && IsWallSliding)
+            {
+                WallSlideStarted?.Invoke();
+            }
+            else if (wasWallSliding && !IsWallSliding)
+            {
+                WallSlideEnded?.Invoke();
             }
         }
     }

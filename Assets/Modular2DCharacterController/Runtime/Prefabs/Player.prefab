@@ -254,6 +254,9 @@ MonoBehaviour:
   runFeature: {fileID: 0}
   dashFeature: {fileID: 0}
   crouchFeature: {fileID: 4728057364999211848}
+  glideFeature: {fileID: 7429609835000910511}
+  groundPoundFeature: {fileID: 3360759555825833622}
+  wallSlideFeature: {fileID: 1537304120068154184}
   wallJumpFeature: {fileID: 0}
 --- !u!114 &9072815575998707769
 MonoBehaviour:

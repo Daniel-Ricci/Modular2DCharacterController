@@ -21,6 +21,12 @@ namespace Modular2DCharacterController.Runtime.Core
         public event Action CrouchEnded;
         public event Action CrouchStandBlocked;
         public event Action<bool> CrouchColliderChanged;
+        public event Action GlideStarted;
+        public event Action GlideEnded;
+        public event Action GroundPoundStarted;
+        public event Action<GameObject> GroundPoundEnded;
+        public event Action WallSlideStarted;
+        public event Action WallSlideEnded;
         public event Action WallJumped;
 
         [Header("Feature References")]
@@ -36,6 +42,12 @@ namespace Modular2DCharacterController.Runtime.Core
         private DashFeature dashFeature;
         [SerializeField]
         private CrouchFeature crouchFeature;
+        [SerializeField]
+        private GlideFeature glideFeature;
+        [SerializeField]
+        private GroundPoundFeature groundPoundFeature;
+        [SerializeField]
+        private WallSlideFeature wallSlideFeature;
         [SerializeField]
         private WallJumpFeature wallJumpFeature;
 
@@ -74,6 +86,24 @@ namespace Modular2DCharacterController.Runtime.Core
                 crouchFeature.CrouchEnded += OnCrouchEnded;
                 crouchFeature.CrouchStandBlocked += OnCrouchStandBlocked;
                 crouchFeature.CrouchColliderChanged += OnCrouchColliderChanged;
+            }
+
+            if (glideFeature != null)
+            {
+                glideFeature.GlideStarted += OnGlideStarted;
+                glideFeature.GlideEnded += OnGlideEnded;
+            }
+
+            if (groundPoundFeature != null)
+            {
+                groundPoundFeature.GroundPoundStarted += OnGroundPoundStarted;
+                groundPoundFeature.GroundPoundEnded += OnGroundPoundEnded;
+            }
+
+            if (wallSlideFeature != null)
+            {
+                wallSlideFeature.WallSlideStarted += OnWallSlideStarted;
+                wallSlideFeature.WallSlideEnded += OnWallSlideEnded;
             }
 
             if (wallJumpFeature != null)
@@ -116,6 +146,24 @@ namespace Modular2DCharacterController.Runtime.Core
                 crouchFeature.CrouchEnded -= OnCrouchEnded;
                 crouchFeature.CrouchStandBlocked -= OnCrouchStandBlocked;
                 crouchFeature.CrouchColliderChanged -= OnCrouchColliderChanged;
+            }
+
+            if (glideFeature != null)
+            {
+                glideFeature.GlideStarted -= OnGlideStarted;
+                glideFeature.GlideEnded -= OnGlideEnded;
+            }
+
+            if (groundPoundFeature != null)
+            {
+                groundPoundFeature.GroundPoundStarted -= OnGroundPoundStarted;
+                groundPoundFeature.GroundPoundEnded -= OnGroundPoundEnded;
+            }
+
+            if (wallSlideFeature != null)
+            {
+                wallSlideFeature.WallSlideStarted -= OnWallSlideStarted;
+                wallSlideFeature.WallSlideEnded -= OnWallSlideEnded;
             }
             
             if (wallJumpFeature != null)
@@ -182,6 +230,36 @@ namespace Modular2DCharacterController.Runtime.Core
         private void OnCrouchColliderChanged(bool isCrouching)
         {
             CrouchColliderChanged?.Invoke(isCrouching);
+        }
+
+        private void OnGlideStarted()
+        {
+            GlideStarted?.Invoke();
+        }
+
+        private void OnGlideEnded()
+        {
+            GlideEnded?.Invoke();
+        }
+
+        private void OnGroundPoundStarted()
+        {
+            GroundPoundStarted?.Invoke();
+        }
+
+        private void OnGroundPoundEnded(GameObject hitObject)
+        {
+            GroundPoundEnded?.Invoke(hitObject);
+        }
+
+        private void OnWallSlideStarted()
+        {
+            WallSlideStarted?.Invoke();
+        }
+
+        private void OnWallSlideEnded()
+        {
+            WallSlideEnded?.Invoke();
         }
         
         private void OnWallJumped()
