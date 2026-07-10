@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 0e5a44ac85dc5804e86a7ecfd0fac6ff
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - meteorPrefab: {fileID: 4799111617866881075, guid: d5126491784697b47aeb5b23aa78b6de, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

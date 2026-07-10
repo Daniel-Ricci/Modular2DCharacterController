@@ -18,8 +18,9 @@ GameObject:
   - component: {fileID: 16260763748119473}
   - component: {fileID: 8715852434207882857}
   - component: {fileID: 8210147804125666905}
+  - component: {fileID: 4737155072686947731}
   m_Layer: 0
-  m_Name: Player
+  m_Name: PlayerPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,7 +67,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: b6b48b7c2f44cb84394b858f84bc0ec1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -90,7 +91,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 0, g: 0.7169812, b: 0.6056182, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -166,7 +167,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 44022f2b87d958247a589bdca8c553b6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -258,9 +259,9 @@ MonoBehaviour:
   airMovementProfile: {fileID: 11400000, guid: 1e4f9bfc726bce24daa51f569d87291a, type: 2}
   preserveMomentumAboveMaxSpeed: 1
   overspeedDeceleration: 0
-  facingMode: 1
+  facingMode: 0
   graphicsRoot: {fileID: 0}
-  spriteRenderer: {fileID: 58205971355265982}
+  spriteRenderer: {fileID: 0}
   minimumInput: 0.5
 --- !u!114 &8210147804125666905
 MonoBehaviour:
@@ -276,3 +277,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.GlideFeature
   defaultGlideProfile: {fileID: 11400000, guid: f4857f1d95bc0514fbda8f815554d6e0, type: 2}
   requireFallingToGlide: 0
+--- !u!114 &4737155072686947731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131145991514253028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fdd3df22bdb57448a73ecb73404e0ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.SampleScenes.Spaceship.Player.PlayerCollisionDetector
+  immuneTimeAfterHit: 1.5
+  flashInterval: 0.1
+  flashAlpha: 0.3
