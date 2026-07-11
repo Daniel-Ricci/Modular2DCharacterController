@@ -1483,7 +1483,7 @@
     "m_PerRendererData": false,
     "m_customAttributes": [],
     "m_Value": {
-        "m_SerializedTexture": "",
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"b3b812fb159ebf747b5508d6528b6fb3\",\"type\":3}}",
         "m_Guid": ""
     },
     "isMainTexture": false,

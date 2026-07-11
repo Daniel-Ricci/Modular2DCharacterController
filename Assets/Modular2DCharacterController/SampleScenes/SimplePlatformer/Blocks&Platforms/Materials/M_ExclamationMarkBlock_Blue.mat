@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_QuestionMarkBlock_Displacement
-  m_Shader: {fileID: -6465566751694194690, guid: cd7037a36db8c8e45ae785349a9226b2, type: 3}
+  m_Name: M_ExclamationMarkBlock_Blue
+  m_Shader: {fileID: -6465566751694194690, guid: 013b9890940e81a45a8158a00356c955, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -24,7 +24,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 34e6dcec8a6816e43a8b57138a9e17a7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -41,15 +41,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DisplacementSpeed: 2
-    - _GlowAmount: 1.25
+    - _GlowAmount: 5
     m_Colors:
     - White: {r: 1, g: 1, b: 1, a: 1}
-    - _DisplacementDirection: {r: -0.65, g: 0, b: 0, a: 0}
-    - _GlowColor: {r: 3.4533544, g: 3.5551393, b: 0, a: 1}
+    - _GlowColor: {r: 0, g: 0.3198138, b: 3.688605, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &7528971278511618736
+--- !u!114 &8380354916862582465
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8298916295775246225}
   - component: {fileID: 1501399402672953028}
   m_Layer: 7
-  m_Name: Questionmark
+  m_Name: Exclamationmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +58,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b3b9dfdcced7ede4dab02fce9c439a50, type: 2}
+  - {fileID: 2100000, guid: 94644d24ffc8f37478cc8da0b301dd21, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: b3b812fb159ebf747b5508d6528b6fb3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4385b9e6a1113694fbc7f92b9f2aaf3c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -102,9 +102,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6335988313843033502}
   - component: {fileID: 3650110879903826187}
-  - component: {fileID: 9161677581290111955}
+  - component: {fileID: 5676457700042752933}
   m_Layer: 7
-  m_Name: QuestionMarkBlock
+  m_Name: ExclamationMarkBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -152,7 +152,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0ff24ad95d0e0aa48a6d8380303aed27, type: 2}
+  - {fileID: 2100000, guid: 94644d24ffc8f37478cc8da0b301dd21, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -186,7 +186,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
---- !u!61 &9161677581290111955
+--- !u!61 &5676457700042752933
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
