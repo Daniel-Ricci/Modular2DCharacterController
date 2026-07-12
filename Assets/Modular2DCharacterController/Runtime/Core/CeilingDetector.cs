@@ -78,6 +78,7 @@ namespace Modular2DCharacterController.Runtime.Core
 
         private Collider2D _characterCollider;
         private Rigidbody2D _rigidbody;
+        private CharacterMotor _motor;
 
         private readonly RaycastHit2D[] _castResults = new RaycastHit2D[8];
         private readonly Collider2D[] _overlapResults = new Collider2D[8];
@@ -88,6 +89,7 @@ namespace Modular2DCharacterController.Runtime.Core
         {
             _characterCollider = GetComponent<Collider2D>();
             _rigidbody = GetComponent<Rigidbody2D>();
+            _motor = GetComponent<CharacterMotor>();
 
             _contactFilter = new ContactFilter2D
             {
@@ -189,10 +191,21 @@ namespace Modular2DCharacterController.Runtime.Core
             CurrentCeilingTransform = bestHit.collider.transform;
 
             if (!wasTouchingCeiling &&
-                _rigidbody.linearVelocity.y >= ceilingHitVelocityThreshold)
+                WasMovingUpIntoCeiling())
             {
                 CeilingHit?.Invoke(bestHit.collider.gameObject);
             }
+        }
+
+        private bool WasMovingUpIntoCeiling()
+        {
+            if (_rigidbody.linearVelocity.y >= ceilingHitVelocityThreshold)
+                return true;
+
+            if (_motor == null)
+                return false;
+
+            return _motor.LastResolvedFinalVelocity.y >= ceilingHitVelocityThreshold;
         }
 
         private RaycastHit2D FindBestCeilingHit()

@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: c7114e0b1aed8274b8b65a9f6b75db14
+guid: 4a8c599c1f66187438fc52bc4ad53a7a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6007718245400672610
-    second: Eyes_Hit 1_0
-  - first:
-      213: -8794649175243787572
-    second: Eyes_Hit 1_1
+      213: 8582620107580193098
+    second: Eyes_Closed_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -103,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Eyes_Hit 1_0
+      name: Eyes_Closed_0
       rect:
         serializedVersion: 2
-        x: 19
-        y: 31
-        width: 11
-        height: 19
+        x: 0
+        y: 0
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -118,30 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2697db7f9e3bf5350800000000000000
-      internalID: 6007718245400672610
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Eyes_Hit 1_1
-      rect:
-        serializedVersion: 2
-        x: 34
-        y: 31
-        width: 11
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: cc27961db2123f580800000000000000
-      internalID: -8794649175243787572
+      spriteID: a493172e3879b1770800000000000000
+      internalID: 8582620107580193098
       vertices: []
       indices: 
       edges: []
@@ -160,8 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Eyes_Hit 1_0: 6007718245400672610
-      Eyes_Hit 1_1: -8794649175243787572
+      Eyes_Closed_0: 8582620107580193098
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

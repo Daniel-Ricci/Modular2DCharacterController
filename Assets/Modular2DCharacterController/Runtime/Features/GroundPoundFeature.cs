@@ -37,9 +37,12 @@ namespace Modular2DCharacterController.Runtime.Features
         // Invoked when the ground pound starts.
         public event Action GroundPoundStarted;
 
-        // Invoked when the ground pound ends.
-        // The hit object is null when the ground pound is interrupted or times out.
-        public event Action<GameObject> GroundPoundEnded;
+        // Invoked when the ground pound ends without hitting the ground.
+        public event Action GroundPoundInterrupted;
+
+        // Invoked when the ground pound finishes by hitting the ground.
+        // The hit object is the grounded object detected by GroundDetector.
+        public event Action<GameObject> GroundPoundFinished;
 
         public bool IsGroundPounding { get; private set; }
 
@@ -329,7 +332,14 @@ namespace Modular2DCharacterController.Runtime.Features
                     currentProfile.timeBeforeCanMoveAgainIfHitGround;
             }
 
-            GroundPoundEnded?.Invoke(hitObject);
+            if (hitGround)
+            {
+                GroundPoundFinished?.Invoke(hitObject);
+            }
+            else
+            {
+                GroundPoundInterrupted?.Invoke();
+            }
         }
 
         private void ClearInterruptRequests()

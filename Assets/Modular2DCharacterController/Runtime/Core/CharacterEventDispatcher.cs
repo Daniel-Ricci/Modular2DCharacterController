@@ -24,32 +24,36 @@ namespace Modular2DCharacterController.Runtime.Core
         public event Action GlideStarted;
         public event Action GlideEnded;
         public event Action GroundPoundStarted;
-        public event Action<GameObject> GroundPoundEnded;
+        public event Action GroundPoundInterrupted;
+        public event Action<GameObject> GroundPoundFinished;
         public event Action WallSlideStarted;
         public event Action WallSlideEnded;
         public event Action WallJumped;
 
-        [Header("Feature References")]
-        [SerializeField]
         private GroundDetector groundDetector;
-        [SerializeField]
         private CeilingDetector ceilingDetector;
-        [SerializeField]
         private JumpFeature jumpFeature;
-        [SerializeField]
         private RunFeature runFeature;
-        [SerializeField]
         private DashFeature dashFeature;
-        [SerializeField]
         private CrouchFeature crouchFeature;
-        [SerializeField]
         private GlideFeature glideFeature;
-        [SerializeField]
         private GroundPoundFeature groundPoundFeature;
-        [SerializeField]
         private WallSlideFeature wallSlideFeature;
-        [SerializeField]
         private WallJumpFeature wallJumpFeature;
+        
+        private void Awake()
+        {
+            groundDetector = GetComponent<GroundDetector>();
+            ceilingDetector = GetComponent<CeilingDetector>();
+            jumpFeature = GetComponent<JumpFeature>();
+            runFeature = GetComponent<RunFeature>();
+            dashFeature = GetComponent<DashFeature>();
+            crouchFeature = GetComponent<CrouchFeature>();
+            glideFeature = GetComponent<GlideFeature>();
+            groundPoundFeature = GetComponent<GroundPoundFeature>();
+            wallSlideFeature = GetComponent<WallSlideFeature>();
+            wallJumpFeature = GetComponent<WallJumpFeature>();
+        }
 
         private void OnEnable()
         {
@@ -97,7 +101,8 @@ namespace Modular2DCharacterController.Runtime.Core
             if (groundPoundFeature != null)
             {
                 groundPoundFeature.GroundPoundStarted += OnGroundPoundStarted;
-                groundPoundFeature.GroundPoundEnded += OnGroundPoundEnded;
+                groundPoundFeature.GroundPoundInterrupted += OnGroundPoundInterrupted;
+                groundPoundFeature.GroundPoundFinished += OnGroundPoundFinished;
             }
 
             if (wallSlideFeature != null)
@@ -157,7 +162,8 @@ namespace Modular2DCharacterController.Runtime.Core
             if (groundPoundFeature != null)
             {
                 groundPoundFeature.GroundPoundStarted -= OnGroundPoundStarted;
-                groundPoundFeature.GroundPoundEnded -= OnGroundPoundEnded;
+                groundPoundFeature.GroundPoundInterrupted -= OnGroundPoundInterrupted;
+                groundPoundFeature.GroundPoundFinished -= OnGroundPoundFinished;
             }
 
             if (wallSlideFeature != null)
@@ -246,10 +252,15 @@ namespace Modular2DCharacterController.Runtime.Core
         {
             GroundPoundStarted?.Invoke();
         }
-
-        private void OnGroundPoundEnded(GameObject hitObject)
+        
+        private void OnGroundPoundInterrupted()
         {
-            GroundPoundEnded?.Invoke(hitObject);
+            GroundPoundInterrupted?.Invoke();
+        }
+
+        private void OnGroundPoundFinished(GameObject hitObject)
+        {
+            GroundPoundFinished?.Invoke(hitObject);
         }
 
         private void OnWallSlideStarted()

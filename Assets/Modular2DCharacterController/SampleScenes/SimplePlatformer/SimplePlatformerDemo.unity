@@ -230,12 +230,29 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1731195217693226295, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
   m_PrefabInstance: {fileID: 2406889666163209020}
   m_PrefabAsset: {fileID: 0}
---- !u!50 &859855538 stripped
-Rigidbody2D:
-  m_CorrespondingSourceObject: {fileID: 5256900421332662946, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
-  m_PrefabInstance: {fileID: 2406889666163209020}
+--- !u!95 &859855545
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &859855543
+  m_GameObject: {fileID: 859855530}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 292686228561f8c42b1bca346f5a381f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &859855546
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -244,21 +261,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 859855530}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3f26f0a218c2044e962ab815884159c, type: 3}
+  m_Script: {fileID: 11500000, guid: 2c34f6cfa11e980439480d30ab5f290d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.SampleScenes.SimplePlatformer.Player.Scripts.PlayerEyesAnimator
-  rigidbody: {fileID: 859855538}
-  spriteRenderer: {fileID: 1389184818}
-  eyesStill: {fileID: 21300000, guid: e0ffc67faa263a94f8b7f36bb01653fa, type: 3}
-  eyesSad: {fileID: 21300000, guid: a682dd60753341545b5b1f70e89dd84e, type: 3}
-  eyesHappy: {fileID: 21300000, guid: fa251b10e2c4fc2468857d1d4f6cd43d, type: 3}
-  eyesLeft: {fileID: 21300000, guid: 69eda8e7b01b7c844927334e8850a53e, type: 3}
-  eyesRight: {fileID: 21300000, guid: 4c134b935e4bc2d438475b7f1751c502, type: 3}
-  eyesHit: {fileID: 21300000, guid: 39c757213d9644e429147789ad1ca215, type: 3}
-  idleAnimationTime: 3
-  hitDuration: 0.5
-  happyDuration: 0.75
-  movementThreshold: 0.05
+  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.SampleScenes.SimplePlatformer.Player.Scripts.PlayerAnimatorController
 --- !u!1001 &922424689
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -316,11 +321,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c598210bcbff54540bc6934992525b3f, type: 3}
---- !u!212 &1389184818 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 4281683813021798210, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
-  m_PrefabInstance: {fileID: 2406889666163209020}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1516812737
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,21 +510,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5256900421332662946, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
-      propertyPath: m_CollisionDetection
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8491106500036555644, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
-      propertyPath: defaultGroundPoundProfile
-      value: 
-      objectReference: {fileID: 11400000, guid: 5280e51b4f174115bdb2783d24ef5423, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1731195217693226295, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
+      insertIndex: 3
+      addedObject: {fileID: 859855545}
+    - targetCorrespondingSourceObject: {fileID: 1731195217693226295, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 859855543}
+      addedObject: {fileID: 859855546}
   m_SourcePrefab: {fileID: 100100000, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
 --- !u!1001 &6965041086328919724
 PrefabInstance:
