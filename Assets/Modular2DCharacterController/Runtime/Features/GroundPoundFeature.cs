@@ -42,7 +42,7 @@ namespace Modular2DCharacterController.Runtime.Features
 
         // Invoked when the ground pound finishes by hitting the ground.
         // The hit object is the grounded object detected by GroundDetector.
-        public event Action<GameObject> GroundPoundFinished;
+        public event Action<CharacterHitEvent> GroundPoundFinished;
 
         public bool IsGroundPounding { get; private set; }
 
@@ -61,7 +61,7 @@ namespace Modular2DCharacterController.Runtime.Features
             if (!CanInterruptCurrentGroundPound)
                 return false;
 
-            EndGroundPound(null, false);
+            EndGroundPound(default, false);
             return true;
         }
 
@@ -120,7 +120,7 @@ namespace Modular2DCharacterController.Runtime.Features
 
             if (IsGroundPounding)
             {
-                EndGroundPound(null, false);
+                EndGroundPound(default, false);
             }
         }
 
@@ -172,7 +172,7 @@ namespace Modular2DCharacterController.Runtime.Features
 
             if (ShouldInterrupt())
             {
-                EndGroundPound(null, false);
+                EndGroundPound(default, false);
                 ClearInterruptRequests();
                 return;
             }
@@ -249,12 +249,10 @@ namespace Modular2DCharacterController.Runtime.Features
         {
             if (_groundDetector.IsGrounded)
             {
-                GameObject hitObject =
-                    _groundDetector.CurrentGroundTransform != null
-                        ? _groundDetector.CurrentGroundTransform.gameObject
-                        : null;
+                CharacterHitEvent hitEvent =
+                    CreateGroundPoundHitEvent();
 
-                EndGroundPound(hitObject, true);
+                EndGroundPound(hitEvent, true);
                 return;
             }
 
@@ -292,7 +290,7 @@ namespace Modular2DCharacterController.Runtime.Features
 
                 if (_descendTimer <= 0f)
                 {
-                    EndGroundPound(null, false);
+                    EndGroundPound(default, false);
                     return;
                 }
             }
@@ -314,7 +312,7 @@ namespace Modular2DCharacterController.Runtime.Features
         }
 
         private void EndGroundPound(
-            GameObject hitObject,
+            CharacterHitEvent hitEvent,
             bool hitGround)
         {
             GroundPoundProfile currentProfile =
@@ -334,12 +332,45 @@ namespace Modular2DCharacterController.Runtime.Features
 
             if (hitGround)
             {
-                GroundPoundFinished?.Invoke(hitObject);
+                GroundPoundFinished?.Invoke(hitEvent);
+
+                if (hitEvent.HitCollider != null &&
+                    hitEvent.HitCollider.TryGetComponent(out IGroundPoundHitReceiver receiver))
+                {
+                    receiver.OnGroundPoundHit(hitEvent);
+                }
             }
             else
             {
                 GroundPoundInterrupted?.Invoke();
             }
+        }
+
+        private CharacterHitEvent CreateGroundPoundHitEvent()
+        {
+            Collider2D hitCollider =
+                _groundDetector.CurrentGroundCollider;
+
+            Rigidbody2D hitRigidbody =
+                hitCollider != null
+                    ? hitCollider.attachedRigidbody
+                    : null;
+
+            GameObject hitObject =
+                hitCollider != null
+                    ? hitCollider.gameObject
+                    : _groundDetector.CurrentGroundTransform != null
+                        ? _groundDetector.CurrentGroundTransform.gameObject
+                        : null;
+
+            return new CharacterHitEvent(
+                hitObject,
+                _groundDetector.GroundPoint,
+                _groundDetector.GroundNormal,
+                hitCollider,
+                hitRigidbody,
+                gameObject,
+                _motor != null ? _motor.CurrentSelfVelocity : Vector2.zero);
         }
 
         private void ClearInterruptRequests()

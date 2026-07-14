@@ -10,28 +10,26 @@ namespace Modular2DCharacterController.SampleScenes.SimplePlatformer.Player.Scri
 
         private static readonly int IsGroundedHash =
             Animator.StringToHash("IsGrounded");
-        
+
         private static readonly int JumpedHash =
             Animator.StringToHash("Jumped");
-        
+
         private static readonly int LandedHash =
             Animator.StringToHash("Landed");
-        
+
         private static readonly int GroundPoundedHash =
             Animator.StringToHash("GroundPounded");
 
-        private Rigidbody2D rigidbody2D;
         private Animator animator;
-        private GroundDetector groundDetector;
+        private CharacterStatusProvider characterStatusProvider;
         private CharacterEventDispatcher characterEventDispatcher;
 
         private bool isGroundPounding;
 
         private void Awake()
         {
-            rigidbody2D = GetComponent<Rigidbody2D>();
             animator = GetComponent<Animator>();
-            groundDetector = GetComponent<GroundDetector>();
+            characterStatusProvider = GetComponent<CharacterStatusProvider>();
             characterEventDispatcher = GetComponent<CharacterEventDispatcher>();
 
             if (characterEventDispatcher != null)
@@ -48,11 +46,11 @@ namespace Modular2DCharacterController.SampleScenes.SimplePlatformer.Player.Scri
         {
             animator.SetFloat(
                 HorizontalVelocityHash,
-                Mathf.Abs(rigidbody2D.linearVelocity.x));
+                Mathf.Abs(characterStatusProvider.Velocity.x));
 
             animator.SetBool(
                 IsGroundedHash,
-                groundDetector.IsGrounded);
+                characterStatusProvider.IsGrounded);
         }
 
         private void TriggerJumped(float _)
@@ -60,7 +58,7 @@ namespace Modular2DCharacterController.SampleScenes.SimplePlatformer.Player.Scri
             animator.SetTrigger(JumpedHash);
         }
 
-        private void TriggerLanded(Vector2 _)
+        private void TriggerLanded(CharacterHitEvent _)
         {
             if(!isGroundPounding)
                 animator.SetTrigger(LandedHash);
@@ -76,7 +74,7 @@ namespace Modular2DCharacterController.SampleScenes.SimplePlatformer.Player.Scri
             isGroundPounding = false;
         }
         
-        private void TriggerGroundPounded(GameObject _)
+        private void TriggerGroundPounded(CharacterHitEvent _)
         {
             animator.SetTrigger(GroundPoundedHash);
             StopGroundPounding();

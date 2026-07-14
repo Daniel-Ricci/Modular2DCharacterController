@@ -12,6 +12,7 @@ namespace Modular2DCharacterController.Runtime.Features
     /// Uses the Dash Profile data to calculate dash force.
     /// </summary>
     [RequireComponent(typeof(CharacterController2D))]
+    [RequireComponent(typeof(Collider2D))]
     public class DashFeature : MonoBehaviour, ICharacterFeature
     {
         [Header("Default Dash Profile")]
@@ -54,6 +55,19 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         private bool canBeInterrupted = true;
 
+        [Header("Dash Hit Detection")]
+
+        [Tooltip("Layers that can be reported by DashHit.")]
+        [SerializeField]
+        private LayerMask dashHitLayers = ~0;
+
+        [Tooltip(
+            "Extra cast distance added to dash hit detection. " +
+            "Small values help catch contacts at high speed.")]
+        [SerializeField]
+        [Min(0f)]
+        private float dashHitSkin = 0.02f;
+
         // True while the dash is actively controlling velocity.
         // Other features can read this to skip movement or gravity during dash.
         public bool IsDashing { get; private set; }
@@ -61,6 +75,10 @@ namespace Modular2DCharacterController.Runtime.Features
         // Event for dashing.
         // Uses the dash's velocity as parameter.
         public event Action<float> Dashed;
+        
+        // Event for dash collision.
+        // Uses the dash's collision data as parameter.
+        public event Action<CharacterHitEvent> DashHit;
         
         // Event for end of dash.
         public event Action DashEnded;
@@ -100,12 +118,14 @@ namespace Modular2DCharacterController.Runtime.Features
         // Components used by this feature.
         private CharacterController2D _controller;
         private CharacterMotor _motor;
+        private Collider2D _collider;
         private ICharacterInput _input;
         private GroundDetector _groundDetector;
         private HorizontalMovementFeature _horizontalMovementFeature;
         private WallJumpFeature _wallJumpFeature;
         private GroundPoundFeature _groundPoundFeature;
         private ProfileProvider<DashProfile> _dashProfileProvider;
+        private ContactFilter2D _dashHitFilter;
 
         // Direction chosen when the dash starts.
         private Vector2 _dashDirection;
@@ -126,17 +146,29 @@ namespace Modular2DCharacterController.Runtime.Features
         // Buffered dash input.
         // DashPressed is frame-based, so it is captured in Tick and consumed in FixedTick.
         private bool _dashRequested;
+        private Collider2D _lastDashHitCollider;
+
+        private readonly RaycastHit2D[] _dashHitResults =
+            new RaycastHit2D[8];
 
         private void Awake()
         {
             _controller = GetComponent<CharacterController2D>();
             _motor = GetComponent<CharacterMotor>();
+            _collider = GetComponent<Collider2D>();
             _input = GetComponent<ICharacterInput>();
             _groundDetector = GetComponent<GroundDetector>();
             _horizontalMovementFeature = GetComponent<HorizontalMovementFeature>();
             _wallJumpFeature = GetComponent<WallJumpFeature>();
             _groundPoundFeature = GetComponent<GroundPoundFeature>();
             _dashProfileProvider = _controller.DashProfileProvider;
+
+            _dashHitFilter = new ContactFilter2D
+            {
+                useLayerMask = true,
+                layerMask = dashHitLayers,
+                useTriggers = false
+            };
 
             _remainingDashes = maxDashCount;
 
@@ -304,9 +336,11 @@ namespace Modular2DCharacterController.Runtime.Features
             _dashDirection = direction.normalized;
             _dashTimer = currentProfile.dashDuration;
             IsDashing = true;
+            _lastDashHitCollider = null;
 
             // Set velocity immediately so dash starts on this physics tick.
             _motor.SetSelfVelocity(_dashDirection * currentProfile.dashSpeed);
+            CheckDashHit(currentProfile);
             Dashed?.Invoke(currentProfile.dashSpeed);
         }
 
@@ -332,6 +366,8 @@ namespace Modular2DCharacterController.Runtime.Features
 
         private void ContinueDash(DashProfile currentProfile)
         {
+            CheckDashHit(currentProfile);
+
             // Clamp minimum duration so it cannot exceed total dash duration.
             float minimumDashDuration =
                 Mathf.Min(
@@ -377,6 +413,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private void EndDash(DashProfile currentProfile, bool applyExitVelocity)
         {
             IsDashing = false;
+            _lastDashHitCollider = null;
 
             _cooldownTimer =
                 currentProfile != null
@@ -412,6 +449,91 @@ namespace Modular2DCharacterController.Runtime.Features
 
             _motor.SetSelfVelocity(exitVelocity);
             DashEnded?.Invoke();
+        }
+
+        private void CheckDashHit(DashProfile currentProfile)
+        {
+            if (_collider == null)
+                return;
+
+            if (_dashDirection == Vector2.zero)
+                return;
+
+            float castDistance =
+                currentProfile.dashSpeed *
+                Time.fixedDeltaTime +
+                dashHitSkin;
+
+            int hitCount =
+                _collider.Cast(
+                    _dashDirection,
+                    _dashHitFilter,
+                    _dashHitResults,
+                    castDistance);
+
+            RaycastHit2D bestHit = default;
+
+            for (int i = 0; i < hitCount; i++)
+            {
+                RaycastHit2D hit =
+                    _dashHitResults[i];
+
+                if (!IsValidDashHit(hit))
+                    continue;
+
+                if (bestHit.collider == null ||
+                    hit.distance < bestHit.distance)
+                {
+                    bestHit = hit;
+                }
+            }
+
+            if (bestHit.collider == null)
+                return;
+
+            if (bestHit.collider == _lastDashHitCollider)
+                return;
+
+            _lastDashHitCollider = bestHit.collider;
+
+            CharacterHitEvent hitEvent =
+                CreateDashHitEvent(bestHit);
+
+            DashHit?.Invoke(hitEvent);
+
+            if (bestHit.collider.TryGetComponent(out IDashHitReceiver receiver))
+            {
+                receiver.OnDashHit(hitEvent);
+            }
+        }
+
+        private bool IsValidDashHit(RaycastHit2D hit)
+        {
+            if (hit.collider == null)
+                return false;
+
+            if (hit.collider == _collider)
+                return false;
+
+            if (hit.collider.transform == transform ||
+                hit.collider.transform.IsChildOf(transform))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private CharacterHitEvent CreateDashHitEvent(RaycastHit2D hit)
+        {
+            return new CharacterHitEvent(
+                hit.collider != null ? hit.collider.gameObject : null,
+                hit.point,
+                hit.normal,
+                hit.collider,
+                hit.rigidbody,
+                gameObject,
+                _motor != null ? _motor.CurrentSelfVelocity : Vector2.zero);
         }
 
         private void ResetDashCount()

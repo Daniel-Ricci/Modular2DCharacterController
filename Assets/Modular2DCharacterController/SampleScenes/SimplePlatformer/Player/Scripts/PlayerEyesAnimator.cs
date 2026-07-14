@@ -110,7 +110,7 @@ namespace Modular2DCharacterController.SampleScenes.SimplePlatformer.Player.Scri
             }
         }
 
-        public void OnHit(GameObject _)
+        public void OnHit(CharacterHitEvent _)
         {
             if (!gameObject.activeInHierarchy)
                 return;

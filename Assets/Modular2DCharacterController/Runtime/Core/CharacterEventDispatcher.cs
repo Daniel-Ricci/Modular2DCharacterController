@@ -9,13 +9,14 @@ namespace Modular2DCharacterController.Runtime.Core
     /// </summary>
     public class CharacterEventDispatcher : MonoBehaviour
     {
-        public event Action<Vector2> Landed;
+        public event Action<CharacterHitEvent> Landed;
         public event Action<Vector2> LeftGround;
-        public event Action<GameObject> CeilingHit;
+        public event Action<CharacterHitEvent> CeilingHit;
         public event Action<float> Jumped;
         public event Action StartedRun;
         public event Action StoppedRun;
         public event Action<float> Dashed;
+        public event Action<CharacterHitEvent> DashHit;
         public event Action DashEnded;
         public event Action CrouchStarted;
         public event Action CrouchEnded;
@@ -25,7 +26,7 @@ namespace Modular2DCharacterController.Runtime.Core
         public event Action GlideEnded;
         public event Action GroundPoundStarted;
         public event Action GroundPoundInterrupted;
-        public event Action<GameObject> GroundPoundFinished;
+        public event Action<CharacterHitEvent> GroundPoundFinished;
         public event Action WallSlideStarted;
         public event Action WallSlideEnded;
         public event Action WallJumped;
@@ -80,6 +81,7 @@ namespace Modular2DCharacterController.Runtime.Core
             if (dashFeature != null)
             {
                 dashFeature.Dashed += OnDashed;
+                dashFeature.DashHit += OnDashHit;
                 dashFeature.DashEnded += OnDashEnded;
             }
                 
@@ -142,6 +144,7 @@ namespace Modular2DCharacterController.Runtime.Core
             if (dashFeature != null)
             {
                 dashFeature.Dashed -= OnDashed;
+                dashFeature.DashHit -= OnDashHit;
                 dashFeature.DashEnded -= OnDashEnded;
             }
             
@@ -178,9 +181,9 @@ namespace Modular2DCharacterController.Runtime.Core
             }
         }
         
-        private void OnLanded(Vector2 landingVelocity)
+        private void OnLanded(CharacterHitEvent hitEvent)
         {
-            Landed?.Invoke(landingVelocity);
+            Landed?.Invoke(hitEvent);
         }
 
         private void OnLeftGround(Vector2 launchVelocity)
@@ -188,9 +191,9 @@ namespace Modular2DCharacterController.Runtime.Core
             LeftGround?.Invoke(launchVelocity);
         }
 
-        private void OnCeilingHit(GameObject hitObject)
+        private void OnCeilingHit(CharacterHitEvent hitEvent)
         {
-            CeilingHit?.Invoke(hitObject);
+            CeilingHit?.Invoke(hitEvent);
         }
 
         private void OnJumped(float jumpVelocity)
@@ -211,6 +214,11 @@ namespace Modular2DCharacterController.Runtime.Core
         private void OnDashed(float dashVelocity)
         {
             Dashed?.Invoke(dashVelocity);
+        }
+
+        private void OnDashHit(CharacterHitEvent hitEvent)
+        {
+            DashHit?.Invoke(hitEvent);
         }
         
         private void OnDashEnded()
@@ -258,9 +266,9 @@ namespace Modular2DCharacterController.Runtime.Core
             GroundPoundInterrupted?.Invoke();
         }
 
-        private void OnGroundPoundFinished(GameObject hitObject)
+        private void OnGroundPoundFinished(CharacterHitEvent hitEvent)
         {
-            GroundPoundFinished?.Invoke(hitObject);
+            GroundPoundFinished?.Invoke(hitEvent);
         }
 
         private void OnWallSlideStarted()

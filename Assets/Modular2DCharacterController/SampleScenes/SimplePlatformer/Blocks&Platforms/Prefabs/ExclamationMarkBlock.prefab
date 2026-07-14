@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 6335988313843033502}
   - component: {fileID: 3650110879903826187}
   - component: {fileID: 5676457700042752933}
+  - component: {fileID: 1906476638911657562}
   m_Layer: 7
   m_Name: ExclamationMarkBlock
   m_TagString: Untagged
@@ -232,3 +233,21 @@ BoxCollider2D:
   m_AutoTiling: 1
   m_Size: {x: 0.64, y: 0.64}
   m_EdgeRadius: 0
+--- !u!114 &1906476638911657562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6779304156818522535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fdf758c472949a9a7f902835b7bc6a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.SampleScenes.SimplePlatformer.Blocks_Platforms.Scripts.ExclamationMarkBlockBehavior
+  bounceHeight: 0.2
+  bounceDuration: 0.1
+  blockRenderer: {fileID: 3650110879903826187}
+  exclamationMarkRenderer: {fileID: 1501399402672953028}
+  redMaterial: {fileID: 2100000, guid: dd9b88bfb4f1bca41953737773155e76, type: 2}
+  blueMaterial: {fileID: 2100000, guid: 94644d24ffc8f37478cc8da0b301dd21, type: 2}

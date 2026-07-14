@@ -74,7 +74,9 @@ namespace Modular2DCharacterController.Runtime.Core
 
         public float StandCheckSkin => standCheckSkin;
 
-        public event Action<GameObject> CeilingHit;
+        // Event for hitting something from bellow.
+        // Uses the ceiling's collision data as parameter.
+        public event Action<CharacterHitEvent> CeilingHit;
 
         private Collider2D _characterCollider;
         private Rigidbody2D _rigidbody;
@@ -193,7 +195,15 @@ namespace Modular2DCharacterController.Runtime.Core
             if (!wasTouchingCeiling &&
                 WasMovingUpIntoCeiling())
             {
-                CeilingHit?.Invoke(bestHit.collider.gameObject);
+                CharacterHitEvent hitEvent =
+                    CreateHitEvent(bestHit);
+
+                CeilingHit?.Invoke(hitEvent);
+
+                if (bestHit.collider.TryGetComponent(out ICeilingHitReceiver receiver))
+                {
+                    receiver.OnCeilingHit(hitEvent);
+                }
             }
         }
 
@@ -329,6 +339,18 @@ namespace Modular2DCharacterController.Runtime.Core
                 platformEffector.transform.TransformDirection(localSolidSide);
 
             return ((Vector2)worldSolidSide).normalized;
+        }
+        
+        private CharacterHitEvent CreateHitEvent(RaycastHit2D hit)
+        {
+            return new CharacterHitEvent(
+                hit.collider != null ? hit.collider.gameObject : null,
+                hit.point,
+                hit.normal,
+                hit.collider,
+                hit.rigidbody,
+                gameObject,
+                _motor != null ? _motor.LastResolvedFinalVelocity : _rigidbody.linearVelocity);
         }
     }
 }

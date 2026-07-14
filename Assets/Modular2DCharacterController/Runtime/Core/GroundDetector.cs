@@ -58,14 +58,21 @@ namespace Modular2DCharacterController.Runtime.Core
 
         public float GroundAngle { get; private set; }
 
+        public Vector2 GroundPoint { get; private set; }
+
+        public Collider2D CurrentGroundCollider { get; private set; }
+
         public Transform CurrentGroundTransform { get; private set; }
 
         public Vector2 GroundVelocity { get; private set; }
 
         public Vector2 GroundDelta { get; private set; }
 
-        // Event triggered when the character lands and leaves the ground.
-        public event Action<Vector2> Landed;
+        // Event triggered when the character lands on the ground.
+        // Uses the landing's hit data as parameter.
+        public event Action<CharacterHitEvent> Landed;
+        
+        // Event triggered when the character leaves the ground.
         public event Action<Vector2> LeftGround;
 
         private Collider2D _characterCollider;
@@ -147,10 +154,11 @@ namespace Modular2DCharacterController.Runtime.Core
                 return;
             }
 
-            SetGrounded(true);
+            SetGrounded(true, bestHit);
 
             GroundNormal = bestHit.normal;
             GroundAngle = Vector2.Angle(bestHit.normal, Vector2.up);
+            GroundPoint = bestHit.point;
 
             UpdateGroundData(bestHit);
         }
@@ -164,6 +172,8 @@ namespace Modular2DCharacterController.Runtime.Core
                 ClearGroundData();
                 return;
             }
+
+            CurrentGroundCollider = hit.collider;
 
             Vector2 currentGroundPosition = groundTransform.position;
 
@@ -208,13 +218,15 @@ namespace Modular2DCharacterController.Runtime.Core
 
         private void ClearGroundData()
         {
+            CurrentGroundCollider = null;
             CurrentGroundTransform = null;
+            GroundPoint = Vector2.zero;
             GroundVelocity = Vector2.zero;
             GroundDelta = Vector2.zero;
             _lastGroundPosition = Vector2.zero;
         }
 
-        private void SetGrounded(bool grounded)
+        private void SetGrounded(bool grounded, RaycastHit2D hit = default)
         {
             if (IsGrounded == grounded)
                 return;
@@ -222,9 +234,34 @@ namespace Modular2DCharacterController.Runtime.Core
             IsGrounded = grounded;
 
             if (grounded)
-                Landed?.Invoke(_motor.CurrentSelfVelocity);
+            {
+                CharacterHitEvent hitEvent =
+                    CreateHitEvent(hit);
+
+                Landed?.Invoke(hitEvent);
+
+                if (hit.collider != null &&
+                    hit.collider.TryGetComponent(out ILandedHitReceiver receiver))
+                {
+                    receiver.OnLandedHit(hitEvent);
+                }
+            }
             else
+            {
                 LeftGround?.Invoke(_motor.CurrentSelfVelocity);
+            }
+        }
+
+        private CharacterHitEvent CreateHitEvent(RaycastHit2D hit)
+        {
+            return new CharacterHitEvent(
+                hit.collider != null ? hit.collider.gameObject : null,
+                hit.point,
+                hit.normal,
+                hit.collider,
+                hit.rigidbody,
+                gameObject,
+                _motor != null ? _motor.CurrentSelfVelocity : _rigidbody.linearVelocity);
         }
     }
 }

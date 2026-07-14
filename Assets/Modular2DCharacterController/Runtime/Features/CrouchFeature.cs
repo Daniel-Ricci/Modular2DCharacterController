@@ -545,7 +545,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _pendingPassThroughOneWayCount = 0;
         }
         
-        private void OnLeftGround(Vector2 unused)
+        private void OnLeftGround(Vector2 _)
         {
             if (clearToggleWhenLeavingGround)
             {

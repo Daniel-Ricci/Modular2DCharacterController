@@ -225,45 +225,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &859855530 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1731195217693226295, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
-  m_PrefabInstance: {fileID: 2406889666163209020}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &859855545
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 859855530}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 292686228561f8c42b1bca346f5a381f, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!114 &859855546
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 859855530}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c34f6cfa11e980439480d30ab5f290d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.SampleScenes.SimplePlatformer.Player.Scripts.PlayerAnimatorController
 --- !u!1001 &922424689
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -458,6 +419,34 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &1908785698 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1731195217693226295, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
+  m_PrefabInstance: {fileID: 2406889666163209020}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1908785715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908785698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f02bc4ea75a30e14480c6de5a9a9f224, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.DashFeature
+  defaultDashProfile: {fileID: 11400000, guid: 7be7cb5cc5db38e4088fd599ccf60e17, type: 2}
+  maxDashCount: 1
+  resetDashCountOnGrounded: 1
+  resetDashCountOnWallJump: 0
+  useInputDirection: 1
+  fallbackToFacingDirection: 1
+  canBeInterrupted: 0
+  dashHitLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  dashHitSkin: 0.02
 --- !u!1001 &2406889666163209020
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -510,16 +499,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7454774836094923543, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
+      propertyPath: dashAction
+      value: 
+      objectReference: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1731195217693226295, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
-      insertIndex: 3
-      addedObject: {fileID: 859855545}
-    - targetCorrespondingSourceObject: {fileID: 1731195217693226295, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 859855546}
+      insertIndex: 12
+      addedObject: {fileID: 1908785715}
   m_SourcePrefab: {fileID: 100100000, guid: 3ed1c90f6edeac74aa0c8595bc7a5d09, type: 3}
 --- !u!1001 &6965041086328919724
 PrefabInstance:

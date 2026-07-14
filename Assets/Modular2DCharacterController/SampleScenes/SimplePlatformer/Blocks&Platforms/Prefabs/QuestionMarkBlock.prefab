@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 6335988313843033502}
   - component: {fileID: 3650110879903826187}
   - component: {fileID: 9161677581290111955}
+  - component: {fileID: 2556874338952385365}
   m_Layer: 7
   m_Name: QuestionMarkBlock
   m_TagString: Untagged
@@ -232,3 +233,18 @@ BoxCollider2D:
   m_AutoTiling: 1
   m_Size: {x: 0.64, y: 0.64}
   m_EdgeRadius: 0
+--- !u!114 &2556874338952385365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6779304156818522535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eb0dc5484efaab418c285864561aa24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  bounceHeight: 0.2
+  bounceDuration: 0.1
+  questionMarkRenderer: {fileID: 1501399402672953028}
