@@ -1,4 +1,5 @@
 using Modular2DCharacterController.Runtime.Core;
+using Modular2DCharacterController.SampleScenes.SimplePlatformer.UI;
 using UnityEngine;
 
 namespace Modular2DCharacterController.SampleScenes.SimplePlatformer.Blocks_Platforms.Scripts
@@ -7,6 +8,9 @@ namespace Modular2DCharacterController.SampleScenes.SimplePlatformer.Blocks_Plat
     {
         [SerializeField]
         private SpriteRenderer questionMarkRenderer;
+
+        [SerializeField]
+        private GameObject objectToShow;
         
         private bool _isHit = false;
 
@@ -17,6 +21,7 @@ namespace Modular2DCharacterController.SampleScenes.SimplePlatformer.Blocks_Plat
                 _isHit = true;
                 base.OnHit(hitEvent, direction);
                 questionMarkRenderer.enabled = false;
+                objectToShow.SetActive(true);
             }
         }
     }

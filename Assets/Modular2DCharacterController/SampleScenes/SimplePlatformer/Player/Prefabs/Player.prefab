@@ -79,7 +79,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 34e6dcec8a6816e43a8b57138a9e17a7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -112,13 +112,14 @@ GameObject:
   - component: {fileID: 5904856740638617353}
   - component: {fileID: 6388393516580580117}
   - component: {fileID: 8491106500036555644}
+  - component: {fileID: 7363095386539452730}
   - component: {fileID: 2586436167017839895}
   - component: {fileID: 7126652484792441938}
   - component: {fileID: 8257239773643357209}
   - component: {fileID: 8255167183516898668}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -305,7 +306,7 @@ MonoBehaviour:
   moveAction: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   jumpAction: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   runAction: {fileID: 0}
-  dashAction: {fileID: 0}
+  dashAction: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   crouchAction: {fileID: 0}
   groundPoundAction: {fileID: 5346571335234246221, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!114 &3746440792277078716
@@ -378,6 +379,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.GroundPoundFeature
   defaultGroundPoundProfile: {fileID: 11400000, guid: 5280e51b4f174115bdb2783d24ef5423, type: 2}
   canBeInterrupted: 1
+--- !u!114 &7363095386539452730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731195217693226295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f02bc4ea75a30e14480c6de5a9a9f224, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.DashFeature
+  defaultDashProfile: {fileID: 11400000, guid: 7be7cb5cc5db38e4088fd599ccf60e17, type: 2}
+  maxDashCount: 1
+  resetDashCountOnGrounded: 1
+  resetDashCountOnWallJump: 0
+  useInputDirection: 1
+  fallbackToFacingDirection: 1
+  canBeInterrupted: 0
+  dashHitLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  dashHitSkin: 0.02
 --- !u!114 &2586436167017839895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -520,7 +544,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: e0ffc67faa263a94f8b7f36bb01653fa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

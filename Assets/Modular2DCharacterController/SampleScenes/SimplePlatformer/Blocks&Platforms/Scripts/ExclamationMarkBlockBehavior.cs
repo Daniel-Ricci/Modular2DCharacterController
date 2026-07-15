@@ -15,22 +15,35 @@ namespace Modular2DCharacterController.SampleScenes.SimplePlatformer.Blocks_Plat
         [SerializeField]
         private Material blueMaterial;
 
-        private bool _isBlue = true;
+        private RedBlueState _redBlueState;
+
+        private void OnEnable()
+        {
+            _redBlueState = FindAnyObjectByType<RedBlueState>();
+            if (_redBlueState != null)
+            {
+                _redBlueState.OnStateChanged += UpdateVisuals;
+                UpdateVisuals(_redBlueState.isBlue);
+            }
+        }
         
         protected override void OnHit(CharacterHitEvent hitEvent, Vector2 direction)
         {
             base.OnHit(hitEvent, direction);
-            if (_isBlue)
+            _redBlueState.ChangeState();
+        }
+
+        private void UpdateVisuals(bool isBlue)
+        {
+            if (isBlue)
             {
-                _isBlue = false;
-                blockRenderer.material = redMaterial;
-                exclamationMarkRenderer.material = redMaterial;
+                blockRenderer.material = blueMaterial;
+                exclamationMarkRenderer.material = blueMaterial;
             }
             else
             {
-                _isBlue = true;
-                blockRenderer.material = blueMaterial;
-                exclamationMarkRenderer.material = blueMaterial;
+                blockRenderer.material = redMaterial;
+                exclamationMarkRenderer.material = redMaterial;
             }
         }
     }
