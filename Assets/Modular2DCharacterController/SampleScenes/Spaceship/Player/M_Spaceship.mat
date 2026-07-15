@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_LightEffect_Meteor
+  m_Name: M_Spaceship
   m_Shader: {fileID: -6465566751694194690, guid: 01a4654c933f68343a191386bc69986a, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -56,6 +56,5 @@ Material:
     m_Floats: []
     m_Colors:
     - White: {r: 1, g: 1, b: 1, a: 1}
-    - _MainColor: {r: 0.6415094, g: 0.24414884, b: 0.033285867, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
