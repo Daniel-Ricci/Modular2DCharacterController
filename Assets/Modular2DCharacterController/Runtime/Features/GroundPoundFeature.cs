@@ -34,6 +34,20 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         private bool canBeInterrupted = true;
 
+        [Header("Recovery Jump")]
+
+        [Tooltip(
+            "If enabled, jump can be pressed during ground pound recovery. " +
+            "The recovery jump profile is registered temporarily while recovery is active.")]
+        [SerializeField]
+        private bool allowJumpDuringRecovery = false;
+
+        [Tooltip(
+            "Jump profile used only during ground pound recovery. " +
+            "Give this profile a higher priority than the normal jump profile.")]
+        [SerializeField]
+        private JumpProfile recoveryJumpProfile;
+
         // Invoked when the ground pound starts.
         public event Action GroundPoundStarted;
 
@@ -56,12 +70,27 @@ namespace Modular2DCharacterController.Runtime.Features
             IsGroundPounding &&
             canBeInterrupted;
 
+        public bool CanJumpDuringRecovery =>
+            IsRecoveryActive &&
+            allowJumpDuringRecovery &&
+            recoveryJumpProfile != null;
+
         public bool TryInterruptGroundPound()
         {
             if (!CanInterruptCurrentGroundPound)
                 return false;
 
             EndGroundPound(default, false);
+            return true;
+        }
+
+        public bool TryConsumeRecoveryJump()
+        {
+            if (!CanJumpDuringRecovery)
+                return false;
+
+            _recoveryTimer = 0f;
+            UnregisterRecoveryJumpProfile();
             return true;
         }
 
@@ -77,6 +106,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private ICharacterInput _input;
         private DashFeature _dashFeature;
         private ProfileProvider<GroundPoundProfile> _groundPoundProfileProvider;
+        private ProfileProvider<JumpProfile> _jumpProfileProvider;
 
         private GroundPoundState _state;
         private float _stillInAirTimer;
@@ -88,6 +118,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private bool _dashInterruptRequested;
         private bool _glideInterruptRequested;
         private bool _wasGlideInputHeld;
+        private bool _recoveryJumpProfileRegistered;
 
         private void Awake()
         {
@@ -99,6 +130,9 @@ namespace Modular2DCharacterController.Runtime.Features
 
             _groundPoundProfileProvider =
                 _controller.GroundPoundProfileProvider;
+
+            _jumpProfileProvider =
+                _controller.JumpProfileProvider;
         }
 
         private void OnEnable()
@@ -122,6 +156,8 @@ namespace Modular2DCharacterController.Runtime.Features
             {
                 EndGroundPound(default, false);
             }
+
+            UnregisterRecoveryJumpProfile();
         }
 
         public void Tick()
@@ -190,6 +226,11 @@ namespace Modular2DCharacterController.Runtime.Features
                 Mathf.Max(
                     0f,
                     _recoveryTimer - Time.fixedDeltaTime);
+
+            if (_recoveryTimer <= 0f)
+            {
+                UnregisterRecoveryJumpProfile();
+            }
         }
 
         private void TryStartGroundPound(
@@ -221,6 +262,7 @@ namespace Modular2DCharacterController.Runtime.Features
         {
             IsGroundPounding = true;
             _recoveryTimer = 0f;
+            UnregisterRecoveryJumpProfile();
 
             _stillInAirTimer =
                 currentProfile.stillTimeBeforeDescending;
@@ -328,6 +370,13 @@ namespace Modular2DCharacterController.Runtime.Features
             {
                 _recoveryTimer =
                     currentProfile.timeBeforeCanMoveAgainIfHitGround;
+
+                RegisterRecoveryJumpProfile();
+            }
+            else
+            {
+                _recoveryTimer = 0f;
+                UnregisterRecoveryJumpProfile();
             }
 
             if (hitGround)
@@ -378,6 +427,29 @@ namespace Modular2DCharacterController.Runtime.Features
             _jumpInterruptRequested = false;
             _dashInterruptRequested = false;
             _glideInterruptRequested = false;
+        }
+
+        private void RegisterRecoveryJumpProfile()
+        {
+            if (_recoveryTimer <= 0f ||
+                !allowJumpDuringRecovery ||
+                recoveryJumpProfile == null ||
+                _recoveryJumpProfileRegistered)
+            {
+                return;
+            }
+
+            _jumpProfileProvider?.RegisterProfile(recoveryJumpProfile);
+            _recoveryJumpProfileRegistered = true;
+        }
+
+        private void UnregisterRecoveryJumpProfile()
+        {
+            if (!_recoveryJumpProfileRegistered)
+                return;
+
+            _jumpProfileProvider?.UnregisterProfile(recoveryJumpProfile);
+            _recoveryJumpProfileRegistered = false;
         }
     }
 }

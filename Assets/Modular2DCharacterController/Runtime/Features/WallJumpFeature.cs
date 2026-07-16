@@ -9,12 +9,11 @@ namespace Modular2DCharacterController.Runtime.Features
     /// <summary>
     /// A configurable feature that handles player wall jumps.
     ///
-    /// Requires the wall slide feature and only allows to wall jump
-    /// while wall sliding.
+    /// Can require an active wall slide, or only require touching a wall,
+    /// depending on the feature settings.
     /// </summary>
     [RequireComponent(typeof(CharacterController2D))]
     [RequireComponent(typeof(WallDetector))]
-    [RequireComponent(typeof(WallSlideFeature))]
     public class WallJumpFeature : MonoBehaviour, ICharacterFeature
     {
         [Header("Default Wall Jump Profile")]
@@ -24,16 +23,24 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         private WallJumpProfile defaultWallJumpProfile;
 
+        [Header("Wall Jump Conditions")]
+
+        [Tooltip(
+            "If enabled, the character must be wall sliding to wall jump. " +
+            "If disabled, simply touching a valid wall is enough.")]
+        [SerializeField]
+        private bool requireWallSlide = true;
+
         [Header("Forgiveness")]
 
         [Tooltip(
-            "Allows wall jumping shortly after leaving a wall slide.")]
+            "Allows wall jumping shortly after leaving a valid wall jump contact.")]
         [SerializeField]
         [Min(0f)]
         private float wallJumpCoyoteTime = 0.1f;
 
         [Tooltip(
-            "Allows a jump input pressed shortly before wall sliding to be buffered " +
+            "Allows a jump input pressed shortly before touching a valid wall jump contact to be buffered " +
             "and executed automatically.")]
         [SerializeField]
         [Min(0f)]
@@ -134,7 +141,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 _controlInfluenceTimer -= Time.fixedDeltaTime;
             }
 
-            if (_wallSlideFeature.IsWallSliding)
+            if (IsWallJumpContactActive())
             {
                 _wallJumpCoyoteTimer =
                     Mathf.Max(wallJumpCoyoteTime, Time.fixedDeltaTime);
@@ -175,7 +182,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 return;
 
             Vector2 wallNormal =
-                _wallSlideFeature.IsWallSliding
+                IsWallJumpContactActive()
                     ? _wallDetector.WallNormal
                     : _lastWallJumpNormal;
 
@@ -247,6 +254,18 @@ namespace Modular2DCharacterController.Runtime.Features
                     currentWallJumpProfile.horizontalInputInfluence);
 
             return influencedVelocityX;
+        }
+
+        private bool IsWallJumpContactActive()
+        {
+            if (requireWallSlide)
+            {
+                return _wallSlideFeature != null &&
+                       _wallSlideFeature.IsWallSliding;
+            }
+
+            return _wallDetector != null &&
+                   _wallDetector.IsTouchingWall;
         }
     }
 }

@@ -569,9 +569,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e17163c2940b90b4a95e9416d1deaac3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RigidbodyMovingPlatform
-  movementAxis: 0
-  distance: 5
-  speed: 2
 --- !u!50 &555328635
 Rigidbody2D:
   serializedVersion: 5
@@ -1830,6 +1827,22 @@ PrefabInstance:
     - target: {fileID: 548829648891183911, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1537304120068154184, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2421745089491559696, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: requireWallSlide
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3360759555825833622, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: recoveryJumpProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: f09bbe033d86b6840af128435dbece6e, type: 2}
+    - target: {fileID: 3360759555825833622, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: allowJumpDuringRecovery
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7429609835000910511, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
       propertyPath: defaultGlideProfile

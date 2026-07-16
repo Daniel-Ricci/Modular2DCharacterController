@@ -195,7 +195,8 @@ namespace Modular2DCharacterController.Runtime.Features
         public void Tick()
         {
             if (_groundPoundFeature != null &&
-                _groundPoundFeature.IsRecoveryActive)
+                _groundPoundFeature.IsRecoveryActive &&
+                !_groundPoundFeature.CanJumpDuringRecovery)
             {
                 _jumpRequested = false;
                 return;
@@ -351,8 +352,11 @@ namespace Modular2DCharacterController.Runtime.Features
             if (_groundPoundFeature != null &&
                 _groundPoundFeature.IsRecoveryActive)
             {
-                _jumpBufferTimer = 0f;
-                return;
+                if (!_groundPoundFeature.CanJumpDuringRecovery)
+                {
+                    _jumpBufferTimer = 0f;
+                    return;
+                }
             }
 
             if (_groundPoundFeature != null &&
@@ -388,6 +392,14 @@ namespace Modular2DCharacterController.Runtime.Features
 
             if (!canGroundJump && !canAirJump && !canJumpAfterAirDash)
                 return;
+
+            if (_groundPoundFeature != null &&
+                _groundPoundFeature.IsRecoveryActive &&
+                !_groundPoundFeature.TryConsumeRecoveryJump())
+            {
+                _jumpBufferTimer = 0f;
+                return;
+            }
 
             if (canGroundJump)
             {
