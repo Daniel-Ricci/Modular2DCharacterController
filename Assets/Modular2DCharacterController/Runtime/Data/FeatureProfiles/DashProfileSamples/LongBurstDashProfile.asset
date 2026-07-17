@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: LongBurstDashProfile
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Data.DashProfile
   priority: 0
-  dashSpeed: 16
-  dashDuration: 0.22
-  dashCooldown: 0.16
-  variableDashLength: 0
-  minimumDashDuration: 0.06
+  dashSpeed: 50
+  dashDuration: 0.2
+  dashCooldown: 0.1
+  variableDashLength: 1
+  minimumDashDuration: 0.04
   allowGroundDash: 1
   allowAirDash: 1
-  preserveDashMomentum: 1
+  preserveDashMomentum: 0
   endingMomentumMultiplier: 0
   clearVerticalVelocityOnEnd: 1
   applyGravity: 0

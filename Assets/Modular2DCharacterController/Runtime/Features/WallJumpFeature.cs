@@ -172,8 +172,7 @@ namespace Modular2DCharacterController.Runtime.Features
             }
         }
 
-        private void TryWallJump(
-            WallJumpProfile currentWallJumpProfile)
+        private void TryWallJump(WallJumpProfile currentWallJumpProfile)
         {
             if (_wallJumpBufferTimer <= 0f)
                 return;
@@ -207,7 +206,7 @@ namespace Modular2DCharacterController.Runtime.Features
             Vector2 velocity = new Vector2(
                 influencedVelocityX,
                 currentWallJumpProfile.verticalForce);
-
+            
             _motor.SetSelfVelocity(velocity);
 
             _controlInfluenceTimer =
