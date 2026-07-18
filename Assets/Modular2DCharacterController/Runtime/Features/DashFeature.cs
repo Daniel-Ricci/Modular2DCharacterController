@@ -122,6 +122,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private ICharacterInput _input;
         private GroundDetector _groundDetector;
         private HorizontalMovementFeature _horizontalMovementFeature;
+        private RollFeature _rollFeature;
         private WallJumpFeature _wallJumpFeature;
         private GroundPoundFeature _groundPoundFeature;
         private ProfileProvider<DashProfile> _dashProfileProvider;
@@ -159,6 +160,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _input = GetComponent<ICharacterInput>();
             _groundDetector = GetComponent<GroundDetector>();
             _horizontalMovementFeature = GetComponent<HorizontalMovementFeature>();
+            _rollFeature = GetComponent<RollFeature>();
             _wallJumpFeature = GetComponent<WallJumpFeature>();
             _groundPoundFeature = GetComponent<GroundPoundFeature>();
             _dashProfileProvider = _controller.DashProfileProvider;
@@ -312,6 +314,13 @@ namespace Modular2DCharacterController.Runtime.Features
             if (_groundPoundFeature != null &&
                 _groundPoundFeature.IsGroundPounding &&
                 !_groundPoundFeature.TryInterruptGroundPound())
+            {
+                return;
+            }
+
+            if (_rollFeature != null &&
+                _rollFeature.IsRolling &&
+                !_rollFeature.TryInterruptRoll())
             {
                 return;
             }

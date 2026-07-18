@@ -19,4 +19,9 @@ namespace Modular2DCharacterController.Runtime.Core
     {
         void OnDashHit(CharacterHitEvent hitEvent);
     }
+
+    public interface IRollHitReceiver
+    {
+        void OnRollHit(CharacterHitEvent hitEvent);
+    }
 }

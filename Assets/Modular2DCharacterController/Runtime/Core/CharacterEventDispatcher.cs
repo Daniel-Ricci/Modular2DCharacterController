@@ -18,6 +18,9 @@ namespace Modular2DCharacterController.Runtime.Core
         public event Action<float> Dashed;
         public event Action<CharacterHitEvent> DashHit;
         public event Action DashEnded;
+        public event Action<float> Rolled;
+        public event Action<CharacterHitEvent> RollHit;
+        public event Action RollEnded;
         public event Action CrouchStarted;
         public event Action CrouchEnded;
         public event Action CrouchStandBlocked;
@@ -36,6 +39,7 @@ namespace Modular2DCharacterController.Runtime.Core
         private JumpFeature jumpFeature;
         private RunFeature runFeature;
         private DashFeature dashFeature;
+        private RollFeature rollFeature;
         private CrouchFeature crouchFeature;
         private GlideFeature glideFeature;
         private GroundPoundFeature groundPoundFeature;
@@ -49,6 +53,7 @@ namespace Modular2DCharacterController.Runtime.Core
             jumpFeature = GetComponent<JumpFeature>();
             runFeature = GetComponent<RunFeature>();
             dashFeature = GetComponent<DashFeature>();
+            rollFeature = GetComponent<RollFeature>();
             crouchFeature = GetComponent<CrouchFeature>();
             glideFeature = GetComponent<GlideFeature>();
             groundPoundFeature = GetComponent<GroundPoundFeature>();
@@ -83,6 +88,13 @@ namespace Modular2DCharacterController.Runtime.Core
                 dashFeature.Dashed += OnDashed;
                 dashFeature.DashHit += OnDashHit;
                 dashFeature.DashEnded += OnDashEnded;
+            }
+
+            if (rollFeature != null)
+            {
+                rollFeature.Rolled += OnRolled;
+                rollFeature.RollHit += OnRollHit;
+                rollFeature.RollEnded += OnRollEnded;
             }
                 
 
@@ -146,6 +158,13 @@ namespace Modular2DCharacterController.Runtime.Core
                 dashFeature.Dashed -= OnDashed;
                 dashFeature.DashHit -= OnDashHit;
                 dashFeature.DashEnded -= OnDashEnded;
+            }
+
+            if (rollFeature != null)
+            {
+                rollFeature.Rolled -= OnRolled;
+                rollFeature.RollHit -= OnRollHit;
+                rollFeature.RollEnded -= OnRollEnded;
             }
             
             if (crouchFeature != null)
@@ -224,6 +243,21 @@ namespace Modular2DCharacterController.Runtime.Core
         private void OnDashEnded()
         {
             DashEnded?.Invoke();
+        }
+
+        private void OnRolled(float rollVelocity)
+        {
+            Rolled?.Invoke(rollVelocity);
+        }
+
+        private void OnRollHit(CharacterHitEvent hitEvent)
+        {
+            RollHit?.Invoke(hitEvent);
+        }
+
+        private void OnRollEnded()
+        {
+            RollEnded?.Invoke();
         }
 
         private void OnCrouchStarted()

@@ -100,6 +100,20 @@ namespace Modular2DCharacterController.Runtime.Features
         [Min(0f)]
         private float jumpAfterDashTime = 0.15f;
 
+        [Header("Air Roll Jump")]
+
+        [Tooltip(
+            "If enabled, the character can jump shortly after an edge-continuing roll ends in the air " +
+            "without consuming an air jump.")]
+        [SerializeField]
+        private bool allowJumpAfterAirRoll = true;
+
+        [Tooltip(
+            "How long after an edge-continuing roll ends in the air the free jump window remains available.")]
+        [SerializeField]
+        [Min(0f)]
+        private float jumpAfterAirRollTime = 0.15f;
+
         // Event triggered when the character jumps.
         public event Action<float> Jumped;
 
@@ -113,6 +127,8 @@ namespace Modular2DCharacterController.Runtime.Features
         public float JumpBufferTimer => _jumpBufferTimer;
 
         public float JumpAfterDashTimer => _jumpAfterDashTimer;
+
+        public float JumpAfterAirRollTimer => _jumpAfterAirRollTimer;
 
         public float JumpVelocity => _jumpVelocity;
 
@@ -128,6 +144,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private GroundDetector _groundDetector;
         private CharacterController2D _controller;
         private DashFeature _dashFeature;
+        private RollFeature _rollFeature;
         private WallSlideFeature _wallSlideFeature;
         private WallJumpFeature _wallJumpFeature;
         private GroundPoundFeature _groundPoundFeature;
@@ -142,6 +159,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private float _coyoteTimer;
         private float _jumpBufferTimer;
         private float _jumpAfterDashTimer;
+        private float _jumpAfterAirRollTimer;
 
         // Keeps track of remaining jumps.
         private int _remainingJumps;
@@ -158,6 +176,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _groundDetector = GetComponent<GroundDetector>();
             _controller = GetComponent<CharacterController2D>();
             _dashFeature = GetComponent<DashFeature>();
+            _rollFeature = GetComponent<RollFeature>();
             _wallSlideFeature = GetComponent<WallSlideFeature>();
             _wallJumpFeature = GetComponent<WallJumpFeature>();
             _groundPoundFeature = GetComponent<GroundPoundFeature>();
@@ -177,6 +196,11 @@ namespace Modular2DCharacterController.Runtime.Features
             {
                 _dashFeature.DashEnded += OnAirDashEnded;
             }
+
+            if (_rollFeature != null)
+            {
+                _rollFeature.RollEnded += OnRollEnded;
+            }
         }
 
         private void OnDisable()
@@ -189,6 +213,11 @@ namespace Modular2DCharacterController.Runtime.Features
             if (_dashFeature != null)
             {
                 _dashFeature.DashEnded -= OnAirDashEnded;
+            }
+
+            if (_rollFeature != null)
+            {
+                _rollFeature.RollEnded -= OnRollEnded;
             }
         }
 
@@ -235,6 +264,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 _coyoteTimer = coyoteTime;
                 _remainingJumps = maxAirJumpCount;
                 _jumpAfterDashTimer = 0f;
+                _jumpAfterAirRollTimer = 0f;
             }
             else
             {
@@ -243,6 +273,11 @@ namespace Modular2DCharacterController.Runtime.Features
                 if (_jumpAfterDashTimer > 0f)
                 {
                     _jumpAfterDashTimer -= Time.fixedDeltaTime;
+                }
+
+                if (_jumpAfterAirRollTimer > 0f)
+                {
+                    _jumpAfterAirRollTimer -= Time.fixedDeltaTime;
                 }
             }
 
@@ -349,6 +384,12 @@ namespace Modular2DCharacterController.Runtime.Features
                     return;
             }
 
+            if (_rollFeature != null && _rollFeature.IsRolling)
+            {
+                if (!_rollFeature.TryInterruptRoll())
+                    return;
+            }
+
             if (_groundPoundFeature != null &&
                 _groundPoundFeature.IsRecoveryActive)
             {
@@ -385,13 +426,24 @@ namespace Modular2DCharacterController.Runtime.Features
                 allowJumpAfterDash &&
                 _jumpAfterDashTimer > 0f;
 
+            bool canJumpAfterAirRoll =
+                !canGroundJump &&
+                allowJumpAfterAirRoll &&
+                _jumpAfterAirRollTimer > 0f;
+
             bool canAirJump =
                 !canGroundJump &&
                 !canJumpAfterAirDash &&
+                !canJumpAfterAirRoll &&
                 _remainingJumps > 0;
 
-            if (!canGroundJump && !canAirJump && !canJumpAfterAirDash)
+            if (!canGroundJump &&
+                !canAirJump &&
+                !canJumpAfterAirDash &&
+                !canJumpAfterAirRoll)
+            {
                 return;
+            }
 
             if (_groundPoundFeature != null &&
                 _groundPoundFeature.IsRecoveryActive &&
@@ -408,6 +460,10 @@ namespace Modular2DCharacterController.Runtime.Features
             else if (canJumpAfterAirDash)
             {
                 _jumpAfterDashTimer = 0f;
+            }
+            else if (canJumpAfterAirRoll)
+            {
+                _jumpAfterAirRollTimer = 0f;
             }
             else
             {
@@ -480,6 +536,31 @@ namespace Modular2DCharacterController.Runtime.Features
                 return;
 
             _jumpAfterDashTimer = jumpAfterDashTime;
+        }
+
+        private void OnRollEnded()
+        {
+            if (!allowJumpAfterAirRoll)
+                return;
+
+            if (_groundDetector == null ||
+                _groundDetector.IsGrounded)
+            {
+                return;
+            }
+
+            RollProfile currentRollProfile =
+                _rollFeature != null
+                    ? _rollFeature.CurrentRollProfile
+                    : null;
+
+            if (currentRollProfile == null ||
+                currentRollProfile.stopWhenLeavingGround)
+            {
+                return;
+            }
+
+            _jumpAfterAirRollTimer = jumpAfterAirRollTime;
         }
     }
 }

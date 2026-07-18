@@ -100,6 +100,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private ICharacterInput _input;
         private GroundDetector _groundDetector;
         private CeilingDetector _ceilingDetector;
+        private RollFeature _rollFeature;
         private GroundPoundFeature _groundPoundFeature;
         private ProfileProvider<HorizontalMovementProfile> _profileProvider;
         private Collider2D _collider;
@@ -122,6 +123,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _input = GetComponent<ICharacterInput>();
             _groundDetector = GetComponent<GroundDetector>();
             _ceilingDetector = GetComponent<CeilingDetector>();
+            _rollFeature = GetComponent<RollFeature>();
             _groundPoundFeature = GetComponent<GroundPoundFeature>();
             _collider = GetComponent<Collider2D>();
             _capsuleCollider = _collider as CapsuleCollider2D;
@@ -186,6 +188,13 @@ namespace Modular2DCharacterController.Runtime.Features
                 return;
             }
 
+            if (_rollFeature != null &&
+                _rollFeature.IsRolling)
+            {
+                _toggleCrouchState = false;
+                return;
+            }
+
             if (crouchMode != CrouchMode.Toggle)
                 return;
 
@@ -245,6 +254,12 @@ namespace Modular2DCharacterController.Runtime.Features
                 return false;
             }
 
+            if (_rollFeature != null &&
+                _rollFeature.IsRolling)
+            {
+                return false;
+            }
+
             return crouchMode switch
             {
                 CrouchMode.Hold => _input.CrouchHeld,
@@ -261,6 +276,12 @@ namespace Modular2DCharacterController.Runtime.Features
             if (_groundPoundFeature != null &&
                 (_groundPoundFeature.IsGroundPounding ||
                  _groundPoundFeature.IsRecoveryActive))
+            {
+                return false;
+            }
+
+            if (_rollFeature != null &&
+                _rollFeature.IsRolling)
             {
                 return false;
             }

@@ -15,6 +15,7 @@ namespace Modular2DCharacterController.Runtime.Input.NewInputSystem
         [SerializeField] private InputActionReference jumpAction;
         [SerializeField] private InputActionReference runAction;
         [SerializeField] private InputActionReference dashAction;
+        [SerializeField] private InputActionReference rollAction;
         [SerializeField] private InputActionReference crouchAction;
         [SerializeField] private InputActionReference groundPoundAction;
 
@@ -48,6 +49,14 @@ namespace Modular2DCharacterController.Runtime.Input.NewInputSystem
             dashAction != null &&
             dashAction.action.IsPressed();
 
+        public bool RollPressed =>
+            rollAction != null &&
+            rollAction.action.WasPressedThisFrame();
+
+        public bool RollHeld =>
+            rollAction != null &&
+            rollAction.action.IsPressed();
+
         public bool CrouchPressed =>
             crouchAction != null &&
             crouchAction.action.WasPressedThisFrame();
@@ -70,6 +79,7 @@ namespace Modular2DCharacterController.Runtime.Input.NewInputSystem
             jumpAction?.action.Enable();
             runAction?.action.Enable();
             dashAction?.action.Enable();
+            rollAction?.action.Enable();
             crouchAction?.action.Enable();
             groundPoundAction?.action.Enable();
         }
@@ -80,6 +90,7 @@ namespace Modular2DCharacterController.Runtime.Input.NewInputSystem
             jumpAction?.action.Disable();
             runAction?.action.Disable();
             dashAction?.action.Disable();
+            rollAction?.action.Disable();
             crouchAction?.action.Disable();
             groundPoundAction?.action.Disable();
         }

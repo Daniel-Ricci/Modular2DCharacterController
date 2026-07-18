@@ -95,6 +95,7 @@ namespace Modular2DCharacterController.Runtime.Features
         private GroundDetector _groundDetector;
         private CharacterController2D _controller;
         private DashFeature _dashFeature;
+        private RollFeature _rollFeature;
         private WallJumpFeature _wallJumpFeature;
         private GroundPoundFeature _groundPoundFeature;
         private ProfileProvider<HorizontalMovementProfile> _horizontalMovementProfileProvider;
@@ -113,6 +114,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _groundDetector = GetComponent<GroundDetector>();
             _controller = GetComponent<CharacterController2D>();
             _dashFeature = GetComponent<DashFeature>();
+            _rollFeature = GetComponent<RollFeature>();
             _wallJumpFeature = GetComponent<WallJumpFeature>();
             _groundPoundFeature = GetComponent<GroundPoundFeature>();
             _horizontalMovementProfileProvider = _controller.HorizontalMovementProfileProvider;
@@ -163,6 +165,9 @@ namespace Modular2DCharacterController.Runtime.Features
         public void FixedTick()
         {
             if (_dashFeature != null && _dashFeature.IsDashing)
+                return;
+
+            if (_rollFeature != null && _rollFeature.IsRolling)
                 return;
             
             if (_wallJumpFeature != null && _wallJumpFeature.IsControlInfluenceActive)

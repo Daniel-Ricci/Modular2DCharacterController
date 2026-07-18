@@ -132,10 +132,12 @@ namespace Modular2DCharacterController.Runtime.Debug
         private GroundDetector _groundDetector;
         private WallDetector _wallDetector;
         private CeilingDetector _ceilingDetector;
+        private EdgeDetector _edgeDetector;
         private ICharacterInput _input;
         private HorizontalMovementFeature _horizontalMovementFeature;
         private JumpFeature _jumpFeature;
         private DashFeature _dashFeature;
+        private RollFeature _rollFeature;
         private RunFeature _runFeature;
         private CrouchFeature _crouchFeature;
         private WallSlideFeature _wallSlideFeature;
@@ -277,10 +279,12 @@ namespace Modular2DCharacterController.Runtime.Debug
             _groundDetector = GetComponent<GroundDetector>();
             _wallDetector = GetComponent<WallDetector>();
             _ceilingDetector = GetComponent<CeilingDetector>();
+            _edgeDetector = GetComponent<EdgeDetector>();
             _input = GetComponent<ICharacterInput>();
             _horizontalMovementFeature = GetComponent<HorizontalMovementFeature>();
             _jumpFeature = GetComponent<JumpFeature>();
             _dashFeature = GetComponent<DashFeature>();
+            _rollFeature = GetComponent<RollFeature>();
             _runFeature = GetComponent<RunFeature>();
             _crouchFeature = GetComponent<CrouchFeature>();
             _wallSlideFeature = GetComponent<WallSlideFeature>();
@@ -636,6 +640,22 @@ namespace Modular2DCharacterController.Runtime.Debug
                 AppendLine($"Ceiling Object: {FormatTransform(_ceilingDetector.CurrentCeilingTransform)}");
             }
 
+            if (_edgeDetector == null)
+            {
+                AppendLine("EdgeDetector: missing");
+            }
+            else
+            {
+                AppendLine($"Left Floor Edge: {_edgeDetector.IsAtLeftFloorEdge}");
+                AppendLine($"Right Floor Edge: {_edgeDetector.IsAtRightFloorEdge}");
+                AppendLine($"Left Floor Point: {FormatVector(_edgeDetector.LeftFloorPoint)}");
+                AppendLine($"Right Floor Point: {FormatVector(_edgeDetector.RightFloorPoint)}");
+                AppendLine($"Left Ledge: {_edgeDetector.HasLeftLedge}");
+                AppendLine($"Right Ledge: {_edgeDetector.HasRightLedge}");
+                AppendLine($"Left Ledge Point: {FormatVector(_edgeDetector.LeftLedgePoint)}");
+                AppendLine($"Right Ledge Point: {FormatVector(_edgeDetector.RightLedgePoint)}");
+            }
+
             AppendLine();
         }
 
@@ -669,6 +689,7 @@ namespace Modular2DCharacterController.Runtime.Debug
                 AppendLine($"Coyote Timer: {FormatFloat(_jumpFeature.CoyoteTimer)}");
                 AppendLine($"Jump Buffer Timer: {FormatFloat(_jumpFeature.JumpBufferTimer)}");
                 AppendLine($"Jump After Dash Timer: {FormatFloat(_jumpFeature.JumpAfterDashTimer)}");
+                AppendLine($"Jump After Air Roll Timer: {FormatFloat(_jumpFeature.JumpAfterAirRollTimer)}");
                 AppendLine($"Jump Velocity: {FormatFloat(_jumpFeature.JumpVelocity)}");
                 AppendLine($"Ascent Gravity Multiplier: {FormatFloat(_jumpFeature.AscentGravityMultiplier)}");
             }
@@ -681,6 +702,15 @@ namespace Modular2DCharacterController.Runtime.Debug
                 AppendLine($"Dash Direction: {FormatVector(_dashFeature.DashDirection)}");
                 AppendLine($"Dash Timer: {FormatFloat(_dashFeature.DashTimer)}");
                 AppendLine($"Dash Cooldown: {FormatFloat(_dashFeature.CooldownTimer)}");
+            }
+
+            if (_rollFeature != null)
+            {
+                AppendLine($"Roll Profile: {FormatObjectName(_rollFeature.CurrentRollProfile)}");
+                AppendLine($"Rolling: {_rollFeature.IsRolling}");
+                AppendLine($"Roll Direction: {FormatVector(_rollFeature.RollDirection)}");
+                AppendLine($"Roll Timer: {FormatFloat(_rollFeature.RollTimer)}");
+                AppendLine($"Roll Cooldown: {FormatFloat(_rollFeature.CooldownTimer)}");
             }
 
             if (_wallSlideFeature != null)
@@ -738,6 +768,8 @@ namespace Modular2DCharacterController.Runtime.Debug
             AppendLine($"Run Held: {_input.RunHeld}");
             AppendLine($"Dash Pressed: {_input.DashPressed}");
             AppendLine($"Dash Held: {_input.DashHeld}");
+            AppendLine($"Roll Pressed: {_input.RollPressed}");
+            AppendLine($"Roll Held: {_input.RollHeld}");
             AppendLine($"Crouch Pressed: {_input.CrouchPressed}");
             AppendLine($"Crouch Held: {_input.CrouchHeld}");
             AppendLine($"Ground Pound Pressed: {_input.GroundPoundPressed}");

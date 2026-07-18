@@ -16,10 +16,12 @@ namespace Modular2DCharacterController.Runtime.Core
         private GroundDetector _groundDetector;
         private WallDetector _wallDetector;
         private CeilingDetector _ceilingDetector;
+        private EdgeDetector _edgeDetector;
         private HorizontalMovementFeature _horizontalMovementFeature;
         private JumpFeature _jumpFeature;
         private RunFeature _runFeature;
         private DashFeature _dashFeature;
+        private RollFeature _rollFeature;
         private CrouchFeature _crouchFeature;
         private WallSlideFeature _wallSlideFeature;
         private WallJumpFeature _wallJumpFeature;
@@ -83,6 +85,30 @@ namespace Modular2DCharacterController.Runtime.Core
                 ? _ceilingDetector.CurrentCeilingTransform
                 : null;
 
+        public bool IsAtLeftFloorEdge =>
+            _edgeDetector != null &&
+            _edgeDetector.IsAtLeftFloorEdge;
+
+        public bool IsAtRightFloorEdge =>
+            _edgeDetector != null &&
+            _edgeDetector.IsAtRightFloorEdge;
+
+        public bool IsAtAnyFloorEdge =>
+            _edgeDetector != null &&
+            _edgeDetector.IsAtAnyFloorEdge;
+
+        public bool HasLeftLedge =>
+            _edgeDetector != null &&
+            _edgeDetector.HasLeftLedge;
+
+        public bool HasRightLedge =>
+            _edgeDetector != null &&
+            _edgeDetector.HasRightLedge;
+
+        public bool HasAnyLedge =>
+            _edgeDetector != null &&
+            _edgeDetector.HasAnyLedge;
+
         public bool IsJumpActive =>
             _jumpFeature != null &&
             _jumpFeature.IsJumpActive;
@@ -113,6 +139,15 @@ namespace Modular2DCharacterController.Runtime.Core
             _dashFeature != null
                 ? _dashFeature.RemainingDashes
                 : 0;
+
+        public bool IsRolling =>
+            _rollFeature != null &&
+            _rollFeature.IsRolling;
+
+        public Vector2 RollDirection =>
+            _rollFeature != null
+                ? _rollFeature.RollDirection
+                : Vector2.zero;
 
         public bool IsCrouching =>
             _crouchFeature != null &&
@@ -159,10 +194,12 @@ namespace Modular2DCharacterController.Runtime.Core
             _groundDetector = GetComponent<GroundDetector>();
             _wallDetector = GetComponent<WallDetector>();
             _ceilingDetector = GetComponent<CeilingDetector>();
+            _edgeDetector = GetComponent<EdgeDetector>();
             _horizontalMovementFeature = GetComponent<HorizontalMovementFeature>();
             _jumpFeature = GetComponent<JumpFeature>();
             _runFeature = GetComponent<RunFeature>();
             _dashFeature = GetComponent<DashFeature>();
+            _rollFeature = GetComponent<RollFeature>();
             _crouchFeature = GetComponent<CrouchFeature>();
             _wallSlideFeature = GetComponent<WallSlideFeature>();
             _wallJumpFeature = GetComponent<WallJumpFeature>();

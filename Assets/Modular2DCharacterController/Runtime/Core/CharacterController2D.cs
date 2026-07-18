@@ -26,6 +26,9 @@ namespace Modular2DCharacterController.Runtime.Core
         public ProfileProvider<DashProfile> DashProfileProvider { get; }
             = new();
 
+        public ProfileProvider<RollProfile> RollProfileProvider { get; }
+            = new();
+
         public ProfileProvider<WallJumpProfile> WallJumpProfileProvider { get; }
             = new();
         
