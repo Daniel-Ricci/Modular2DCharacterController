@@ -16,7 +16,6 @@ MonoBehaviour:
   rollSpeed: 14
   rollDuration: 0.22
   rollCooldown: 0.12
-  stopWhenLeavingGround: 1
   variableRollLength: 1
   minimumRollDuration: 0.08
   preserveRollMomentum: 1

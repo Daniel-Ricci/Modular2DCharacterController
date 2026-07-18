@@ -549,13 +549,8 @@ namespace Modular2DCharacterController.Runtime.Features
                 return;
             }
 
-            RollProfile currentRollProfile =
-                _rollFeature != null
-                    ? _rollFeature.CurrentRollProfile
-                    : null;
-
-            if (currentRollProfile == null ||
-                currentRollProfile.stopWhenLeavingGround)
+            if (_rollFeature == null ||
+                _rollFeature.StopWhenLeavingGround)
             {
                 return;
             }

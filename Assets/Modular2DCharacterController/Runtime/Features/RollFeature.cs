@@ -14,7 +14,7 @@ namespace Modular2DCharacterController.Runtime.Features
     [RequireComponent(typeof(CharacterController2D))]
     [RequireComponent(typeof(Collider2D))]
     [RequireComponent(typeof(GroundDetector))]
-    [RequireComponent(typeof(EdgeDetector))]
+    [RequireComponent(typeof(LedgeDetector))]
     public class RollFeature : MonoBehaviour, ICharacterFeature
     {
         [Header("Default Roll Profile")]
@@ -55,6 +55,14 @@ namespace Modular2DCharacterController.Runtime.Features
         [Min(0f)]
         private float rollHitSkin = 0.02f;
 
+        [Header("Ground Edge Detection")]
+
+        [Tooltip(
+            "If enabled, the roll ends immediately when the character leaves the ground. " +
+            "If disabled, the roll continues over edges until its duration ends or it is interrupted.")]
+        [SerializeField]
+        private bool stopWhenLeavingGround = true;
+
         public bool IsRolling { get; private set; }
 
         public event Action<float> Rolled;
@@ -70,28 +78,18 @@ namespace Modular2DCharacterController.Runtime.Features
 
         public float CooldownTimer => _cooldownTimer;
 
+        public bool StopWhenLeavingGround => stopWhenLeavingGround;
+
         public bool CanInterruptCurrentRoll =>
             IsRolling &&
             canBeInterrupted;
-
-        public bool TryInterruptRoll()
-        {
-            if (!CanInterruptCurrentRoll)
-                return false;
-
-            RollProfile currentProfile =
-                _rollProfileProvider.GetCurrentProfile();
-
-            EndRoll(currentProfile, false);
-            return true;
-        }
 
         private CharacterController2D _controller;
         private CharacterMotor _motor;
         private Collider2D _collider;
         private ICharacterInput _input;
         private GroundDetector _groundDetector;
-        private EdgeDetector _edgeDetector;
+        private LedgeDetector _ledgeDetector;
         private HorizontalMovementFeature _horizontalMovementFeature;
         private DashFeature _dashFeature;
         private GroundPoundFeature _groundPoundFeature;
@@ -116,7 +114,7 @@ namespace Modular2DCharacterController.Runtime.Features
             _collider = GetComponent<Collider2D>();
             _input = GetComponent<ICharacterInput>();
             _groundDetector = GetComponent<GroundDetector>();
-            _edgeDetector = GetComponent<EdgeDetector>();
+            _ledgeDetector = GetComponent<LedgeDetector>();
             _horizontalMovementFeature = GetComponent<HorizontalMovementFeature>();
             _dashFeature = GetComponent<DashFeature>();
             _groundPoundFeature = GetComponent<GroundPoundFeature>();
@@ -262,6 +260,18 @@ namespace Modular2DCharacterController.Runtime.Features
             CheckRollHit(currentProfile, _rollImpulseX);
             Rolled?.Invoke(currentProfile.rollSpeed);
         }
+        
+        public bool TryInterruptRoll()
+        {
+            if (!CanInterruptCurrentRoll)
+                return false;
+
+            RollProfile currentProfile =
+                _rollProfileProvider.GetCurrentProfile();
+
+            EndRoll(currentProfile, false);
+            return true;
+        }
 
         private Vector2 GetRollDirection()
         {
@@ -287,16 +297,15 @@ namespace Modular2DCharacterController.Runtime.Features
                 _groundDetector.IsGrounded;
 
             if (_groundDetector == null ||
-                (!isGrounded && currentProfile.stopWhenLeavingGround))
+                (!isGrounded && stopWhenLeavingGround))
             {
                 EndRoll(currentProfile, true);
                 return;
             }
 
             if (isGrounded &&
-                currentProfile.stopWhenLeavingGround &&
-                _edgeDetector != null &&
-                _edgeDetector.WouldLeaveGround(_rollImpulseX))
+                stopWhenLeavingGround &&
+                ShouldStopBeforeGroundEdge())
             {
                 EndRollAtEdge(currentProfile);
                 return;
@@ -376,6 +385,17 @@ namespace Modular2DCharacterController.Runtime.Features
 
             _motor.SetSelfVelocity(exitVelocity);
             RollEnded?.Invoke();
+        }
+
+        private bool ShouldStopBeforeGroundEdge()
+        {
+            if (_ledgeDetector == null)
+                return false;
+
+            if (Mathf.Abs(_rollImpulseX) < 0.01f)
+                return false;
+
+            return _ledgeDetector.IsOnGroundEdge;
         }
 
         private void EndRollAtEdge(RollProfile currentProfile)

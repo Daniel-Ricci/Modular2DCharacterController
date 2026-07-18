@@ -27,13 +27,6 @@ namespace Modular2DCharacterController.Runtime.Data.FeatureProfiles
         [Min(0f)]
         public float rollCooldown = 0.12f;
 
-        [Header("Ground Edge")]
-
-        [Tooltip(
-            "If enabled, the roll ends immediately when the character leaves the ground. " +
-            "If disabled, the roll continues over edges until its duration ends or it is interrupted.")]
-        public bool stopWhenLeavingGround = true;
-
         [Header("Variable Roll")]
 
         [Tooltip(

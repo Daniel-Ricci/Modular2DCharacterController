@@ -132,7 +132,7 @@ namespace Modular2DCharacterController.Runtime.Debug
         private GroundDetector _groundDetector;
         private WallDetector _wallDetector;
         private CeilingDetector _ceilingDetector;
-        private EdgeDetector _edgeDetector;
+        private LedgeDetector _ledgeDetector;
         private ICharacterInput _input;
         private HorizontalMovementFeature _horizontalMovementFeature;
         private JumpFeature _jumpFeature;
@@ -279,7 +279,7 @@ namespace Modular2DCharacterController.Runtime.Debug
             _groundDetector = GetComponent<GroundDetector>();
             _wallDetector = GetComponent<WallDetector>();
             _ceilingDetector = GetComponent<CeilingDetector>();
-            _edgeDetector = GetComponent<EdgeDetector>();
+            _ledgeDetector = GetComponent<LedgeDetector>();
             _input = GetComponent<ICharacterInput>();
             _horizontalMovementFeature = GetComponent<HorizontalMovementFeature>();
             _jumpFeature = GetComponent<JumpFeature>();
@@ -640,20 +640,20 @@ namespace Modular2DCharacterController.Runtime.Debug
                 AppendLine($"Ceiling Object: {FormatTransform(_ceilingDetector.CurrentCeilingTransform)}");
             }
 
-            if (_edgeDetector == null)
+            if (_ledgeDetector == null)
             {
-                AppendLine("EdgeDetector: missing");
+                AppendLine("LedgeDetector: missing");
             }
             else
             {
-                AppendLine($"Left Floor Edge: {_edgeDetector.IsAtLeftFloorEdge}");
-                AppendLine($"Right Floor Edge: {_edgeDetector.IsAtRightFloorEdge}");
-                AppendLine($"Left Floor Point: {FormatVector(_edgeDetector.LeftFloorPoint)}");
-                AppendLine($"Right Floor Point: {FormatVector(_edgeDetector.RightFloorPoint)}");
-                AppendLine($"Left Ledge: {_edgeDetector.HasLeftLedge}");
-                AppendLine($"Right Ledge: {_edgeDetector.HasRightLedge}");
-                AppendLine($"Left Ledge Point: {FormatVector(_edgeDetector.LeftLedgePoint)}");
-                AppendLine($"Right Ledge Point: {FormatVector(_edgeDetector.RightLedgePoint)}");
+                AppendLine($"On Ground Edge: {_ledgeDetector.IsOnGroundEdge}");
+                AppendLine($"Ground Ahead: {_ledgeDetector.HasGroundAhead}");
+                AppendLine($"Ground Ahead Point: {FormatVector(_ledgeDetector.GroundAheadPoint)}");
+                AppendLine($"Ground Ahead Normal: {FormatVector(_ledgeDetector.GroundAheadNormal)}");
+                AppendLine($"Wall Ahead: {_ledgeDetector.HasWallAhead}");
+                AppendLine($"Clear Above Wall: {_ledgeDetector.IsClearAboveWall}");
+                AppendLine($"High Ledge: {_ledgeDetector.HasHighLedge}");
+                AppendLine($"Wall Ahead Point: {FormatVector(_ledgeDetector.WallAheadPoint)}");
             }
 
             AppendLine();

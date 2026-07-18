@@ -16,7 +16,7 @@ namespace Modular2DCharacterController.Runtime.Core
         private GroundDetector _groundDetector;
         private WallDetector _wallDetector;
         private CeilingDetector _ceilingDetector;
-        private EdgeDetector _edgeDetector;
+        private LedgeDetector _ledgeDetector;
         private HorizontalMovementFeature _horizontalMovementFeature;
         private JumpFeature _jumpFeature;
         private RunFeature _runFeature;
@@ -85,29 +85,25 @@ namespace Modular2DCharacterController.Runtime.Core
                 ? _ceilingDetector.CurrentCeilingTransform
                 : null;
 
-        public bool IsAtLeftFloorEdge =>
-            _edgeDetector != null &&
-            _edgeDetector.IsAtLeftFloorEdge;
+        public bool IsOnGroundEdge =>
+            _ledgeDetector != null &&
+            _ledgeDetector.IsOnGroundEdge;
 
-        public bool IsAtRightFloorEdge =>
-            _edgeDetector != null &&
-            _edgeDetector.IsAtRightFloorEdge;
+        public bool HasGroundAhead =>
+            _ledgeDetector != null &&
+            _ledgeDetector.HasGroundAhead;
 
-        public bool IsAtAnyFloorEdge =>
-            _edgeDetector != null &&
-            _edgeDetector.IsAtAnyFloorEdge;
+        public bool HasWallAhead =>
+            _ledgeDetector != null &&
+            _ledgeDetector.HasWallAhead;
 
-        public bool HasLeftLedge =>
-            _edgeDetector != null &&
-            _edgeDetector.HasLeftLedge;
+        public bool IsClearAboveWall =>
+            _ledgeDetector != null &&
+            _ledgeDetector.IsClearAboveWall;
 
-        public bool HasRightLedge =>
-            _edgeDetector != null &&
-            _edgeDetector.HasRightLedge;
-
-        public bool HasAnyLedge =>
-            _edgeDetector != null &&
-            _edgeDetector.HasAnyLedge;
+        public bool HasHighLedge =>
+            _ledgeDetector != null &&
+            _ledgeDetector.HasHighLedge;
 
         public bool IsJumpActive =>
             _jumpFeature != null &&
@@ -194,7 +190,7 @@ namespace Modular2DCharacterController.Runtime.Core
             _groundDetector = GetComponent<GroundDetector>();
             _wallDetector = GetComponent<WallDetector>();
             _ceilingDetector = GetComponent<CeilingDetector>();
-            _edgeDetector = GetComponent<EdgeDetector>();
+            _ledgeDetector = GetComponent<LedgeDetector>();
             _horizontalMovementFeature = GetComponent<HorizontalMovementFeature>();
             _jumpFeature = GetComponent<JumpFeature>();
             _runFeature = GetComponent<RunFeature>();

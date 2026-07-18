@@ -49,6 +49,56 @@ namespace Modular2DCharacterController.Runtime.Core
             UpdateWallState();
         }
 
+        public bool TryFindWall(
+            Vector2 direction,
+            Vector2 offset,
+            out RaycastHit2D wallHit)
+        {
+            wallHit = default;
+
+            if (direction == Vector2.zero)
+                return false;
+
+            Bounds bounds =
+                _collider.bounds;
+
+            int hitCount =
+                Physics2D.BoxCast(
+                    (Vector2)bounds.center + offset,
+                    bounds.size,
+                    0f,
+                    direction.normalized,
+                    _filter,
+                    _results,
+                    wallCheckDistance);
+
+            for (int i = 0; i < hitCount; i++)
+            {
+                RaycastHit2D hit =
+                    _results[i];
+
+                if (hit.collider == null)
+                    continue;
+
+                if (hit.collider == _collider)
+                    continue;
+
+                if (hit.collider.transform == transform ||
+                    hit.collider.transform.IsChildOf(transform))
+                {
+                    continue;
+                }
+
+                if (Mathf.Abs(hit.normal.x) <= 0.5f)
+                    continue;
+
+                wallHit = hit;
+                return true;
+            }
+
+            return false;
+        }
+
         private void UpdateWallState()
         {
             int hitCount = _collider.Cast(

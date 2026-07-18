@@ -103,6 +103,55 @@ namespace Modular2DCharacterController.Runtime.Core
             UpdateGroundState();
         }
 
+        public bool TryFindGroundAtOffset(
+            Vector2 offset,
+            out RaycastHit2D groundHit)
+        {
+            Bounds bounds =
+                _characterCollider.bounds;
+
+            int hitCount =
+                Physics2D.BoxCast(
+                    (Vector2)bounds.center + offset,
+                    bounds.size,
+                    0f,
+                    Vector2.down,
+                    _contactFilter,
+                    _results,
+                    groundCheckDistance);
+
+            groundHit = default;
+
+            for (int i = 0; i < hitCount; i++)
+            {
+                RaycastHit2D hit =
+                    _results[i];
+
+                if (hit.collider == null)
+                    continue;
+
+                if (hit.collider == _characterCollider)
+                    continue;
+
+                if (hit.collider.transform == transform ||
+                    hit.collider.transform.IsChildOf(transform))
+                {
+                    continue;
+                }
+
+                if (Vector2.Angle(hit.normal, Vector2.up) > maxSlopeAngle)
+                    continue;
+
+                if (groundHit.collider == null ||
+                    hit.normal.y > groundHit.normal.y)
+                {
+                    groundHit = hit;
+                }
+            }
+
+            return groundHit.collider != null;
+        }
+
         private void UpdateGroundState()
         {
             if (_rigidbody.linearVelocity.y > ascendingVelocityThreshold)

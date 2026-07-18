@@ -1907,23 +1907,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: edd09f33db0242988fde5703e2d8f74f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.EdgeDetector
-  groundLayers:
-    serializedVersion: 2
-    m_Bits: 128
-  floorEdgeProbeInset: 0.03
-  floorEdgeProbeStartHeight: 0.05
-  floorEdgeProbeDownDistance: 0.12
-  projectedEdgeForwardSkin: 0.03
-  ledgeLayers:
-    serializedVersion: 2
-    m_Bits: 128
-  ledgeWallCheckDistance: 0.12
-  ledgeLowerProbeHeight: 0.45
-  ledgeUpperProbeHeight: 1.2
-  ledgeTopProbeHeight: 0.25
-  ledgeTopProbeDownDistance: 0.6
-  minimumLedgeTopNormalY: 0.5
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.LedgeDetector
+  groundCheckDistanceAhead: 0.08
+  clearCheckHeight: 1.2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
