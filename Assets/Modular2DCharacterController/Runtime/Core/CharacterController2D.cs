@@ -9,13 +9,11 @@ namespace Modular2DCharacterController.Runtime.Core
     /// <summary>
     /// Coordinates character features and stores profile providers.
     /// </summary>
-    [RequireComponent(typeof(GroundDetector))]
     [RequireComponent(typeof(CharacterMotor))]
     [RequireComponent(typeof(ICharacterInput))]
     public class CharacterController2D : MonoBehaviour
     {
         private ICharacterFeature[] _features;
-        private CharacterMotor _motor;
 
         public ProfileProvider<HorizontalMovementProfile> HorizontalMovementProfileProvider { get; }
             = new();
@@ -41,7 +39,6 @@ namespace Modular2DCharacterController.Runtime.Core
         private void Awake()
         {
             _features = GetComponents<ICharacterFeature>();
-            _motor = GetComponent<CharacterMotor>();
         }
 
         private void Update()
