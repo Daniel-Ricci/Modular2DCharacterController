@@ -135,6 +135,7 @@ Character Hierarchy
 
 A typical character hierarchy looks like this:
 
+```text
 Player
 ├── Sprite
 ├── Rigidbody2D
@@ -152,6 +153,7 @@ Player
 ├── Jump Feature
 ├── Dash Feature
 ├── ...
+```
 
 Depending on your game, your character may include more or fewer features. The controller automatically detects all attached features during initialization, so there is no additional setup required when adding or removing them.
 
