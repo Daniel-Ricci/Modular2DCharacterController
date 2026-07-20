@@ -319,7 +319,7 @@ namespace Modular2DCharacterController.Runtime.Features
 
         // Called when the character goes airborne to register the air movement
         // profile, if available.
-        private void OnLeftGround(Vector2 _)
+        private void OnLeftGround(CharacterHitEvent _)
         {
             if (airMovementProfile != null)
             {

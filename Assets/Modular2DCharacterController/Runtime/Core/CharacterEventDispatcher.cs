@@ -10,7 +10,7 @@ namespace Modular2DCharacterController.Runtime.Core
     public class CharacterEventDispatcher : MonoBehaviour
     {
         public event Action<CharacterHitEvent> Landed;
-        public event Action<Vector2> LeftGround;
+        public event Action<CharacterHitEvent> LeftGround;
         public event Action<CharacterHitEvent> CeilingHit;
         public event Action<float> Jumped;
         public event Action StartedRun;
@@ -205,9 +205,9 @@ namespace Modular2DCharacterController.Runtime.Core
             Landed?.Invoke(hitEvent);
         }
 
-        private void OnLeftGround(Vector2 launchVelocity)
+        private void OnLeftGround(CharacterHitEvent hitEvent)
         {
-            LeftGround?.Invoke(launchVelocity);
+            LeftGround?.Invoke(hitEvent);
         }
 
         private void OnCeilingHit(CharacterHitEvent hitEvent)

@@ -73,13 +73,14 @@ namespace Modular2DCharacterController.Runtime.Core
         public event Action<CharacterHitEvent> Landed;
         
         // Event triggered when the character leaves the ground.
-        public event Action<Vector2> LeftGround;
+        public event Action<CharacterHitEvent> LeftGround;
 
         private Collider2D _characterCollider;
         private Rigidbody2D _rigidbody;
         private CharacterMotor _motor;
 
         private Vector2 _lastGroundPosition;
+        private RaycastHit2D _lastGroundHit;
 
         private readonly RaycastHit2D[] _results = new RaycastHit2D[8];
         private ContactFilter2D _contactFilter;
@@ -101,55 +102,6 @@ namespace Modular2DCharacterController.Runtime.Core
         private void FixedUpdate()
         {
             UpdateGroundState();
-        }
-
-        public bool TryFindGroundAtOffset(
-            Vector2 offset,
-            out RaycastHit2D groundHit)
-        {
-            Bounds bounds =
-                _characterCollider.bounds;
-
-            int hitCount =
-                Physics2D.BoxCast(
-                    (Vector2)bounds.center + offset,
-                    bounds.size,
-                    0f,
-                    Vector2.down,
-                    _contactFilter,
-                    _results,
-                    groundCheckDistance);
-
-            groundHit = default;
-
-            for (int i = 0; i < hitCount; i++)
-            {
-                RaycastHit2D hit =
-                    _results[i];
-
-                if (hit.collider == null)
-                    continue;
-
-                if (hit.collider == _characterCollider)
-                    continue;
-
-                if (hit.collider.transform == transform ||
-                    hit.collider.transform.IsChildOf(transform))
-                {
-                    continue;
-                }
-
-                if (Vector2.Angle(hit.normal, Vector2.up) > maxSlopeAngle)
-                    continue;
-
-                if (groundHit.collider == null ||
-                    hit.normal.y > groundHit.normal.y)
-                {
-                    groundHit = hit;
-                }
-            }
-
-            return groundHit.collider != null;
         }
 
         private void UpdateGroundState()
@@ -204,6 +156,7 @@ namespace Modular2DCharacterController.Runtime.Core
             }
 
             SetGrounded(true, bestHit);
+            _lastGroundHit = bestHit;
 
             GroundNormal = bestHit.normal;
             GroundAngle = Vector2.Angle(bestHit.normal, Vector2.up);
@@ -273,6 +226,7 @@ namespace Modular2DCharacterController.Runtime.Core
             GroundVelocity = Vector2.zero;
             GroundDelta = Vector2.zero;
             _lastGroundPosition = Vector2.zero;
+            _lastGroundHit = default;
         }
 
         private void SetGrounded(bool grounded, RaycastHit2D hit = default)
@@ -297,8 +251,57 @@ namespace Modular2DCharacterController.Runtime.Core
             }
             else
             {
-                LeftGround?.Invoke(_motor.CurrentSelfVelocity);
+                LeftGround?.Invoke(CreateHitEvent(_lastGroundHit));
             }
+        }
+        
+        public bool TryFindGroundAtOffset(
+            Vector2 offset,
+            out RaycastHit2D groundHit)
+        {
+            Bounds bounds =
+                _characterCollider.bounds;
+
+            int hitCount =
+                Physics2D.BoxCast(
+                    (Vector2)bounds.center + offset,
+                    bounds.size,
+                    0f,
+                    Vector2.down,
+                    _contactFilter,
+                    _results,
+                    groundCheckDistance);
+
+            groundHit = default;
+
+            for (int i = 0; i < hitCount; i++)
+            {
+                RaycastHit2D hit =
+                    _results[i];
+
+                if (hit.collider == null)
+                    continue;
+
+                if (hit.collider == _characterCollider)
+                    continue;
+
+                if (hit.collider.transform == transform ||
+                    hit.collider.transform.IsChildOf(transform))
+                {
+                    continue;
+                }
+
+                if (Vector2.Angle(hit.normal, Vector2.up) > maxSlopeAngle)
+                    continue;
+
+                if (groundHit.collider == null ||
+                    hit.normal.y > groundHit.normal.y)
+                {
+                    groundHit = hit;
+                }
+            }
+
+            return groundHit.collider != null;
         }
 
         private CharacterHitEvent CreateHitEvent(RaycastHit2D hit)
