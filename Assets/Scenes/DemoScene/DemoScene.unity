@@ -1029,7 +1029,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 908953618317756315, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
   m_PrefabInstance: {fileID: 1141310045916416020}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1141310045916416021}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c5ea883e7374314ea2ee32c72c4e0e4, type: 3}
@@ -1828,118 +1828,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1537304120068154184, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2421745089491559696, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      propertyPath: requireWallSlide
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3360759555825833622, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      propertyPath: recoveryJumpProfile
-      value: 
-      objectReference: {fileID: 11400000, guid: f09bbe033d86b6840af128435dbece6e, type: 2}
-    - target: {fileID: 3360759555825833622, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      propertyPath: allowJumpDuringRecovery
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7429609835000910511, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      propertyPath: defaultGlideProfile
-      value: 
-      objectReference: {fileID: 11400000, guid: 4d83aad13062fb1439cc0aebcaeb9f6c, type: 2}
-    - target: {fileID: 7500109327406742787, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      propertyPath: defaultDashProfile
-      value: 
-      objectReference: {fileID: 11400000, guid: 7be7cb5cc5db38e4088fd599ccf60e17, type: 2}
-    - target: {fileID: 7666062897064686800, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      propertyPath: debugEnabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9072815575998707769, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      propertyPath: rollAction
-      value: 
-      objectReference: {fileID: -2834546399220992478, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-    - target: {fileID: 9072815575998707769, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      propertyPath: glideAction
-      value: 
-      objectReference: {fileID: -7785473658258010991, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-    m_RemovedComponents:
-    - {fileID: 9072815575998707769, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 341889370699776070, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1141310045916416022}
-    - targetCorrespondingSourceObject: {fileID: 341889370699776070, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1141310045916416041}
-    - targetCorrespondingSourceObject: {fileID: 341889370699776070, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1141310045916416060}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
---- !u!1 &1141310045916416021 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 341889370699776070, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
-  m_PrefabInstance: {fileID: 1141310045916416020}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1141310045916416022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1141310045916416021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92bec7d7b8bf4f9587cbe1a77994e4a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.RollFeature
-  defaultRollProfile: {fileID: 11400000, guid: 22e027b99913f3844b627be88f758594, type: 2}
-  useInputDirection: 1
-  fallbackToFacingDirection: 1
-  canBeInterrupted: 1
-  rollHitLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  rollHitSkin: 0.02
-  stopWhenLeavingGround: 1
---- !u!114 &1141310045916416041
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1141310045916416021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edd09f33db0242988fde5703e2d8f74f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.LedgeDetector
-  groundCheckDistanceAhead: 0.08
-  clearCheckHeight: 1.2
---- !u!114 &1141310045916416060
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1141310045916416021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62914aa11cc355e45a052ae8adb31c14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Input.LegacyInputProvider
-  horizontalAxis: Horizontal
-  verticalAxis: Vertical
-  jumpButton: Jump
-  runButton: Run
-  glideButton: Glide
-  dashButton: Dash
-  rollButton: Roll
-  crouchButton: Crouch
-  groundPoundButton: GroundPound
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

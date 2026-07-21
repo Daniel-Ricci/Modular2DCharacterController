@@ -19,10 +19,15 @@ namespace Modular2DCharacterController.Runtime.Input
         [SerializeField] private string rollButton = "Roll";
         [SerializeField] private string crouchButton = "Crouch";
         [SerializeField] private string groundPoundButton = "GroundPound";
+        
+        [Header("Vertical axis inversion")]
+        [Tooltip("Some DirectInput controllers may report joystick axes with inverted directions. " +
+                 "If necessary, enable to invert Y axis input.")]
+        [SerializeField] private bool invertVerticalAxis = false;
 
         public float HorizontalMoveInput => UnityEngine.Input.GetAxisRaw(horizontalAxis);
         
-        public float VerticalMoveInput => UnityEngine.Input.GetAxisRaw(verticalAxis);
+        public float VerticalMoveInput => UnityEngine.Input.GetAxisRaw(verticalAxis) * (invertVerticalAxis ?  -1f : 1f);
 
         public bool JumpPressed => UnityEngine.Input.GetButtonDown(jumpButton);
 

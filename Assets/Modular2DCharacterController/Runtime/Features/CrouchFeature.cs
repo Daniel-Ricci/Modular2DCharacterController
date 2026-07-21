@@ -80,6 +80,20 @@ namespace Modular2DCharacterController.Runtime.Features
             "when crouching and standing.")]
         [SerializeField]
         private bool preserveColliderBottom = true;
+        
+        [Header("Input Settings")]
+        
+        [Tooltip(
+            "If enabled, use the down vertical input to crouch and " +
+            "ignores what is set at the Crouch input mapping. Also ignores " +
+            "the crouch mode and assumes Hold mode.")]
+        [SerializeField]
+        private bool useDownInput;
+        
+        [Tooltip(
+            "Minimum vertical input needed to trigger a crouch, if using down input.")]
+        [SerializeField]
+        private float minimumInput = 0.5f;
 
         // True while the player is crouching
         public bool IsCrouching { get; private set; }
@@ -258,6 +272,12 @@ namespace Modular2DCharacterController.Runtime.Features
                 _rollFeature.IsRolling)
             {
                 return false;
+            }
+
+            // If using down to crouch, ignores crouch mode and assumes Hold mode
+            if (useDownInput)
+            {
+                return _input.VerticalMoveInput <= -minimumInput;
             }
 
             return crouchMode switch

@@ -48,6 +48,19 @@ namespace Modular2DCharacterController.Runtime.Features
         [SerializeField]
         private JumpProfile recoveryJumpProfile;
 
+        [Header("Input Settings")]
+        
+        [Tooltip(
+            "If enabled, use the down vertical input to ground pound and " +
+            "ignores what is set at the GroundPound input mapping.")]
+        [SerializeField]
+        private bool useDownInput;
+        
+        [Tooltip(
+            "Minimum vertical input needed to trigger a ground pound, if using down input.")]
+        [SerializeField]
+        private float minimumInput = 0.9f;
+
         // Invoked when the ground pound starts.
         public event Action GroundPoundStarted;
 
@@ -162,7 +175,14 @@ namespace Modular2DCharacterController.Runtime.Features
 
         public void Tick()
         {
-            if (_input.GroundPoundPressed)
+            if (useDownInput)
+            {
+                if (_input.VerticalMoveInput <= -minimumInput)
+                {
+                    _groundPoundRequested = true;
+                }
+            }
+            else if (_input.GroundPoundPressed)
             {
                 _groundPoundRequested = true;
             }

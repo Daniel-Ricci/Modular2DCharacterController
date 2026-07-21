@@ -29,6 +29,8 @@ GameObject:
   - component: {fileID: 2421745089491559696}
   - component: {fileID: 7429609835000910511}
   - component: {fileID: 3360759555825833622}
+  - component: {fileID: 2526659493668553883}
+  - component: {fileID: 530723468354700996}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -128,7 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5db8b24b5d6406e94051357bef21c39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Debug.CharacterDebugOverlay
-  debugEnabled: 1
+  debugEnabled: 0
   toggleKey: 96
   showInReleaseBuild: 0
   screenOffset: {x: 12, y: 12}
@@ -213,7 +215,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71cbd6487c5d4b2a8bda5c6ed8a0c19f, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.CeilingDetector
   ceilingLayers:
     serializedVersion: 2
@@ -248,16 +250,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c5ea883e7374314ea2ee32c72c4e0e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.CharacterEventDispatcher
-  groundDetector: {fileID: 1624187124611957247}
-  ceilingDetector: {fileID: 6381042147093948921}
-  jumpFeature: {fileID: 0}
-  runFeature: {fileID: 0}
-  dashFeature: {fileID: 0}
-  crouchFeature: {fileID: 4728057364999211848}
-  glideFeature: {fileID: 7429609835000910511}
-  groundPoundFeature: {fileID: 3360759555825833622}
-  wallSlideFeature: {fileID: 1537304120068154184}
-  wallJumpFeature: {fileID: 0}
 --- !u!114 &9072815575998707769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,7 +265,9 @@ MonoBehaviour:
   moveAction: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   jumpAction: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   runAction: {fileID: -7471211009204490832, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  glideAction: {fileID: -7785473658258010991, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   dashAction: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  rollAction: {fileID: -2834546399220992478, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   crouchAction: {fileID: 7040659881675835329, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   groundPoundAction: {fileID: 5346571335234246221, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!114 &3147954627580100399
@@ -320,6 +314,8 @@ MonoBehaviour:
   jumpHangGravityMultiplier: 0.35
   allowJumpAfterDash: 1
   jumpAfterDashTime: 0.15
+  allowJumpAfterAirRoll: 1
+  jumpAfterAirRollTime: 0.15
 --- !u!114 &2065180972893838928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,7 +340,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d3a84c388373c5a4b8700819e01f1019, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.CrouchFeature
   crouchMovementProfile: {fileID: 11400000, guid: d100008c8a8357b42aceeda15fea35c7, type: 2}
   crouchMode: 0
@@ -355,6 +351,8 @@ MonoBehaviour:
   resizeCollider: 1
   crouchedHeightMultiplier: 0.5
   preserveColliderBottom: 1
+  useDownInput: 1
+  minimumInput: 0.5
 --- !u!114 &7500109327406742787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -367,13 +365,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f02bc4ea75a30e14480c6de5a9a9f224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Modular2DCharacterController.Features.DashFeature
-  defaultDashProfile: {fileID: 11400000, guid: d2fc5b078a974c744849c84f0d6b83ff, type: 2}
+  defaultDashProfile: {fileID: 11400000, guid: 7be7cb5cc5db38e4088fd599ccf60e17, type: 2}
   maxDashCount: 1
   resetDashCountOnGrounded: 1
   resetDashCountOnWallJump: 0
   useInputDirection: 1
   fallbackToFacingDirection: 1
   canBeInterrupted: 1
+  dashHitLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  dashHitSkin: 0.02
 --- !u!114 &951386037181885141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,6 +416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.WallJumpFeature
   defaultWallJumpProfile: {fileID: 11400000, guid: dbc287f7f2386df4c8caac2d9e5f3e9a, type: 2}
+  requireWallSlide: 0
   wallJumpCoyoteTime: 0.1
   wallJumpBufferTime: 0.1
 --- !u!114 &7429609835000910511
@@ -429,6 +432,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.GlideFeature
   defaultGlideProfile: {fileID: 11400000, guid: 4d83aad13062fb1439cc0aebcaeb9f6c, type: 2}
+  requireFallingToGlide: 0
 --- !u!114 &3360759555825833622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -443,6 +447,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.GroundPoundFeature
   defaultGroundPoundProfile: {fileID: 11400000, guid: 5280e51b4f174115bdb2783d24ef5423, type: 2}
   canBeInterrupted: 1
+  allowJumpDuringRecovery: 1
+  recoveryJumpProfile: {fileID: 11400000, guid: f09bbe033d86b6840af128435dbece6e, type: 2}
+  useDownInput: 1
+  minimumInput: 0.9
+--- !u!114 &2526659493668553883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92bec7d7b8bf4f9587cbe1a77994e4a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Features.RollFeature
+  defaultRollProfile: {fileID: 11400000, guid: 22e027b99913f3844b627be88f758594, type: 2}
+  useInputDirection: 1
+  fallbackToFacingDirection: 1
+  canBeInterrupted: 1
+  rollHitLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  rollHitSkin: 0.02
+  stopWhenLeavingGround: 1
+--- !u!114 &530723468354700996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341889370699776070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edd09f33db0242988fde5703e2d8f74f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.LedgeDetector
+  groundCheckDistanceAhead: 0.08
+  clearCheckHeight: 1.2
 --- !u!1 &1436459613464208644
 GameObject:
   m_ObjectHideFlags: 0

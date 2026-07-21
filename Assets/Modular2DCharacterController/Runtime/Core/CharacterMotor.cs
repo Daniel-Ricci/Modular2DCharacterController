@@ -335,7 +335,6 @@ namespace Modular2DCharacterController.Runtime.Core
 
         private void FixedUpdate()
         {
-            UnityEngine.Debug.Log("fixedUpdate");
             Apply();
         }
 
