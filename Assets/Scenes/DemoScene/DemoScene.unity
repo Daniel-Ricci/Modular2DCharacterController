@@ -1847,7 +1847,7 @@ PrefabInstance:
     - target: {fileID: 7429609835000910511, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
       propertyPath: defaultGlideProfile
       value: 
-      objectReference: {fileID: 11400000, guid: f4857f1d95bc0514fbda8f815554d6e0, type: 2}
+      objectReference: {fileID: 11400000, guid: 4d83aad13062fb1439cc0aebcaeb9f6c, type: 2}
     - target: {fileID: 7500109327406742787, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
       propertyPath: defaultDashProfile
       value: 
@@ -1860,7 +1860,12 @@ PrefabInstance:
       propertyPath: rollAction
       value: 
       objectReference: {fileID: -2834546399220992478, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-    m_RemovedComponents: []
+    - target: {fileID: 9072815575998707769, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      propertyPath: glideAction
+      value: 
+      objectReference: {fileID: -7785473658258010991, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    m_RemovedComponents:
+    - {fileID: 9072815575998707769, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -1870,6 +1875,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 341889370699776070, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1141310045916416041}
+    - targetCorrespondingSourceObject: {fileID: 341889370699776070, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1141310045916416060}
   m_SourcePrefab: {fileID: 100100000, guid: dcb7b5a571b9cde40a43d97ce844bfbf, type: 3}
 --- !u!1 &1141310045916416021 stripped
 GameObject:
@@ -1896,6 +1904,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   rollHitSkin: 0.02
+  stopWhenLeavingGround: 1
 --- !u!114 &1141310045916416041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1910,6 +1919,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Core.LedgeDetector
   groundCheckDistanceAhead: 0.08
   clearCheckHeight: 1.2
+--- !u!114 &1141310045916416060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1141310045916416021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62914aa11cc355e45a052ae8adb31c14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Modular2DCharacterController.Runtime::Modular2DCharacterController.Runtime.Input.LegacyInputProvider
+  horizontalAxis: Horizontal
+  verticalAxis: Vertical
+  jumpButton: Jump
+  runButton: Run
+  glideButton: Glide
+  dashButton: Dash
+  rollButton: Roll
+  crouchButton: Crouch
+  groundPoundButton: GroundPound
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

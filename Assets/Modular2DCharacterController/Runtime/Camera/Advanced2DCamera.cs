@@ -1,4 +1,3 @@
-using System;
 using Modular2DCharacterController.Runtime.Core;
 using UnityEngine;
 using Random = UnityEngine.Random;

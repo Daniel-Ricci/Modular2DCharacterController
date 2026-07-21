@@ -14,6 +14,7 @@ namespace Modular2DCharacterController.Runtime.Input
         [Header("Button Names")]
         [SerializeField] private string jumpButton = "Jump";
         [SerializeField] private string runButton = "Run";
+        [SerializeField] private string glideButton = "Glide";
         [SerializeField] private string dashButton = "Dash";
         [SerializeField] private string rollButton = "Roll";
         [SerializeField] private string crouchButton = "Crouch";
@@ -28,6 +29,8 @@ namespace Modular2DCharacterController.Runtime.Input
         public bool JumpHeld => UnityEngine.Input.GetButton(jumpButton);
 
         public bool RunHeld => UnityEngine.Input.GetButton(runButton);
+        
+        public bool GlideHeld => UnityEngine.Input.GetButton(runButton);
         
         public bool DashPressed => UnityEngine.Input.GetButtonDown(dashButton);
 

@@ -1,4 +1,3 @@
-using Modular2DCharacterController.Runtime.Data;
 using Modular2DCharacterController.Runtime.Data.FeatureProfiles;
 using Modular2DCharacterController.Runtime.Features;
 using Modular2DCharacterController.Runtime.Input;

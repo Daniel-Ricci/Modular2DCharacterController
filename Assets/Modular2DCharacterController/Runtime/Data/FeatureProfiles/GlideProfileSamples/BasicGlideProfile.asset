@@ -15,4 +15,4 @@ MonoBehaviour:
   priority: 0
   useGravityDuringGlide: 0
   gravityFactor: 0.3
-  fallSpeed: 3
+  fallSpeed: 0.2

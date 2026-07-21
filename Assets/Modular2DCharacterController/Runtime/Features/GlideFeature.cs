@@ -118,7 +118,7 @@ namespace Modular2DCharacterController.Runtime.Features
                 !_groundDetector.IsGrounded &&
                 ((requireFallingToGlide && _motor.CurrentSelfVelocity.y < 0f) ||
                 !requireFallingToGlide) &&
-                _input.RunHeld;
+                _input.GlideHeld;
 
             if (!wantsToGlide)
             {

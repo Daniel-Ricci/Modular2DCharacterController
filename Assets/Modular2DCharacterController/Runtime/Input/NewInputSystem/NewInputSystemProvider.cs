@@ -14,6 +14,7 @@ namespace Modular2DCharacterController.Runtime.Input.NewInputSystem
         [SerializeField] private InputActionReference moveAction;
         [SerializeField] private InputActionReference jumpAction;
         [SerializeField] private InputActionReference runAction;
+        [SerializeField] private InputActionReference glideAction;
         [SerializeField] private InputActionReference dashAction;
         [SerializeField] private InputActionReference rollAction;
         [SerializeField] private InputActionReference crouchAction;
@@ -40,6 +41,10 @@ namespace Modular2DCharacterController.Runtime.Input.NewInputSystem
         public bool RunHeld =>
             runAction != null &&
             runAction.action.IsPressed();
+        
+        public bool GlideHeld =>
+            glideAction != null &&
+            glideAction.action.IsPressed();
         
         public bool DashPressed =>
             dashAction != null &&
