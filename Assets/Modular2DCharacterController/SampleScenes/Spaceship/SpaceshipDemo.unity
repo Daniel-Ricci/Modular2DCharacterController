@@ -1370,6 +1370,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3516120877384698043, guid: d63c9b6862e5e464f97ce1f0478e45e1, type: 3}
+      propertyPath: glideAction
+      value: 
+      objectReference: {fileID: -7785473658258010991, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
     - target: {fileID: 4801533423870843640, guid: d63c9b6862e5e464f97ce1f0478e45e1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
